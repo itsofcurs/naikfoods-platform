@@ -3,13 +3,16 @@ import { Link, useLocation } from 'react-router-dom';
 import { User, Heart, ShoppingBag, Menu, Search, X, Loader2, Sparkles, Gift } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { useSwadCoinsStore } from '../store/swadCoinsStore';
+import { useLanguageStore } from '../store/languageStore';
 import { getProducts } from '../api';
 import ThemeToggle from './ThemeToggle';
+import LanguageToggle from './LanguageToggle';
 import SwadCoinsModal from './SwadCoinsModal';
 
 export default function Header() {
   const cartCount = useCartStore((state) => state.cartCount());
   const coins = useSwadCoinsStore((state) => state.coins);
+  const { t } = useLanguageStore();
   const location = useLocation();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,12 +82,12 @@ export default function Header() {
   }, [searchQuery, allProducts]);
 
   const navLinks = [
-    { label: 'Home', href: '/' },
-    { label: 'Shop', href: '/in/store' },
-    { label: 'Build Hamper', href: '/in/box-builder', badge: '15% Off 🎁' },
-    { label: 'About', href: '/in/about' },
-    { label: 'Blogs', href: '/in/blog' },
-    { label: 'Contact', href: '/in/contact' },
+    { label: t('home'), href: '/' },
+    { label: t('shop'), href: '/in/store' },
+    { label: t('buildHamper'), href: '/in/box-builder', badge: t('hamperBadge') },
+    { label: t('about'), href: '/in/about' },
+    { label: t('blogs'), href: '/in/blog' },
+    { label: t('contact'), href: '/in/contact' },
   ];
 
   return (
@@ -124,7 +127,7 @@ export default function Header() {
                     (link.href !== '/' && location.pathname.startsWith(link.href));
                   return (
                     <Link
-                      key={link.label}
+                      key={link.href}
                       to={link.href}
                       className={`text-[14px] xl:text-[15px] font-bold whitespace-nowrap transition-all duration-200 inline-flex items-center gap-1.5 relative ${
                         isActive ? 'text-[#70BF4F]' : 'text-[#1B1B1B] hover:text-[#70BF4F]'
@@ -143,13 +146,13 @@ export default function Header() {
             </div>
 
             {/* Search Bar & Actions (Right) */}
-            <div className="flex items-center gap-x-2 sm:gap-x-3 flex-shrink-0">
+            <div className="flex items-center gap-x-2 sm:gap-x-2.5 flex-shrink-0">
               
               {/* Desktop Expandable / Inline Search Bar */}
-              <div className="hidden md:block relative w-44 lg:w-56 xl:w-64" ref={searchRef}>
+              <div className="hidden md:block relative w-40 lg:w-52 xl:w-60" ref={searchRef}>
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder={t('searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => {
@@ -225,8 +228,11 @@ export default function Header() {
                 <span className="w-4 h-4 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center text-[10px] text-amber-950 font-black shadow-xs ring-1 ring-amber-200">
                   🪙
                 </span>
-                <span className="tracking-tight whitespace-nowrap">{coins} Coins</span>
+                <span className="tracking-tight whitespace-nowrap">{coins} {t('coinsLabel')}</span>
               </button>
+
+              {/* Marathi / English Language Toggle */}
+              <LanguageToggle />
 
               {/* Starlit Sky / Sunlight Theme Toggle */}
               <ThemeToggle />
@@ -272,7 +278,7 @@ export default function Header() {
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search authentic Maharashtrian products..."
+                  placeholder={t('searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   autoFocus
@@ -291,7 +297,7 @@ export default function Header() {
               <div className="px-4 py-2 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl flex items-center justify-between border border-amber-200/60 mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-base">🪙</span>
-                  <span className="text-xs font-black text-amber-900">{coins} Swad Coins Available</span>
+                  <span className="text-xs font-black text-amber-900">{coins} {t('coinsLabel')}</span>
                 </div>
                 <button
                   onClick={() => setShowCoinsModal(true)}
@@ -303,7 +309,7 @@ export default function Header() {
 
               {navLinks.map((link) => (
                 <Link
-                  key={link.label}
+                  key={link.href}
                   to={link.href}
                   className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold text-[#1B1B1B] hover:bg-[#F2F7F5] hover:text-[#70BF4F] transition-colors"
                 >
