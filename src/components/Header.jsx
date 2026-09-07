@@ -92,6 +92,22 @@ export default function Header() {
 
   return (
     <>
+      {/* Top Heritage & Language Announcement Ribbon */}
+      <div className="bg-gradient-to-r from-emerald-800 via-[#70BF4F] to-emerald-900 text-white py-1.5 px-4 text-xs font-bold tracking-wide shadow-xs">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 truncate">
+            <span className="text-sm">🚩</span>
+            <span className="truncate">{t('freeShippingBanner')}</span>
+          </div>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <span className="hidden md:inline text-[11px] text-emerald-100 font-semibold">{t('heritageCallout')}</span>
+            <div className="scale-90 origin-right">
+              <LanguageToggle />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs transition-all">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 md:h-24">
