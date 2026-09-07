@@ -1,0 +1,208 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #70BF4F;
+  --color-brand-dark: #58A03A;
+  --color-marigold: #F59E0B;
+  --color-terracotta: #D9531E;
+  --font-sans: "Manrope", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: #1E293B;
+  background-color: #FFFFFF;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ==========================================================================
+   STARLIT SKY NIGHT THEME (तारकांचे आकाश / Cosmic Celestial Midnight Theme)
+   High-Contrast & Beautifully Balanced Dark Palette
+   ========================================================================== */
+html.dark body {
+  background-color: #070B14;
+  background-image: 
+    radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 90px 160px, #93c5fd, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 170px 80px, #fde047, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 280px 220px, #ffffff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 380px 100px, #93c5fd, rgba(0,0,0,0)),
+    radial-gradient(1.5px 1.5px at 480px 300px, #fde047, rgba(0,0,0,0)),
+    radial-gradient(circle at 50% -10%, #172554 0%, #0B1329 45%, #050811 100%);
+  background-size: 550px 550px, 550px 550px, 550px 550px, 550px 550px, 550px 550px, 550px 550px, 100% 100%;
+  background-attachment: fixed;
+  color: #F8FAFC;
+}
+
+/* Midnight Starlit Header & Surface Cards */
+html.dark header {
+  background-color: rgba(11, 19, 36, 0.95) !important;
+  border-color: rgba(30, 41, 59, 0.9) !important;
+}
+
+/* Card Surfaces */
+html.dark .bg-white:not([data-preserve-bg]):not(.hero-cta-btn):not(.banner-cta-btn) {
+  background-color: #0F172A !important;
+  border-color: #1E293B !important;
+}
+
+/* Pastel Containers converted to Dark Tinted Glass */
+html.dark .bg-gray-50,
+html.dark .bg-\[\#F6F8F9\],
+html.dark .bg-\[\#F9FBF9\],
+html.dark .bg-\[\#F2F7F5\],
+html.dark .bg-\[\#FAFBF9\],
+html.dark .bg-\[\#FFF9E6\],
+html.dark .bg-\[\#FFEFED\],
+html.dark .bg-\[\#FFF5E9\],
+html.dark .bg-amber-50,
+html.dark .bg-green-50,
+html.dark .bg-red-50,
+html.dark .bg-rose-50,
+html.dark .bg-orange-50,
+html.dark .bg-teal-50,
+html.dark .bg-blue-50 {
+  background-color: #131E35 !important;
+  border-color: #1E2E4E !important;
+}
+
+/* Borders */
+html.dark .border-gray-100,
+html.dark .border-gray-200,
+html.dark .border-gray-200\/80,
+html.dark .border-gray-300,
+html.dark .border-amber-100,
+html.dark .border-amber-200,
+html.dark .border-green-200,
+html.dark .border-red-100,
+html.dark .border-red-200 {
+  border-color: #243556 !important;
+}
+
+/* Main Text & Headings */
+html.dark .text-gray-900,
+html.dark .text-\[\#1B1B1B\],
+html.dark .text-\[\#161915\],
+html.dark .text-gray-800 {
+  color: #FFFFFF !important;
+}
+
+/* Readable Paragraphs & Descriptions */
+html.dark .text-gray-700,
+html.dark .text-gray-600 {
+  color: #E2E8F0 !important;
+}
+
+/* Muted secondary labels */
+html.dark .text-gray-500,
+html.dark .text-gray-400 {
+  color: #94A3B8 !important;
+}
+
+/* Colored Text in Dark Mode (Convert dark mud colors to luminous readable colors) */
+html.dark .text-amber-900,
+html.dark .text-amber-800,
+html.dark .text-amber-700,
+html.dark .text-\[\#D9A400\],
+html.dark .text-\[\#D99B26\] {
+  color: #FDE047 !important; /* Luminous Sunny Gold */
+}
+
+html.dark .text-green-900,
+html.dark .text-green-800,
+html.dark .text-green-700,
+html.dark .text-\[\#4A7c2c\] {
+  color: #86EFAC !important; /* Luminous Mint Green */
+}
+
+html.dark .text-red-900,
+html.dark .text-red-800,
+html.dark .text-red-700,
+html.dark .text-rose-900,
+html.dark .text-rose-800,
+html.dark .text-\[\#E05243\] {
+  color: #FCA5A5 !important; /* Luminous Coral Red */
+}
+
+html.dark .text-orange-900,
+html.dark .text-orange-800,
+html.dark .text-orange-700 {
+  color: #FDBA74 !important; /* Luminous Peach */
+}
+
+html.dark .text-teal-900,
+html.dark .text-teal-800,
+html.dark .text-teal-700 {
+  color: #5EEAD4 !important; /* Luminous Teal */
+}
+
+/* Form Inputs in Dark Mode */
+html.dark input, 
+html.dark textarea, 
+html.dark select {
+  background-color: #131E35 !important;
+  color: #FFFFFF !important;
+  border-color: #243556 !important;
+}
+
+html.dark input::placeholder, 
+html.dark textarea::placeholder {
+  color: #64748B !important;
+}
+
+/* High-Contrast Hero Banner & Card Buttons in Dark Mode */
+.banner-cta-btn,
+.hero-cta-btn,
+[data-theme-hero-btn] {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
+}
+
+.banner-cta-btn:hover,
+.hero-cta-btn:hover,
+[data-theme-hero-btn]:hover {
+  background-color: #F8FAFC !important;
+  color: #020617 !important;
+  transform: translateY(-2px);
+}
+
+/* Glowing Shadows in Starlit Mode */
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  box-shadow: 0 10px 30px -8px rgba(0, 0, 0, 0.7), 0 0 1px 1px rgba(147, 197, 253, 0.1) !important;
+}
+
+/* Custom Starlit Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F1F1F1;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #090E1A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #243556;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #70BF4F;
+}
