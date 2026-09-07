@@ -21,10 +21,16 @@ body {
 
 /* ==========================================================================
    STARLIT SKY NIGHT THEME (तारकांचे आकाश / Cosmic Celestial Midnight Theme)
-   High-Contrast & Beautifully Balanced Dark Palette
+   High-Contrast & Beautifully Balanced Dark Palette with Zero Text Washes
    ========================================================================== */
-html.dark body {
+html.dark body,
+html.dark main,
+html.dark #root {
   background-color: #070B14;
+  color: #F8FAFC;
+}
+
+html.dark body {
   background-image: 
     radial-gradient(1px 1px at 25px 35px, #ffffff, rgba(0,0,0,0)),
     radial-gradient(1px 1px at 90px 160px, #93c5fd, rgba(0,0,0,0)),
@@ -35,27 +41,39 @@ html.dark body {
     radial-gradient(circle at 50% -10%, #172554 0%, #0B1329 45%, #050811 100%);
   background-size: 550px 550px, 550px 550px, 550px 550px, 550px 550px, 550px 550px, 550px 550px, 100% 100%;
   background-attachment: fixed;
-  color: #F8FAFC;
 }
 
 /* Midnight Starlit Header & Surface Cards */
 html.dark header {
-  background-color: rgba(11, 19, 36, 0.95) !important;
+  background-color: rgba(11, 19, 36, 0.96) !important;
   border-color: rgba(30, 41, 59, 0.9) !important;
 }
 
+/* Page Outer Background Wrappers */
+html.dark .bg-\[\#FAFAF8\],
+html.dark .bg-\[\#FAFBF9\],
+html.dark .bg-\[\#FDFCF7\],
+html.dark .bg-\[\#F7F7F7\],
+html.dark .bg-\[\#FAF7F0\],
+html.dark .bg-\[\#FAF5E8\] {
+  background-color: #070B14 !important;
+}
+
 /* Card Surfaces */
-html.dark .bg-white:not([data-preserve-bg]):not(.hero-cta-btn):not(.banner-cta-btn) {
+html.dark .bg-white:not([data-preserve-bg]):not(.hero-cta-btn):not(.brand-badge):not(.badge-solid) {
   background-color: #0F172A !important;
   border-color: #1E293B !important;
 }
 
 /* Pastel Containers converted to Dark Tinted Glass */
 html.dark .bg-gray-50,
+html.dark .bg-gray-100,
+html.dark .bg-slate-50,
+html.dark .bg-slate-100,
 html.dark .bg-\[\#F6F8F9\],
 html.dark .bg-\[\#F9FBF9\],
 html.dark .bg-\[\#F2F7F5\],
-html.dark .bg-\[\#FAFBF9\],
+html.dark .bg-\[\#F8FAF6\],
 html.dark .bg-\[\#FFF9E6\],
 html.dark .bg-\[\#FFEFED\],
 html.dark .bg-\[\#FFF5E9\],
@@ -75,12 +93,21 @@ html.dark .border-gray-100,
 html.dark .border-gray-200,
 html.dark .border-gray-200\/80,
 html.dark .border-gray-300,
+html.dark .border-\[\#E9F0E8\],
 html.dark .border-amber-100,
+html.dark .border-amber-100\/60,
 html.dark .border-amber-200,
 html.dark .border-green-200,
 html.dark .border-red-100,
+html.dark .border-red-100\/60,
 html.dark .border-red-200 {
   border-color: #243556 !important;
+}
+
+/* Explicit White Text Protection - Never get washed out */
+.text-white,
+html.dark .text-white {
+  color: #FFFFFF !important;
 }
 
 /* Main Text & Headings */
@@ -94,7 +121,14 @@ html.dark .text-gray-800 {
 /* Readable Paragraphs & Descriptions */
 html.dark .text-gray-700,
 html.dark .text-gray-600 {
-  color: #E2E8F0 !important;
+  color: #CBD5E1 !important;
+}
+
+/* Inactive tabs and pills */
+html.dark .bg-gray-100.text-gray-600,
+html.dark .bg-gray-100.text-gray-500 {
+  background-color: #1E293B !important;
+  color: #94A3B8 !important;
 }
 
 /* Muted secondary labels */
@@ -140,6 +174,40 @@ html.dark .text-teal-700 {
   color: #5EEAD4 !important; /* Luminous Teal */
 }
 
+/* Vibrant Action Buttons & Badges (Always solid white text with brilliant background) */
+.bg-\[\#70BF4F\],
+.bg-\[\#58A03A\],
+.bg-\[\#25D366\],
+.bg-\[\#136091\],
+html.dark .bg-\[\#70BF4F\],
+html.dark .bg-\[\#58A03A\],
+html.dark .bg-\[\#25D366\],
+html.dark .bg-\[\#136091\] {
+  color: #FFFFFF !important;
+}
+
+/* High-Contrast Hero Banner CTA Button */
+.hero-cta-btn {
+  transition: all 0.3s ease;
+}
+
+html.dark .hero-cta-btn {
+  background-color: #70BF4F !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 10px 25px -5px rgba(112, 191, 79, 0.4) !important;
+}
+
+html.dark .hero-cta-btn *,
+html.dark .hero-cta-btn span,
+html.dark .hero-cta-btn p {
+  color: #FFFFFF !important;
+}
+
+html.dark .hero-cta-btn:hover {
+  background-color: #5ea73f !important;
+  transform: translateY(-2px);
+}
+
 /* Form Inputs in Dark Mode */
 html.dark input, 
 html.dark textarea, 
@@ -152,23 +220,6 @@ html.dark select {
 html.dark input::placeholder, 
 html.dark textarea::placeholder {
   color: #64748B !important;
-}
-
-/* High-Contrast Hero Banner & Card Buttons in Dark Mode */
-.banner-cta-btn,
-.hero-cta-btn,
-[data-theme-hero-btn] {
-  background-color: #FFFFFF !important;
-  color: #0F172A !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4) !important;
-}
-
-.banner-cta-btn:hover,
-.hero-cta-btn:hover,
-[data-theme-hero-btn]:hover {
-  background-color: #F8FAFC !important;
-  color: #020617 !important;
-  transform: translateY(-2px);
 }
 
 /* Glowing Shadows in Starlit Mode */
