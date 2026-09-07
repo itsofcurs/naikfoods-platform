@@ -2,6 +2,8 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { getProducts, getCollections } from '../api';
 import { Link, useSearchParams } from 'react-router-dom';
 import AddToCartButton from '../components/AddToCartButton';
+import { useWishlistStore } from '../store/wishlistStore';
+import toast from 'react-hot-toast';
 import {
   Search,
   ChevronDown,
@@ -88,6 +90,10 @@ export default function Shop() {
 
   // Category horizontal scroll ref
   const categoryScrollRef = useRef(null);
+  
+  // Wishlist actions
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist);
 
   useEffect(() => {
     async function loadData() {
@@ -589,12 +595,33 @@ export default function Shop() {
                       key={product.id}
                       className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group flex flex-col h-full relative"
                     >
-                      {/* Wishlist Heart Icon */}
+                      {/* Interactive Wishlist Heart Icon */}
                       <button
-                        className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-white/80 hover:bg-white text-gray-400 hover:text-red-500 transition-colors shadow-sm"
-                        title="Add to Wishlist"
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const isFav = isInWishlist(product.id);
+                          toggleWishlist(product);
+                          if (!isFav) {
+                            toast.success(`Added to Favorites! ❤️`, { duration: 2000 });
+                          } else {
+                            toast('Removed from Favorites', { icon: '💔', duration: 1500 });
+                          }
+                        }}
+                        className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-md shadow-xs transition-all hover:scale-115 active:scale-90 cursor-pointer ${
+                          isInWishlist(product.id)
+                            ? 'bg-red-50 text-red-500 border border-red-200'
+                            : 'bg-white/85 hover:bg-white text-gray-400 hover:text-red-500'
+                        }`}
+                        title={isInWishlist(product.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                        aria-label="Toggle Wishlist"
                       >
-                        <Heart className="w-4 h-4" />
+                        <Heart
+                          className={`w-4 h-4 transition-all ${
+                            isInWishlist(product.id) ? 'fill-red-500 text-red-500 scale-110' : ''
+                          }`}
+                        />
                       </button>
 
                       {/* Product Thumbnail */}

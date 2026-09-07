@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getProducts } from '../api';
 import AddToCartButton from '../components/AddToCartButton';
 import RegionalTasteMap from '../components/RegionalTasteMap';
+import { useWishlistStore } from '../store/wishlistStore';
 import {
   Sparkles,
   ShieldCheck,
@@ -296,6 +297,9 @@ export default function Home() {
   
   const categoryScrollRef = useRef(null);
   const bestSellersScrollRef = useRef(null);
+
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist);
 
   // 1. Hero Banner Autoplay Timer (every 6 seconds)
   useEffect(() => {
@@ -758,8 +762,37 @@ export default function Home() {
           {(regionProducts.length > 0 ? regionProducts : products).map((product) => (
             <div
               key={product.id}
-              className="flex-shrink-0 w-64 sm:w-72 bg-white rounded-2xl border border-[#F0F2EF] overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group"
+              className="flex-shrink-0 w-64 sm:w-72 bg-white rounded-2xl border border-[#F0F2EF] overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group relative"
             >
+              {/* Interactive Wishlist Heart Icon */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const isFav = isInWishlist(product.id);
+                  toggleWishlist(product);
+                  if (!isFav) {
+                    toast.success(`Added to Favorites! ❤️`, { duration: 2000 });
+                  } else {
+                    toast('Removed from Favorites', { icon: '💔', duration: 1500 });
+                  }
+                }}
+                className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-md shadow-xs transition-all hover:scale-115 active:scale-90 cursor-pointer ${
+                  isInWishlist(product.id)
+                    ? 'bg-red-50 text-red-500 border border-red-200'
+                    : 'bg-white/85 hover:bg-white text-gray-400 hover:text-red-500'
+                }`}
+                title={isInWishlist(product.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                aria-label="Toggle Wishlist"
+              >
+                <Heart
+                  className={`w-4 h-4 transition-all ${
+                    isInWishlist(product.id) ? 'fill-red-500 text-red-500 scale-110' : ''
+                  }`}
+                />
+              </button>
+
               <Link
                 to={`/in/product/${product.handle}`}
                 className="block relative aspect-square bg-[#F9FBF9] p-4 overflow-hidden"

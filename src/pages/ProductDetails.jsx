@@ -4,6 +4,7 @@ import { getProduct } from '../api';
 import AddToCartButton from '../components/AddToCartButton';
 import SpiceMeter from '../components/SpiceMeter';
 import DietaryBadge from '../components/DietaryBadge';
+import { useWishlistStore } from '../store/wishlistStore';
 import {
   ShieldCheck,
   Truck,
@@ -14,7 +15,8 @@ import {
   CheckCircle2,
   Clock,
   Award,
-  Leaf
+  Leaf,
+  Heart
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -27,6 +29,10 @@ export default function ProductDetails() {
   const [pincode, setPincode] = useState('');
   const [pincodeChecked, setPincodeChecked] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Wishlist actions
+  const toggleWishlist = useWishlistStore((state) => state.toggleWishlist);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist);
 
   useEffect(() => {
     async function fetchProduct() {
@@ -125,6 +131,35 @@ export default function ProductDetails() {
                 <DietaryBadge type="veg" />
                 {spiceLevel === 3 && <DietaryBadge type="handPounded" />}
               </div>
+
+              {/* Interactive Wishlist Heart Button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  const isFav = isInWishlist(product.id);
+                  toggleWishlist(product);
+                  if (!isFav) {
+                    toast.success(`Added to Favorites! ❤️`, { duration: 2000 });
+                  } else {
+                    toast('Removed from Favorites', { icon: '💔', duration: 1500 });
+                  }
+                }}
+                className={`absolute top-4 right-4 z-10 p-2.5 rounded-full backdrop-blur-md shadow-md transition-all hover:scale-110 active:scale-90 cursor-pointer ${
+                  isInWishlist(product.id)
+                    ? 'bg-red-50 text-red-500 border-2 border-red-300'
+                    : 'bg-white/90 hover:bg-white text-gray-400 hover:text-red-500'
+                }`}
+                title={isInWishlist(product.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                aria-label="Toggle Wishlist"
+              >
+                <Heart
+                  className={`w-5 h-5 transition-all ${
+                    isInWishlist(product.id) ? 'fill-red-500 text-red-500 scale-110' : ''
+                  }`}
+                />
+              </button>
             </div>
 
             {/* Thumbnail selector */}
@@ -213,11 +248,36 @@ export default function ProductDetails() {
               </div>
 
               {/* Action Buttons */}
-              <div className="space-y-3 mb-8">
-                <AddToCartButton
-                  product={product}
-                  className="w-full py-4 text-base font-black rounded-2xl shadow-lg hover:shadow-xl"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 mb-8">
+                <div className="sm:col-span-9">
+                  <AddToCartButton
+                    product={product}
+                    className="w-full py-4 text-base font-black rounded-2xl shadow-lg hover:shadow-xl"
+                  />
+                </div>
+                <div className="sm:col-span-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const isFav = isInWishlist(product.id);
+                      toggleWishlist(product);
+                      if (!isFav) {
+                        toast.success(`Saved to Favorites! ❤️`);
+                      } else {
+                        toast('Removed from Favorites', { icon: '💔' });
+                      }
+                    }}
+                    className={`w-full h-full min-h-[52px] rounded-2xl flex items-center justify-center gap-2 text-sm font-bold border-2 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-sm ${
+                      isInWishlist(product.id)
+                        ? 'bg-red-50 text-red-500 border-red-300'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:text-red-500'
+                    }`}
+                    title={isInWishlist(product.id) ? 'In Favorites' : 'Save to Favorites'}
+                  >
+                    <Heart className={`w-5 h-5 ${isInWishlist(product.id) ? 'fill-red-500 text-red-500' : ''}`} />
+                    <span className="sm:hidden">{isInWishlist(product.id) ? 'In Wishlist' : 'Wishlist'}</span>
+                  </button>
+                </div>
               </div>
 
               {/* Trust Badges */}
