@@ -73,15 +73,17 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 lg:px-8 py-8 md:py-12 max-w-6xl">
-      <h1 className="text-3xl font-black text-gray-900 mb-6 font-serif">Shopping Cart</h1>
+      <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-6 font-serif">
+        {lang === 'mr' ? 'खरेदीची पिशवी (शॉपिंग कार्ट)' : 'Shopping Cart'}
+      </h1>
 
       {items.length === 0 ? (
-        <div className="bg-white p-12 rounded-3xl border border-gray-100 shadow-sm text-center py-16">
-          <div className="w-16 h-16 bg-green-50 text-[#70BF4F] rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="bg-white dark:bg-[#0F172A] p-12 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center py-16">
+          <div className="w-16 h-16 bg-green-50 dark:bg-green-950/50 text-[#70BF4F] dark:text-[#86EFAC] rounded-full flex items-center justify-center mx-auto mb-4 border border-green-100 dark:border-green-800/60">
             <Tag className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('cartEmpty')}</h2>
-          <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('cartEmpty')}</h2>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 max-w-sm mx-auto">
             {lang === 'mr' ? 'आमचे अस्सल मराठमोळे मसाले, लोणची आणि कुरकुरीत पदार्थ पाहून खरेदी सुरू करा.' : 'Discover our hand-pounded authentic Maharashtrian masalas, pickles, and traditional snacks.'}
           </p>
           <Link
@@ -99,22 +101,22 @@ export default function Cart() {
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Cart Items Table */}
             <div className="flex-grow space-y-6">
-              <div className="border border-gray-100 rounded-3xl overflow-hidden bg-white shadow-sm">
+              <div className="border border-gray-100 dark:border-gray-800 rounded-3xl overflow-hidden bg-white dark:bg-[#0F172A] shadow-sm">
                 <table className="w-full text-left border-collapse">
-                  <thead className="bg-[#F8FAF6] text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-100">
+                  <thead className="bg-[#F8FAF6] dark:bg-[#131E35] text-gray-700 dark:text-gray-300 text-xs font-bold uppercase tracking-wider border-b border-gray-100 dark:border-gray-800">
                     <tr>
                       <th className="p-4 sm:p-5">{lang === 'mr' ? 'खाद्यपदार्थ' : 'Delicacy'}</th>
                       <th className="p-4 sm:p-5">{lang === 'mr' ? 'प्रमाण' : 'Quantity'}</th>
                       <th className="p-4 sm:p-5 text-right">{lang === 'mr' ? 'किंमत' : 'Price'}</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 text-sm">
+                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800/80 text-sm">
                     {items.map((item) => {
                       const itemPrice = ((item.variant.prices?.[0]?.amount || 0) / 100) || 120;
                       return (
-                        <tr key={item.variant.id} className="hover:bg-gray-50/50 transition-colors">
+                        <tr key={item.variant.id} className="hover:bg-gray-50/80 dark:hover:bg-[#1E293B]/60 transition-colors">
                           <td className="p-4 sm:p-5 flex items-center gap-4">
-                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F8FAF6] border border-gray-100 p-2 flex-shrink-0 rounded-2xl overflow-hidden">
+                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F8FAF6] dark:bg-[#131E35] border border-gray-100 dark:border-gray-700/80 p-2 flex-shrink-0 rounded-2xl overflow-hidden">
                               {item.product.thumbnail ? (
                                 <img
                                   src={item.product.thumbnail}
@@ -122,17 +124,17 @@ export default function Cart() {
                                   className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                                 />
                               ) : (
-                                <div className="w-full h-full bg-gray-200" />
+                                <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />
                               )}
                             </div>
                             <div>
                               <Link
                                 to={`/in/product/${item.product.handle}`}
-                                className="font-bold text-gray-900 hover:text-[#70BF4F] transition-colors line-clamp-1 text-sm sm:text-base"
+                                className="font-bold text-gray-900 dark:text-white hover:text-[#70BF4F] dark:hover:text-[#86EFAC] transition-colors line-clamp-1 text-sm sm:text-base"
                               >
                                 {item.product.title}
                               </Link>
-                              <p className="text-xs text-gray-500 mt-0.5 font-medium">
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 font-medium">
                                 {lang === 'mr' ? 'वजन' : 'Net Wt'}: {item.variant.title || (lang === 'mr' ? 'प्रमाणित पॅक' : 'Standard Pack')}
                               </p>
                             </div>
@@ -144,10 +146,10 @@ export default function Cart() {
                                 onChange={(e) =>
                                   updateQuantity(item.variant.id, parseInt(e.target.value))
                                 }
-                                className="border border-gray-200 rounded-xl p-2 text-sm bg-white font-semibold focus:outline-none focus:border-[#70BF4F]"
+                                className="border border-gray-200 dark:border-gray-700 rounded-xl p-2 text-sm bg-white dark:bg-[#131E35] text-gray-900 dark:text-white font-semibold focus:outline-none focus:border-[#70BF4F]"
                               >
                                 {[...Array(10).keys()].map((i) => (
-                                  <option key={i + 1} value={i + 1}>
+                                  <option key={i + 1} value={i + 1} className="bg-white dark:bg-[#131E35] text-gray-900 dark:text-white">
                                     {i + 1}
                                   </option>
                                 ))}
@@ -155,14 +157,14 @@ export default function Cart() {
                               <button
                                 type="button"
                                 onClick={() => removeFromCart(item.variant.id)}
-                                className="text-gray-400 hover:text-red-500 p-1.5 transition-colors cursor-pointer"
+                                className="text-gray-400 hover:text-red-500 dark:hover:text-red-400 p-1.5 transition-colors cursor-pointer"
                                 title="Remove item"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
                             </div>
                           </td>
-                          <td className="p-4 sm:p-5 text-right font-bold text-gray-900 text-sm sm:text-base">
+                          <td className="p-4 sm:p-5 text-right font-bold text-gray-900 dark:text-white text-sm sm:text-base">
                             ₹{itemPrice * item.quantity}
                           </td>
                         </tr>
@@ -175,18 +177,18 @@ export default function Cart() {
               {/* Cross-selling Recommendations */}
               {recommendations.length > 0 && (
                 <div className="mt-8">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 font-serif">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 font-serif">
                     {t('frequentlyBoughtTogether')}
                   </h2>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {recommendations.map((product) => (
                       <div
                         key={product.id}
-                        className="bg-white border border-gray-100 rounded-2xl p-4 flex flex-col shadow-2xs hover:shadow-md transition-shadow"
+                        className="bg-white dark:bg-[#0F172A] border border-gray-100 dark:border-gray-800 rounded-2xl p-4 flex flex-col shadow-2xs hover:shadow-md transition-shadow"
                       >
                         <Link
                           to={`/in/product/${product.handle}`}
-                          className="block relative aspect-square bg-[#F8FAF6] mb-3 p-2 rounded-xl"
+                          className="block relative aspect-square bg-[#F8FAF6] dark:bg-[#131E35] mb-3 p-2 rounded-xl border border-transparent dark:border-gray-700/60"
                         >
                           {product.thumbnail ? (
                             <img
@@ -195,16 +197,16 @@ export default function Cart() {
                               className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                             />
                           ) : (
-                            <div className="w-full h-full bg-gray-200" />
+                            <div className="w-full h-full bg-gray-200 dark:bg-gray-700" />
                           )}
                         </Link>
                         <Link
                           to={`/in/product/${product.handle}`}
-                          className="text-xs sm:text-sm font-bold text-gray-900 line-clamp-1 hover:text-[#70BF4F] mb-1"
+                          className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white line-clamp-1 hover:text-[#70BF4F] dark:hover:text-[#86EFAC] mb-1"
                         >
                           {product.title}
                         </Link>
-                        <span className="text-xs sm:text-sm font-bold text-gray-800 mb-2">
+                        <span className="text-xs sm:text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
                           ₹{product.variants?.[0]?.prices?.[0]?.amount / 100 || 120}
                         </span>
                         <div className="mt-auto">
@@ -219,14 +221,14 @@ export default function Cart() {
 
             {/* Right: Cart Summary */}
             <div className="w-full lg:w-96 flex-shrink-0">
-              <div className="bg-white rounded-3xl p-6 sm:p-7 border border-gray-100 shadow-sm space-y-6 sticky top-24">
-                <h2 className="text-xl font-black text-gray-900 border-b border-gray-100 pb-3 font-serif">
+              <div className="bg-white dark:bg-[#0F172A] rounded-3xl p-6 sm:p-7 border border-gray-100 dark:border-gray-800 shadow-sm space-y-6 sticky top-24">
+                <h2 className="text-xl font-black text-gray-900 dark:text-white border-b border-gray-100 dark:border-gray-800 pb-3 font-serif">
                   {t('orderSummary')}
                 </h2>
 
                 {/* Promo Code Input & Discovery Chips */}
                 <div className="space-y-3">
-                  <span className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider block">
                     {t('applyCoupon')}
                   </span>
                   <div className="flex gap-2">
@@ -235,12 +237,12 @@ export default function Cart() {
                       placeholder="e.g. FESTIVE10"
                       value={promoCode}
                       onChange={(e) => setPromoCode(e.target.value)}
-                      className="border border-gray-200 rounded-xl px-3 py-2 text-sm uppercase flex-grow focus:outline-none focus:border-[#70BF4F]"
+                      className="border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#131E35] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-xl px-3 py-2 text-sm uppercase flex-grow focus:outline-none focus:border-[#70BF4F]"
                     />
                     <button
                       type="button"
                       onClick={() => handleApplyPromo()}
-                      className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#70BF4F] transition-colors cursor-pointer"
+                      className="bg-gray-900 dark:bg-[#70BF4F] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#70BF4F] dark:hover:bg-[#58A03A] transition-colors cursor-pointer"
                     >
                       {t('applyPromo')}
                     </button>
@@ -251,28 +253,28 @@ export default function Cart() {
                     <button
                       type="button"
                       onClick={() => handleApplyPromo('FESTIVE10')}
-                      className="text-[11px] bg-green-50 text-[#70BF4F] font-bold border border-green-200 px-2 py-0.5 rounded-md hover:bg-green-100 transition-colors"
+                      className="text-[11px] bg-green-50 dark:bg-green-950/60 text-[#70BF4F] dark:text-[#86EFAC] font-bold border border-green-200 dark:border-green-800 px-2 py-0.5 rounded-md hover:bg-green-100 dark:hover:bg-green-900/60 transition-colors cursor-pointer"
                     >
                       FESTIVE10 ({lang === 'mr' ? '१०% सूट' : '10% OFF'})
                     </button>
                     <button
                       type="button"
                       onClick={() => handleApplyPromo('SWAD50')}
-                      className="text-[11px] bg-amber-50 text-amber-800 font-bold border border-amber-200 px-2 py-0.5 rounded-md hover:bg-amber-100 transition-colors"
+                      className="text-[11px] bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold border border-amber-200 dark:border-amber-800 px-2 py-0.5 rounded-md hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors cursor-pointer"
                     >
                       SWAD50 ({lang === 'mr' ? '₹५० सूट' : '₹50 OFF'})
                     </button>
                   </div>
 
                   {appliedPromo && (
-                    <div className="flex items-center justify-between text-xs bg-emerald-50 text-emerald-800 p-2.5 rounded-xl border border-emerald-200">
+                    <div className="flex items-center justify-between text-xs bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800">
                       <span className="font-bold flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> {appliedPromo} {lang === 'mr' ? 'लागू झाले' : 'applied'}
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> {appliedPromo} {lang === 'mr' ? 'लागू झाले' : 'applied'}
                       </span>
                       <button
                         type="button"
                         onClick={handleRemovePromo}
-                        className="text-red-500 font-bold hover:underline"
+                        className="text-red-500 dark:text-red-400 font-bold hover:underline cursor-pointer"
                       >
                         {t('remove')}
                       </button>
@@ -281,14 +283,14 @@ export default function Cart() {
                 </div>
 
                 {/* Pricing Line Items */}
-                <div className="space-y-3 text-sm text-gray-600 border-t border-b border-gray-100 py-4">
+                <div className="space-y-3 text-sm text-gray-600 dark:text-gray-300 border-t border-b border-gray-100 dark:border-gray-800 py-4">
                   <div className="flex justify-between font-medium">
                     <span>{t('subtotal')}</span>
-                    <span className="text-gray-900 font-bold">₹{subtotal}</span>
+                    <span className="text-gray-900 dark:text-white font-bold">₹{subtotal}</span>
                   </div>
 
                   {appliedDiscount > 0 && (
-                    <div className="flex justify-between text-emerald-600 font-bold">
+                    <div className="flex justify-between text-emerald-600 dark:text-emerald-400 font-bold">
                       <span>{lang === 'mr' ? 'सवलत' : 'Discount'} ({appliedPromo})</span>
                       <span>-₹{appliedDiscount}</span>
                     </div>
@@ -298,14 +300,14 @@ export default function Cart() {
                     <span>{t('deliveryFee')}</span>
                     <span>
                       {shippingFee === 0 ? (
-                        <strong className="text-[#70BF4F]">{t('free')}</strong>
+                        <strong className="text-[#70BF4F] dark:text-[#86EFAC]">{t('free')}</strong>
                       ) : (
                         `₹${shippingFee}.00`
                       )}
                     </span>
                   </div>
 
-                  <div className="flex justify-between font-black text-lg text-gray-900 pt-2 border-t border-dashed border-gray-200">
+                  <div className="flex justify-between font-black text-lg text-gray-900 dark:text-white pt-2 border-t border-dashed border-gray-200 dark:border-gray-700">
                     <span>{t('total')}</span>
                     <span>₹{totalAmount}</span>
                   </div>
@@ -313,7 +315,7 @@ export default function Cart() {
 
                 <Link
                   to="/in/checkout"
-                  className="block text-center w-full bg-[#70BF4F] hover:bg-[#5ca040] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  className="block text-center w-full bg-[#70BF4F] hover:bg-[#5ca040] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 cursor-pointer"
                 >
                   {t('proceedToCheckout')}
                 </Link>
