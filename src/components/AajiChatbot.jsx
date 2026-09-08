@@ -1,73 +1,27 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Sparkles, ExternalLink, Bot, RotateCcw } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, ExternalLink, Bot, RotateCcw, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguageStore } from '../store/languageStore';
-
-const KNOWLEDGE_BASE = [
-  {
-    keywords: ['return', 'refund', 'damaged', 'exchange', 'broken', 'cancel', 'परतावा', 'पैसे', 'नुकसान'],
-    answerEn:
-      'Namaskar! As per our official Refund Policy, returns and replacements are accepted for damaged or defective items if reported within 7 days of delivery with parcel photos. Refunds are processed back to your original payment method within 5–7 working days.',
-    answerMr:
-      'नमस्कार बाळ! आमच्या अधिकृत परतावा धोरणानुसार, पार्सल खराब किंवा तुटलेले असल्यास डिलिव्हरीच्या ७ दिवसांच्या आत फोटोंसह नोंदवल्यास त्वरित बदलून किंवा पैसे परत दिले जातात. परतावा ५-७ कामकाजाच्या दिवसांत तुमच्या मूळ बँक खात्यात जमा होतो.',
-  },
-  {
-    keywords: ['shipping', 'delivery', 'pincode', 'track', 'time', 'how long', 'days', 'cost', 'charge', 'डिलिव्हरी', 'पोहोच', 'वेळ', 'शुल्क'],
-    answerEn:
-      'We offer express delivery across Maharashtra and India! Orders above ₹499 qualify for FREE Shipping (flat ₹50 for orders below ₹499). Deliveries within Pune and Mumbai take 24–48 hours, and other states take 3–5 working days.',
-    answerMr:
-      'आम्ही संपूर्ण महाराष्ट्रभर आणि देशभरात जलद होम डिलिव्हरी देतो! ₹४९९ वरील सर्व ऑर्डरवर मोफत डिलिव्हरी आहे (त्याखाली ₹५०). पुणे व मुंबईत २४-४८ तासांत आणि इतर शहरांत ३-५ दिवसांत पार्सल पोहोचते.',
-  },
-  {
-    keywords: ['hour', 'time', 'timing', 'open', 'close', 'store', 'shop', 'visit', 'address', 'location', 'दुकान', 'पत्ता', 'पुणे', 'वेळ'],
-    answerEn:
-      'Our authentic flagship store is located at Seva Mitra Mandal Chowk, Near Fadgate Police Chowki, Shukrawar Peth, Pune 411002. We are open from 9:00 AM to 10:00 PM daily. Our online AI support is available 24/7!',
-    answerMr:
-      'आमचे मुख्य दुकान सेवा मित्र मंडळ चौक, फडगेट पोलीस चौकी जवळ, शुक्रवार पेठ, पुणे ४११००२ येथे आहे. दुकान दररोज सकाळी ९ ते रात्री १० पर्यंत उघडे असते. आणि मी (आजी AI) तुमच्यासाठी २४ तास उपलब्ध आहे!',
-  },
-  {
-    keywords: ['fssai', 'safety', 'hygiene', 'license', 'quality', 'fda', 'pure', 'गुणवत्ता', 'शुद्ध', 'परवाना'],
-    answerEn:
-      'Naik Foods operates under FSSAI Central/State License No. 11524999000123. All masalas are stone-ground and hand-pounded (खलबत्ता पद्धत) using 100% natural, preservative-free ingredients with zero artificial colors or palm oil.',
-    answerMr:
-      'नाईक फूड्स FSSAI परवाना क्र. 11524999000123 अंतर्गत चालवले जाते. सर्व मसाले पारंपारिक पद्धतीने खलबत्त्यात कुटलेले व जात्यावर दळलेले आहेत. यात कोणतेही कृत्रिम रंग, पाम तेल किंवा प्रिझर्व्हेटिव्ह वापरले जात नाहीत.',
-  },
-  {
-    keywords: ['thalipith', 'bhajni', 'recipe', 'how to make', 'flour', 'थालीपीठ', 'भाजणी', 'कृती'],
-    answerEn:
-      'To prepare authentic Thalipith using our Bhajni: Mix the flour with finely chopped onions, green chillies, coriander, salt, and warm water. Pat it gently on a damp cloth or butter paper, roast on a tawa with pure ghee, and serve with fresh white butter (loni) and our Shengdana Chutney!',
-    answerMr:
-      'खमंग थालीपीठ करण्याची आजीची कृती: भाजणीच्या पिठात बारीक चिरलेला कांदा, हिरवी मिरची, कोथिंबीर, मीठ आणि कोमट पाणी घालून मळून घ्या. ओल्या सुती कापडावर थापून तव्यावर साजूक तुपात खमंग भाजा. गरमागरम थालीपीठ ताज्या लोण्यासोबत आणि नाईक फूड्सच्या शेंगदाणा चटणीसोबत सर्व्ह करा!',
-  },
-  {
-    keywords: ['masala', 'goda', 'kanda lasun', 'saoji', 'spicy', 'thecha', 'मसाला', 'गोडा', 'कांदा लसूण', 'सावजी', 'ठेचा', 'तिखट'],
-    answerEn:
-      'Our specialty masalas include traditional Goda Masala (mild & aromatic), Kolhapuri Kanda Lasun Masala (medium-hot), and Vidarbha Saoji Masala (झणझणीत spicy). All recipes originate from heirloom family techniques established in 1935.',
-    answerMr:
-      'आमच्या खास मसाल्यांमध्ये पारंपरिक गोडा मसाला (सुवासिक व सौम्य), कोल्हापुरी कांदा लसूण मसाला (मध्यम तिखट), आणि विदर्भाचा अस्सल सावजी मसाला (झणझणीत तिखट) यांचा समावेश आहे. सर्व पाककृती १९३५ पासूनच्या जुन्या परंपरेनुसार तयार केल्या जातात.',
-  },
-  {
-    keywords: ['payment', 'upi', 'cod', 'cash on delivery', 'gpay', 'phonepe', 'पेमेंट', 'पैसे देणे', 'कॅश'],
-    answerEn:
-      'We accept all major UPI apps (Google Pay, PhonePe, Paytm, BHIM), Credit/Debit Cards, Net Banking, and Cash on Delivery (COD) for orders between ₹299 and ₹1,500.',
-    answerMr:
-      'आम्ही सर्व प्रमुख UPI (GPay, PhonePe, Paytm), क्रेडिट/डेबिट कार्ड, नेट बँकिंग आणि ₹२९९ ते ₹१,५०० च्या दरम्यानच्या ऑर्डरवर कॅश ऑन डिलिव्हरी (COD) स्वीकारतो.',
-  },
-];
+import { processAajiQuery } from '../services/aajiRagEngine';
 
 const DEFAULT_CHIPS_EN = [
+  '🛍️ How to check available products?',
+  '🎁 Build Festive Hamper (15% Off)',
+  '🪙 How do Swad Coins work?',
   '📦 Shipping Timelines & Rates',
   '🔄 Return & Refund Policy',
   '📍 Pune Store Location & Hours',
-  '🌶️ Masala Spice Levels',
-  '🛡️ FSSAI & Quality Standards',
+  '🍲 Aaji’s Thalipith Recipe'
 ];
 
 const DEFAULT_CHIPS_MR = [
-  '📦 डिलिव्हरी वेळ व दर',
-  '🔄 परतावा व मनी-बॅक धोरण',
+  '🛍️ उपलब्ध पदार्थ कसे पाहावे?',
+  '🎁 भेट बॉक्स कसा बनवावा? (१५% सूट)',
+  '🪙 स्वाद नाणी कशी वापरावी?',
+  '📦 डिलिव्हरी वेळ व मोफत दर',
+  '🔄 परतावा व रिफंड धोरण',
   '📍 पुणे दुकानाचा पत्ता व वेळ',
-  '🌶️ मसाल्यांचे तिखट प्रमाण',
-  '🛡️ FSSAI व शुद्धतेची हमी',
+  '🍲 खमंग थालीपीठाची आजीची कृती'
 ];
 
 export default function AajiChatbot() {
@@ -75,19 +29,21 @@ export default function AajiChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [isThinking, setIsThinking] = useState(false);
+  const [thinkingStep, setThinkingStep] = useState('');
   const chatEndRef = useRef(null);
 
   useEffect(() => {
     const greetingText = lang === 'mr'
-      ? 'नमस्कार बाळ! मी तुझी आजी. अस्सल मराठमोळ्या पाककृती, मसाल्यांचे प्रमाण किंवा डिलिव्हरीबद्दल मला काहीही विचार!'
-      : 'Namaskar! I am Aaji AI, your traditional culinary and policy guide for Naik Foods. How may I assist your shopping today?';
+      ? 'नमस्कार बाळ! मी तुझी आजी. अस्सल मराठमोळ्या पाककृती, उपलब्ध उत्पादने, सण-उत्सव भेट बॉक्सेस किंवा डिलिव्हरीबद्दल मला काहीही विचार! 👵✨'
+      : 'Namaskar dear child! I am Aaji AI, your traditional culinary guide and customer assistant for Naik Foods. Ask me anything about our available snacks, pickles, hampers, or delivery! 👵✨';
     
     setMessages([
       {
         sender: 'bot',
         text: greetingText,
         time: 'Just now',
+        action: { labelEn: 'Browse Store', labelMr: 'दुकान पहा', link: '/in/store' }
       },
     ]);
   }, [lang]);
@@ -96,7 +52,7 @@ export default function AajiChatbot() {
     if (isOpen) {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isThinking]);
 
   const handleSend = (userQuery) => {
     const text = (userQuery || input).trim();
@@ -110,42 +66,35 @@ export default function AajiChatbot() {
     };
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
-    setIsTyping(true);
+    setIsThinking(true);
+    setThinkingStep(lang === 'mr' ? 'आजी विचार करत आहेत व माहिती शोधत आहेत... 🧠💭' : 'Aaji is thinking & searching recipe documents... 🧠💭');
 
-    // Deterministic low-temperature query matching
+    // Multi-stage RAG thinking simulation
     setTimeout(() => {
-      const lower = text.toLowerCase();
-      let matchedItem = null;
+      setThinkingStep(lang === 'mr' ? 'सुरक्षा नियम व माहिती पडताळत आहे... 🛡️' : 'Verifying safety guardrails & policies... 🛡️');
+      
+      setTimeout(() => {
+        const queryResult = processAajiQuery(text, lang);
 
-      for (const item of KNOWLEDGE_BASE) {
-        if (item.keywords.some((kw) => lower.includes(kw.toLowerCase()))) {
-          matchedItem = item;
-          break;
-        }
-      }
+        const botReply = {
+          sender: 'bot',
+          text: queryResult.text,
+          action: queryResult.action || null,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        };
 
-      const answerText = matchedItem
-        ? (lang === 'mr' ? matchedItem.answerMr : matchedItem.answerEn)
-        : (lang === 'mr'
-          ? 'बाळ, मला अधिक अचूक उत्तर द्यायला आवडेल! विशेष ऑर्डर किंवा चौकशीसाठी तू आमच्या व्हॉट्सॲप सपोर्टवर (+९१ ९७३००४६२४७) थेट संपर्क साधू शकतोस.'
-          : "I want to make sure you get the most accurate answer! For special custom orders or personal inquiries, you can instantly connect with our human customer support on WhatsApp at +91 9730046247.");
-
-      const botReply = {
-        sender: 'bot',
-        text: answerText,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-
-      setMessages((prev) => [...prev, botReply]);
-      setIsTyping(false);
-    }, 450);
+        setMessages((prev) => [...prev, botReply]);
+        setIsThinking(false);
+        setThinkingStep('');
+      }, 350);
+    }, 400);
   };
 
   const currentChips = lang === 'mr' ? DEFAULT_CHIPS_MR : DEFAULT_CHIPS_EN;
 
   return (
     <>
-      {/* Floating Toggle Button (Positioned at bottom-left to complement right WhatsApp button) */}
+      {/* Floating Toggle Button */}
       {!isOpen && (
         <button
           type="button"
@@ -157,15 +106,15 @@ export default function AajiChatbot() {
             👵
           </div>
           <span className="hidden sm:inline font-bold text-sm tracking-wide">
-            Aaji AI Assistant
+            {lang === 'mr' ? 'आजी AI सहाय्यक' : 'Aaji AI Assistant'}
           </span>
           <span className="w-2 h-2 rounded-full bg-emerald-300 animate-ping" />
         </button>
       )}
 
-      {/* Expandable Chat Drawer / Window */}
+      {/* Expandable Chat Drawer */}
       {isOpen && (
-        <div className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-96 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden max-h-[580px] h-[520px] transition-all animate-in fade-in slide-in-from-bottom-5">
+        <div className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[410px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden max-h-[620px] h-[550px] transition-all animate-in fade-in slide-in-from-bottom-5">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#70BF4F] to-[#5ca040] text-white p-4 flex items-center justify-between shadow-md">
             <div className="flex items-center gap-3">
@@ -174,10 +123,11 @@ export default function AajiChatbot() {
               </div>
               <div>
                 <h3 className="font-extrabold text-sm flex items-center gap-1.5 font-serif">
-                  {lang === 'mr' ? 'आजी AI' : 'Aaji AI'} <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  {lang === 'mr' ? 'आजी AI (बुद्धिमत्ता व RAG)' : 'Aaji AI (RAG Assistant)'} <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 </h3>
-                <p className="text-[11px] text-white/90 font-medium">
-                  {lang === 'mr' ? '२४/७ अधिकृत पाककृती व मदतनीस' : '24/7 Verified Policy & Recipe Guide'}
+                <p className="text-[10px] text-white/90 font-medium flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-200 inline" />
+                  {lang === 'mr' ? '२४/७ ५-स्तरीय सुरक्षित व अधिकृत मार्गदर्शक' : '24/7 Hardened 5-Layer Customer Guide'}
                 </p>
               </div>
             </div>
@@ -200,35 +150,49 @@ export default function AajiChatbot() {
                 }`}
               >
                 <div
-                  className={`max-w-[85%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+                  className={`max-w-[88%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
                     msg.sender === 'user'
                       ? 'bg-[#70BF4F] text-white rounded-br-none shadow-sm'
                       : 'bg-white text-gray-800 rounded-bl-none border border-gray-100 shadow-sm'
                   }`}
                 >
                   {msg.text}
+
+                  {/* Interactive Action Chip */}
+                  {msg.action && (
+                    <div className="mt-3 pt-2.5 border-t border-gray-100/80">
+                      <Link
+                        to={msg.action.link}
+                        onClick={() => setIsOpen(false)}
+                        className="inline-flex items-center gap-1.5 bg-[#70BF4F]/10 hover:bg-[#70BF4F] text-[#70BF4F] hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 group cursor-pointer"
+                      >
+                        <span>{lang === 'mr' ? msg.action.labelMr : msg.action.labelEn}</span>
+                        <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                      </Link>
+                    </div>
+                  )}
                 </div>
                 <span className="text-[10px] text-gray-400 mt-1 px-1">{msg.time}</span>
               </div>
             ))}
 
-            {isTyping && (
-              <div className="flex items-center gap-1.5 bg-white p-3 rounded-2xl w-20 border border-gray-100 shadow-2xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#70BF4F] animate-bounce" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#70BF4F] animate-bounce [animation-delay:0.2s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#70BF4F] animate-bounce [animation-delay:0.4s]" />
+            {/* Thinking / Cognitive State */}
+            {isThinking && (
+              <div className="flex items-center gap-2 bg-amber-50/80 border border-amber-200/60 p-3 rounded-2xl text-amber-900 text-xs font-semibold max-w-[85%] shadow-xs animate-pulse">
+                <Sparkles className="w-4 h-4 text-amber-600 animate-spin" />
+                <span>{thinkingStep}</span>
               </div>
             )}
             <div ref={chatEndRef} />
           </div>
 
           {/* Quick Prompt Chips */}
-          <div className="px-3 py-2 bg-white border-t border-gray-100 flex gap-1.5 overflow-x-auto no-scrollbar">
+          <div className="px-3 py-2 bg-white border-t border-gray-100 flex gap-1.5 overflow-x-auto hide-scrollbar">
             {currentChips.map((chip, idx) => (
               <button
                 key={idx}
                 type="button"
-                onClick={() => handleSend(chip)}
+                onClick={() => handleSend(chip.replace(/^[^\s]+\s/, ''))}
                 className="whitespace-nowrap bg-gray-50 hover:bg-green-50 text-gray-700 hover:text-[#70BF4F] text-[11px] font-bold px-2.5 py-1 rounded-full border border-gray-200 transition-colors shrink-0 cursor-pointer"
               >
                 {chip}
@@ -240,7 +204,7 @@ export default function AajiChatbot() {
           <div className="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
             <input
               type="text"
-              placeholder={lang === 'mr' ? 'पाककृती, डिलिव्हरी किंवा धोरणांबद्दल विचारा...' : 'Ask about policies, shipping, recipes...'}
+              placeholder={lang === 'mr' ? 'उपलब्ध पदार्थ, पाककृती, डिलिव्हरी किंवा धोरणांबद्दल विचारा...' : 'Ask about available products, policies, recipes...'}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -257,14 +221,14 @@ export default function AajiChatbot() {
 
           {/* Direct WhatsApp Transfer Footer */}
           <div className="bg-gray-50 px-4 py-2 text-center text-[11px] text-gray-500 border-t border-gray-100 flex items-center justify-between">
-            <span>Need human assistance?</span>
+            <span>{lang === 'mr' ? 'थेट प्रतिनिधीशी बोलायचे आहे?' : 'Need human assistance?'}</span>
             <a
               href="https://wa.me/919730046247?text=Hi!%20I%20have%20a%20question%20for%20Naik%20Foods%20team."
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#70BF4F] font-bold flex items-center gap-1 hover:underline"
             >
-              WhatsApp Support <ExternalLink className="w-3 h-3" />
+              {lang === 'mr' ? 'व्हॉट्सॲप सपोर्ट' : 'WhatsApp Support'} <ExternalLink className="w-3 h-3" />
             </a>
           </div>
         </div>
