@@ -110,7 +110,7 @@ export default function Header() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs transition-all">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0B1324]/95 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 shadow-xs transition-all">
         <div className="max-w-[1400px] mx-auto px-3 sm:px-5 lg:px-8">
           <div className="flex items-center justify-between h-18 sm:h-20 md:h-22 gap-2">
             
@@ -118,7 +118,7 @@ export default function Header() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation Menu"
-              className="lg:hidden p-1.5 -ml-1 text-gray-700 hover:text-[#70BF4F] transition-colors cursor-pointer flex-shrink-0"
+              className="lg:hidden p-1.5 -ml-1 text-gray-700 dark:text-gray-200 hover:text-[#70BF4F] transition-colors cursor-pointer flex-shrink-0"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -148,7 +148,7 @@ export default function Header() {
                       key={link.href}
                       to={link.href}
                       className={`text-[13px] xl:text-[14.5px] font-bold whitespace-nowrap transition-all duration-200 inline-flex items-center gap-1 relative ${
-                        isActive ? 'text-[#70BF4F]' : 'text-[#1B1B1B] hover:text-[#70BF4F]'
+                        isActive ? 'text-[#70BF4F]' : 'text-[#1B1B1B] dark:text-gray-200 hover:text-[#70BF4F] dark:hover:text-[#70BF4F]'
                       }`}
                     >
                       <span>{link.label}</span>
@@ -176,7 +176,7 @@ export default function Header() {
                   onFocus={() => {
                     if (searchQuery.length > 1) setShowDropdown(true);
                   }}
-                  className="w-full bg-[#F6F8F9] border border-gray-200/80 rounded-full py-1.5 pl-3 pr-8 text-xs sm:text-sm text-[#1B1B1B] placeholder-gray-400 focus:outline-none focus:border-[#70BF4F] focus:bg-white focus:ring-2 focus:ring-[#70BF4F]/20 transition-all"
+                  className="w-full bg-[#F6F8F9] dark:bg-[#131E35] border border-gray-200/80 dark:border-gray-700 rounded-full py-1.5 pl-3 pr-8 text-xs sm:text-sm text-[#1B1B1B] dark:text-white placeholder-gray-400 focus:outline-none focus:border-[#70BF4F] focus:bg-white dark:focus:bg-[#1E293B] focus:ring-2 focus:ring-[#70BF4F]/20 transition-all"
                 />
                 <button
                   type="button"
@@ -188,19 +188,19 @@ export default function Header() {
 
                 {/* Search Results Dropdown */}
                 {showDropdown && (
-                  <div className="absolute top-full right-0 left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-96 overflow-y-auto w-72 sm:w-80">
+                  <div className="absolute top-full right-0 left-0 mt-2 bg-white dark:bg-[#0F172A] rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 overflow-hidden z-50 max-h-96 overflow-y-auto w-72 sm:w-80">
                     {isSearching ? (
-                      <div className="p-4 text-center text-sm text-gray-500">Searching catalog...</div>
+                      <div className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">Searching catalog...</div>
                     ) : searchResults.length > 0 ? (
-                      <div className="flex flex-col divide-y divide-gray-50">
+                      <div className="flex flex-col divide-y divide-gray-50 dark:divide-gray-800">
                         {searchResults.map((product) => (
                           <Link
                             key={product.id}
                             to={`/in/product/${product.handle}`}
                             onClick={() => setShowDropdown(false)}
-                            className="flex items-center gap-3 p-3 hover:bg-gray-50 transition-colors"
+                            className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-[#131E35] transition-colors"
                           >
-                            <div className="w-10 h-10 bg-[#F9FBF9] rounded-xl flex-shrink-0 flex items-center justify-center border border-gray-100 p-1">
+                            <div className="w-10 h-10 bg-[#F9FBF9] dark:bg-[#131E35] rounded-xl flex-shrink-0 flex items-center justify-center border border-gray-100 dark:border-gray-700 p-1">
                               {product.thumbnail ? (
                                 <img
                                   src={product.thumbnail}
@@ -210,7 +210,7 @@ export default function Header() {
                               ) : null}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-bold text-gray-900 truncate">{product.title}</p>
+                              <p className="text-xs font-bold text-gray-900 dark:text-white truncate">{product.title}</p>
                               <p className="text-[11px] text-[#70BF4F] font-extrabold mt-0.5">
                                 ₹{product.variants?.[0]?.prices?.[0]?.amount / 100 || 'N/A'}
                               </p>
@@ -220,7 +220,7 @@ export default function Header() {
                       </div>
                     ) : (
                       <div className="p-5 text-center">
-                        <p className="text-gray-500 text-xs">No products found for "{searchQuery}"</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">No products found for "{searchQuery}"</p>
                       </div>
                     )}
                   </div>
@@ -231,7 +231,7 @@ export default function Header() {
               <button
                 onClick={() => setShowMobileSearch(!showMobileSearch)}
                 aria-label="Toggle Search"
-                className="md:hidden w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] flex items-center justify-center text-[#1B1B1B] hover:bg-[#70BF4F] hover:text-white transition-all cursor-pointer flex-shrink-0"
+                className="md:hidden w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] dark:bg-[#131E35] flex items-center justify-center text-[#1B1B1B] dark:text-gray-200 hover:bg-[#70BF4F] hover:text-white transition-all cursor-pointer flex-shrink-0"
               >
                 <Search className="w-3.5 h-3.5" />
               </button>
@@ -256,7 +256,7 @@ export default function Header() {
               <Link
                 to="/in/account"
                 aria-label="Account"
-                className="hidden sm:flex w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] items-center justify-center text-[#1B1B1B] hover:bg-[#70BF4F] hover:text-white transition-all shadow-xs cursor-pointer flex-shrink-0"
+                className="hidden sm:flex w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] dark:bg-[#131E35] items-center justify-center text-[#1B1B1B] dark:text-gray-200 hover:bg-[#70BF4F] hover:text-white transition-all shadow-xs border border-transparent dark:border-gray-700/60 cursor-pointer flex-shrink-0"
                 title="My Account"
               >
                 <User className="w-4 h-4" />
@@ -266,12 +266,12 @@ export default function Header() {
               <Link
                 to="/in/wishlist"
                 aria-label="Wishlist"
-                className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] flex items-center justify-center text-[#1B1B1B] hover:bg-[#70BF4F] hover:text-white transition-all shadow-xs cursor-pointer flex-shrink-0"
+                className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] dark:bg-[#131E35] flex items-center justify-center text-[#1B1B1B] dark:text-gray-200 hover:bg-[#70BF4F] hover:text-white transition-all shadow-xs border border-transparent dark:border-gray-700/60 cursor-pointer flex-shrink-0"
                 title="Favorites / Wishlist"
               >
                 <Heart className={`w-4 h-4 ${wishlistCount > 0 ? 'text-red-500 fill-red-500' : ''}`} />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-4.5 sm:h-4.5 bg-[#70BF4F] text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-md border-2 border-white">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-4.5 sm:h-4.5 bg-[#70BF4F] text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-md border-2 border-white dark:border-[#0B1324]">
                     {wishlistCount}
                   </span>
                 )}
@@ -281,12 +281,12 @@ export default function Header() {
               <Link
                 to="/in/cart"
                 aria-label="Shopping Cart"
-                className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] flex items-center justify-center text-[#1B1B1B] hover:bg-[#70BF4F] hover:text-white transition-all shadow-xs cursor-pointer flex-shrink-0"
+                className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#F6F8F9] dark:bg-[#131E35] flex items-center justify-center text-[#1B1B1B] dark:text-gray-200 hover:bg-[#70BF4F] hover:text-white transition-all shadow-xs border border-transparent dark:border-gray-700/60 cursor-pointer flex-shrink-0"
                 title="Shopping Cart"
               >
                 <ShoppingBag className="w-4 h-4" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-4.5 sm:h-4.5 bg-[#EB001B] text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-md border-2 border-white">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 sm:w-4.5 sm:h-4.5 bg-[#EB001B] text-white text-[9px] font-black flex items-center justify-center rounded-full shadow-md border-2 border-white dark:border-[#0B1324]">
                     {cartCount}
                   </span>
                 )}
@@ -305,7 +305,7 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   autoFocus
-                  className="w-full bg-[#F6F8F9] border border-gray-200 rounded-full py-2 pl-4 pr-10 text-xs text-[#1B1B1B] focus:outline-none focus:border-[#70BF4F] focus:bg-white"
+                  className="w-full bg-[#F6F8F9] dark:bg-[#131E35] border border-gray-200 dark:border-gray-700 rounded-full py-2 pl-4 pr-10 text-xs text-[#1B1B1B] dark:text-white focus:outline-none focus:border-[#70BF4F] focus:bg-white dark:focus:bg-[#1E293B]"
                 />
                 <button type="button" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                   {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
@@ -316,15 +316,15 @@ export default function Header() {
 
           {/* Mobile Navigation Menu Drawer */}
           {mobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-100 py-4 space-y-2">
-              <div className="px-4 py-2 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-2xl flex items-center justify-between border border-amber-200/60 mb-2">
+            <div className="lg:hidden border-t border-gray-100 dark:border-gray-800 py-4 space-y-2">
+              <div className="px-4 py-2 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-[#131E35] dark:to-[#1E293B] rounded-2xl flex items-center justify-between border border-amber-200/60 dark:border-gray-700 mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-base">🪙</span>
-                  <span className="text-xs font-black text-amber-900">{coins} {t('coinsLabel')}</span>
+                  <span className="text-xs font-black text-amber-900 dark:text-amber-300">{coins} {t('coinsLabel')}</span>
                 </div>
                 <button
                   onClick={() => setShowCoinsModal(true)}
-                  className="text-xs font-extrabold text-amber-700 underline"
+                  className="text-xs font-extrabold text-amber-700 dark:text-amber-400 underline"
                 >
                   View Perks
                 </button>
@@ -334,7 +334,7 @@ export default function Header() {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold text-[#1B1B1B] hover:bg-[#F2F7F5] hover:text-[#70BF4F] transition-colors"
+                  className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold text-[#1B1B1B] dark:text-gray-200 hover:bg-[#F2F7F5] dark:hover:bg-[#131E35] hover:text-[#70BF4F] transition-colors"
                 >
                   <span>{link.label}</span>
                   {link.badge && (
@@ -345,16 +345,16 @@ export default function Header() {
                 </Link>
               ))}
               
-              <div className="pt-3 border-t border-gray-100 flex items-center justify-around">
-                <Link to="/in/account" className="flex items-center gap-1.5 text-xs font-bold text-gray-700 py-1.5">
+              <div className="pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-around">
+                <Link to="/in/account" className="flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-300 py-1.5">
                   <User className="w-4 h-4" /> Account
                 </Link>
-                <Link to="/in/wishlist" className="flex items-center gap-1.5 text-xs font-bold text-gray-700 py-1.5">
+                <Link to="/in/wishlist" className="flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-300 py-1.5">
                   <Heart className="w-4 h-4" /> Wishlist
                 </Link>
                 <button
                   onClick={() => setShowCoinsModal(true)}
-                  className="flex items-center gap-1.5 text-xs font-bold text-amber-700 py-1.5"
+                  className="flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 py-1.5"
                 >
                   <span>🪙 Rewards</span>
                 </button>

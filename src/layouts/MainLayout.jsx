@@ -12,7 +12,7 @@ export default function MainLayout() {
       <ScrollToTop />
       <Toaster position="top-center" />
       <Header />
-      <main className="flex-grow bg-[#F7F7F7] dark:bg-[#070B14] transition-colors duration-300">
+      <main className="flex-grow bg-[#FDFCF7] dark:bg-[#070B14] transition-colors duration-300">
         <Outlet />
       </main>
       <Footer />
