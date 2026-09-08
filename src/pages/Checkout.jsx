@@ -1,40 +1,17 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useSwadCoinsStore } from '../store/swadCoinsStore';
 import { useLanguageStore } from '../store/languageStore';
 import { 
-  MapPin, Search, Loader2, Navigation, ShieldCheck, CheckCircle2, 
-  CreditCard, Smartphone, Banknote, Sparkles, Coins, ArrowRight, 
-  ShoppingBag, Check, AlertCircle, Home as HomeIcon, Briefcase, X
+  MapPin, ShieldCheck, CheckCircle2, CreditCard, Smartphone, 
+  Banknote, Coins, ArrowRight, AlertCircle, Loader2 
 } from 'lucide-react';
-import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
 import { Link, useNavigate } from 'react-router-dom';
-import 'leaflet/dist/leaflet.css';
 import CheckoutAuthModal from '../components/CheckoutAuthModal';
-import { searchLocalLocations, searchLocationsHybrid } from '../utils/locationSearch';
+import DeliveryLocationPicker from '../components/checkout/DeliveryLocationPicker';
 
 const DEFAULT_CENTER = { lat: 18.5204, lng: 73.8567 }; // Pune default
-
-function MapController({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position?.lat && position?.lng) {
-      map.flyTo([position.lat, position.lng], 16, { duration: 1 });
-    }
-  }, [position, map]);
-  return null;
-}
-
-function MapCenterListener({ onCenterChange }) {
-  const map = useMapEvents({
-    dragend: () => {
-      const center = map.getCenter();
-      onCenterChange({ lat: center.lat, lng: center.lng });
-    },
-  });
-  return null;
-}
 
 export default function Checkout() {
   const { t, lang } = useLanguageStore();
@@ -50,10 +27,6 @@ export default function Checkout() {
   // Address State
   const [position, setPosition] = useState(DEFAULT_CENTER);
   const [address, setAddress] = useState('Pune, Maharashtra, India');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
 
   const [addressDetails, setAddressDetails] = useState({
     fullName: customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Rohan Jadhav',
@@ -71,8 +44,6 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [placedOrder, setPlacedOrder] = useState(null);
 
-  const searchTimeoutRef = useRef(null);
-
   // COD Calculation Rules
   const codFee = paymentMethod === 'cod' ? 40 : 0;
   const isCodAllowed = rawCartTotal >= 299 && rawCartTotal <= 1500;
@@ -82,131 +53,14 @@ export default function Checkout() {
   const deliveryFee = rawCartTotal >= 499 ? 0 : 50;
   const finalOrderTotal = Math.max(0, rawCartTotal - coinsDeduction + deliveryFee + codFee);
 
-  // Reverse Geocode
-  const fetchAddressFromCoords = useCallback(async (lat, lng) => {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
-        { headers: { 'Accept-Language': 'en' } }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        if (data.display_name) {
-          setAddress(data.display_name);
-          if (data.address?.postcode) {
-            setAddressDetails((prev) => ({ ...prev, pincode: data.address.postcode }));
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Reverse geocode error:', err);
-    }
-  }, []);
-
-  const handleCenterChange = (newCenter) => {
-    setPosition(newCenter);
-    fetchAddressFromCoords(newCenter.lat, newCenter.lng);
-  };
-
-  const handleSearchChange = (e) => {
-    const val = e.target.value;
-    setSearchQuery(val);
-
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-
-    const cleanQuery = val.trim();
-    if (cleanQuery.length >= 1) {
-      // 1. Instant 0ms synchronous local results for instant feedback on EVERY character
-      const instantMatches = searchLocalLocations(cleanQuery).map((loc) => ({
-        display_name: `${loc.name}, ${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city}, ${loc.pincode}`,
-        title: loc.name,
-        subtitle: `${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city}`,
-        lat: loc.lat,
-        lon: loc.lon,
-        address: {
-          postcode: loc.pincode,
-          suburb: loc.suburb,
-          city: loc.city,
-          state: loc.state,
-          road: loc.name
-        },
-        source: 'local'
-      }));
-
-      if (instantMatches.length > 0) {
-        setSearchResults(instantMatches);
-        setShowDropdown(true);
-      }
-
-      // 2. Debounced live hybrid geocoder search (Photon + Nominatim + abbreviation expansion)
-      setIsSearching(true);
-      setShowDropdown(true);
-
-      searchTimeoutRef.current = setTimeout(async () => {
-        try {
-          const hybridResults = await searchLocationsHybrid(cleanQuery, position);
-          if (hybridResults && hybridResults.length > 0) {
-            setSearchResults(hybridResults);
-          } else if (instantMatches.length > 0) {
-            setSearchResults(instantMatches);
-          }
-        } catch (err) {
-          console.error('Search places error:', err);
-        } finally {
-          setIsSearching(false);
-        }
-      }, 180);
-    } else {
-      setSearchResults([]);
-      setShowDropdown(false);
-      setIsSearching(false);
-    }
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery('');
-    setSearchResults([]);
-    setShowDropdown(false);
-  };
-
-  const handleSelectPlace = (place) => {
-    const lat = parseFloat(place.lat);
-    const lng = parseFloat(place.lon);
-    const newPos = { lat, lng };
-
-    setPosition(newPos);
-    setAddress(place.display_name.replace('📍 ', '').replace(' (Deliver to this pin location)', ''));
-    setSearchQuery(place.title || place.display_name.split(',')[0]);
-    setShowDropdown(false);
-
-    if (place.address) {
-      if (place.address.postcode) {
-        setAddressDetails((prev) => ({ ...prev, pincode: place.address.postcode }));
-      }
-      const landmarkPart = place.address.suburb || place.address.neighbourhood || place.address.road || '';
-      if (landmarkPart) {
-        setAddressDetails((prev) => ({ ...prev, landmark: landmarkPart }));
-      }
-    }
-  };
-
-  const handleUseCurrentLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const newPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          setPosition(newPos);
-          fetchAddressFromCoords(newPos.lat, newPos.lng);
-        },
-        (err) => console.warn('Geolocation error:', err)
-      );
-    }
-  };
-
   const handleProceedToPayment = (e) => {
     e.preventDefault();
     if (!addressDetails.flat) {
       alert('Please enter your house/flat number');
+      return;
+    }
+    if (!position?.lat || !position?.lng) {
+      alert('Please select a valid delivery location pin on the map.');
       return;
     }
     setStep(2);
@@ -356,131 +210,13 @@ export default function Checkout() {
               {step === 1 ? (
                 /* STEP 1: DELIVERY ADDRESS */
                 <div className="space-y-6">
-                  <div className="bg-white dark:bg-[#0F172A] p-6 sm:p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2 font-serif">
-                          <MapPin className="text-[#70BF4F] dark:text-[#86EFAC] w-5 h-5" /> 
-                          {lang === 'mr' ? 'नकाशावर पत्ता निश्चित करा' : 'Pin Your Delivery Location'}
-                        </h2>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {lang === 'mr' ? 'अचूक पिनपॉइंट डिलिव्हरी ट्रॅकिंग • जलद शोध' : 'Live autocomplete with instant locality search & OpenStreetMap'}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleUseCurrentLocation}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#70BF4F] dark:text-[#86EFAC] bg-[#70BF4F]/10 dark:bg-[#70BF4F]/20 hover:bg-[#70BF4F]/20 px-3.5 py-1.5 rounded-full transition-colors cursor-pointer border border-[#70BF4F]/20"
-                      >
-                        <Navigation className="w-3.5 h-3.5" /> 
-                        {lang === 'mr' ? 'सध्याचे ठिकाण वापरा' : 'Use Current Location'}
-                      </button>
-                    </div>
-
-                    {/* Zomato-style Instant Search Input */}
-                    <div className="relative mb-4">
-                      <div className="relative flex items-center">
-                        <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 absolute left-3.5 pointer-events-none" />
-                        <input
-                          type="text"
-                          placeholder={lang === 'mr' ? 'इमारत, कॉलनी, सोस., रस्ता किंवा परिसर शोधा (उदा. सुजाता अपार्टमेंट्स, डेक्कन)...' : 'Search building, society, apartment, street (e.g. Sujata Apartment, Kothrud)...'}
-                          value={searchQuery}
-                          onChange={handleSearchChange}
-                          onFocus={() => {
-                            if (searchResults.length > 0) setShowDropdown(true);
-                          }}
-                          className="w-full bg-gray-50 dark:bg-[#131E35] border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl py-3 pl-10 pr-16 text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white dark:focus:bg-[#18263E] transition-all shadow-inner"
-                        />
-                        <div className="absolute right-3 flex items-center gap-1.5">
-                          {isSearching && (
-                            <Loader2 className="w-4 h-4 text-[#70BF4F] dark:text-[#86EFAC] animate-spin" />
-                          )}
-                          {searchQuery && (
-                            <button
-                              type="button"
-                              onClick={handleClearSearch}
-                              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-200/60 dark:hover:bg-gray-700 transition-colors cursor-pointer"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Rich Suggestion Dropdown (Zomato-style) */}
-                      {showDropdown && searchResults.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0F172A] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
-                          {searchResults.map((place, idx) => (
-                            <button
-                              key={idx}
-                              type="button"
-                              onClick={() => handleSelectPlace(place)}
-                              className="w-full text-left p-3.5 hover:bg-gray-50 dark:hover:bg-[#18263E] flex items-start gap-3 transition-colors cursor-pointer group"
-                            >
-                              <div className="w-8 h-8 rounded-xl bg-[#70BF4F]/10 dark:bg-[#70BF4F]/20 text-[#70BF4F] dark:text-[#86EFAC] flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform border border-[#70BF4F]/20">
-                                <MapPin className="w-4 h-4" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-2">
-                                  <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
-                                    {place.title || place.display_name.split(',')[0]}
-                                  </p>
-                                  {place.source === 'local' && (
-                                    <span className="text-[9px] font-bold bg-green-50 dark:bg-green-950/60 text-green-700 dark:text-[#86EFAC] px-1.5 py-0.5 rounded border border-green-200 dark:border-green-800 flex-shrink-0">
-                                      Verified
-                                    </span>
-                                  )}
-                                  {place.isCustomPin && (
-                                    <span className="text-[9px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 flex-shrink-0">
-                                      Pin Position
-                                    </span>
-                                  )}
-                                </div>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                                  {place.subtitle || place.display_name}
-                                </p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Interactive Leaflet Map */}
-                    <div className="h-64 sm:h-80 w-full rounded-2xl overflow-hidden relative z-0 mb-4 border border-gray-200 dark:border-gray-700 shadow-inner">
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-[1000] pointer-events-none flex flex-col items-center">
-                        <div className="bg-[#161915] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-lg mb-1 whitespace-nowrap border border-white/20">
-                          {lang === 'mr' ? 'येथे डिलिव्हरी करा 📍' : 'Deliver Here 📍'}
-                        </div>
-                        <MapPin className="w-9 h-9 text-[#EB001B] fill-[#EB001B] drop-shadow-lg animate-bounce-short" />
-                      </div>
-
-                      <MapContainer
-                        center={[position.lat, position.lng]}
-                        zoom={16}
-                        scrollWheelZoom={true}
-                        className="w-full h-full"
-                      >
-                        <TileLayer
-                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        <MapController position={position} />
-                        <MapCenterListener onCenterChange={handleCenterChange} />
-                      </MapContainer>
-                    </div>
-
-                    {/* Detected Address Pill */}
-                    <div className="bg-[#F2F7F5] dark:bg-[#131E35] p-3.5 rounded-2xl text-xs text-gray-800 dark:text-gray-200 border border-green-200/60 dark:border-gray-700 flex items-start gap-2.5">
-                      <MapPin className="w-4 h-4 text-[#70BF4F] dark:text-[#86EFAC] flex-shrink-0 mt-0.5" />
-                      <div>
-                        <span className="font-black text-gray-900 dark:text-white block mb-0.5">
-                          {lang === 'mr' ? 'शोधलेला पत्ता:' : 'Detected Street:'}
-                        </span>
-                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{address}</p>
-                      </div>
-                    </div>
-                  </div>
+                  <DeliveryLocationPicker
+                    position={position}
+                    setPosition={setPosition}
+                    address={address}
+                    setAddress={setAddress}
+                    onAddressDetailsChange={setAddressDetails}
+                  />
 
                   {/* Manual Detailed Address Fields */}
                   <form onSubmit={handleProceedToPayment} className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-xs space-y-4">
