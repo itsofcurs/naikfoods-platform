@@ -3,6 +3,7 @@ import { getProducts, getCollections } from '../api';
 import { Link, useSearchParams } from 'react-router-dom';
 import AddToCartButton from '../components/AddToCartButton';
 import { useWishlistStore } from '../store/wishlistStore';
+import { useLanguageStore } from '../store/languageStore';
 import toast from 'react-hot-toast';
 import {
   Search,
@@ -77,6 +78,8 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const { t, lang, translateCategory } = useLanguageStore();
+  
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [searchQuery, setSearchQuery] = useState('');
@@ -302,14 +305,14 @@ export default function Shop() {
       >
         <div className="container mx-auto px-4 relative z-10">
           <h1 className="text-3xl md:text-5xl font-black mb-3 tracking-tight drop-shadow-sm font-serif text-white">
-            Our Store
+            {lang === 'mr' ? 'आमचे दुकान' : 'Our Store'}
           </h1>
           <nav className="flex items-center justify-center gap-2 text-sm text-white/90">
             <Link to="/" className="hover:underline opacity-80 hover:opacity-100 transition-opacity">
-              Home
+              {t('home')}
             </Link>
             <ChevronRight className="w-4 h-4 opacity-70" />
-            <span className="font-semibold text-white">Store</span>
+            <span className="font-semibold text-white">{t('shop')}</span>
           </nav>
         </div>
       </section>
@@ -355,7 +358,7 @@ export default function Shop() {
                         <path d="M3 13.5h8v8H3z" />
                       </svg>
                     </div>
-                    <span>{cat.title}</span>
+                    <span>{translateCategory(cat.title)}</span>
                   </button>
                 );
               }
@@ -378,7 +381,7 @@ export default function Shop() {
                     />
                   </div>
                   <span className="font-semibold text-xs md:text-sm whitespace-nowrap">
-                    {cat.title}
+                    {translateCategory(cat.title)}
                   </span>
                 </button>
               );
@@ -408,7 +411,7 @@ export default function Shop() {
               <Search className="w-5 h-5 text-gray-400 ml-1 flex-shrink-0" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder={t('searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none"
@@ -426,7 +429,7 @@ export default function Shop() {
             {/* Sort by Box */}
             <div className="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm">
               <label className="block text-sm font-bold text-gray-900 mb-2.5">
-                Sort by
+                {t('sortBy')}
               </label>
               <div className="relative">
                 <select
@@ -434,11 +437,11 @@ export default function Shop() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#70BF4F] focus:ring-1 focus:ring-[#70BF4F] appearance-none cursor-pointer"
                 >
-                  <option value="newest">Newest first</option>
-                  <option value="price-asc">Price: Low to High</option>
-                  <option value="price-desc">Price: High to Low</option>
-                  <option value="title-asc">Alphabetical: A-Z</option>
-                  <option value="title-desc">Alphabetical: Z-A</option>
+                  <option value="newest">{lang === 'mr' ? 'नवीनतम उत्पादने' : 'Newest first'}</option>
+                  <option value="price-asc">{t('priceLowHigh')}</option>
+                  <option value="price-desc">{t('priceHighLow')}</option>
+                  <option value="title-asc">{lang === 'mr' ? 'नावानुसार: A ते Z' : 'Alphabetical: A-Z'}</option>
+                  <option value="title-desc">{lang === 'mr' ? 'नावानुसार: Z ते A' : 'Alphabetical: Z-A'}</option>
                 </select>
                 <ChevronDown className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               </div>
@@ -448,9 +451,9 @@ export default function Shop() {
             <div className="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm">
               <button
                 onClick={() => setIsRegionOpen(!isRegionOpen)}
-                className="w-full flex items-center justify-between text-left font-bold text-sm md:text-base text-gray-900 focus:outline-none"
+                className="w-full flex items-center justify-between text-left font-bold text-sm md:text-base text-gray-900 focus:outline-none cursor-pointer"
               >
-                <span>Region</span>
+                <span>{lang === 'mr' ? 'प्रदेश / विभाग' : 'Region'}</span>
                 {isRegionOpen ? (
                   <ChevronUp className="w-5 h-5 text-gray-700" />
                 ) : (
@@ -476,7 +479,7 @@ export default function Shop() {
                             className="w-4 h-4 rounded border-gray-300 text-[#70BF4F] focus:ring-[#70BF4F] cursor-pointer accent-[#70BF4F]"
                           />
                           <span className={isChecked ? 'font-semibold text-gray-900' : ''}>
-                            {region}
+                            {translateRegion ? translateRegion(region) : region}
                           </span>
                         </div>
                         <span className="text-xs text-gray-400 font-medium">{count}</span>
@@ -491,9 +494,9 @@ export default function Shop() {
             <div className="bg-white rounded-2xl p-4 border border-gray-200/80 shadow-sm">
               <button
                 onClick={() => setIsVendorOpen(!isVendorOpen)}
-                className="w-full flex items-center justify-between text-left font-bold text-sm md:text-base text-gray-900 focus:outline-none"
+                className="w-full flex items-center justify-between text-left font-bold text-sm md:text-base text-gray-900 focus:outline-none cursor-pointer"
               >
-                <span>Vender</span>
+                <span>{lang === 'mr' ? 'उत्पादक / ब्रँड' : 'Vendor'}</span>
                 {isVendorOpen ? (
                   <ChevronUp className="w-5 h-5 text-gray-700" />
                 ) : (
@@ -504,7 +507,7 @@ export default function Shop() {
               {isVendorOpen && (
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-2.5 max-h-60 overflow-y-auto pr-1">
                   {allVendors.length === 0 ? (
-                    <p className="text-xs text-gray-400">No vendors found</p>
+                    <p className="text-xs text-gray-400">{lang === 'mr' ? 'कोणतेही ब्रँड उपलब्ध नाहीत' : 'No vendors found'}</p>
                   ) : (
                     allVendors.map((vendor) => {
                       const isChecked = selectedVendors.includes(vendor);
@@ -538,9 +541,9 @@ export default function Shop() {
             {hasActiveFilters && (
               <button
                 onClick={resetAllFilters}
-                className="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
-                <X className="w-3.5 h-3.5" /> Clear All Filters
+                <X className="w-3.5 h-3.5" /> {t('clearAll')}
               </button>
             )}
           </aside>
@@ -551,8 +554,17 @@ export default function Shop() {
             {/* Showing Count Header */}
             <div className="flex items-center justify-between mb-6">
               <p className="text-sm text-gray-500 font-medium">
-                Showing <strong className="text-gray-900 font-bold">{sortedProducts.length}</strong> of{' '}
-                <strong className="text-gray-900 font-bold">{products.length}</strong> Authentic Products
+                {lang === 'mr' ? (
+                  <>
+                    {t('showing')} <strong className="text-gray-900 font-bold">{sortedProducts.length}</strong> {t('of')}{' '}
+                    <strong className="text-gray-900 font-bold">{products.length}</strong> {t('authenticProducts')}
+                  </>
+                ) : (
+                  <>
+                    Showing <strong className="text-gray-900 font-bold">{sortedProducts.length}</strong> of{' '}
+                    <strong className="text-gray-900 font-bold">{products.length}</strong> Authentic Products
+                  </>
+                )}
               </p>
             </div>
 
@@ -560,21 +572,27 @@ export default function Shop() {
             {loading ? (
               <div className="text-center py-24 bg-white rounded-2xl border border-gray-100 shadow-sm">
                 <Loader2 className="w-9 h-9 text-[#70BF4F] animate-spin mx-auto mb-3" />
-                <p className="text-gray-600 font-medium text-sm">Loading authentic Maharashtrian foods...</p>
+                <p className="text-gray-600 font-medium text-sm">
+                  {lang === 'mr' ? 'अस्सल मराठमोळे पदार्थ लोड होत आहेत...' : 'Loading authentic Maharashtrian foods...'}
+                </p>
               </div>
             ) : error ? (
               <div className="text-center py-16 text-red-500 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                Failed to load products. Please check network.
+                {lang === 'mr' ? 'उत्पादने लोड करण्यात अडचण आली. कृपया पुन्हा प्रयत्न करा.' : 'Failed to load products. Please check network.'}
               </div>
             ) : sortedProducts.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-                <p className="text-gray-700 font-bold text-base mb-2">No matching products found.</p>
-                <p className="text-gray-400 text-xs mb-4">Try clearing filters or changing your search terms.</p>
+                <p className="text-gray-700 font-bold text-base mb-2">
+                  {lang === 'mr' ? 'कोणतेही जुळणारे उत्पादन आढळले नाही.' : 'No matching products found.'}
+                </p>
+                <p className="text-gray-400 text-xs mb-4">
+                  {lang === 'mr' ? 'कृपया फिल्टर्स हटवून किंवा वेगळा शब्द शोधून पहा.' : 'Try clearing filters or changing your search terms.'}
+                </p>
                 <button
                   onClick={resetAllFilters}
-                  className="bg-[#70BF4F] text-white text-xs font-bold px-5 py-2.5 rounded-full hover:bg-[#5ca040] transition-colors shadow-sm"
+                  className="bg-[#70BF4F] text-white text-xs font-bold px-5 py-2.5 rounded-full hover:bg-[#5ca040] transition-colors shadow-sm cursor-pointer"
                 >
-                  Reset All Filters
+                  {t('clearAll')}
                 </button>
               </div>
             ) : (
@@ -585,10 +603,13 @@ export default function Shop() {
                   const price = product.variants?.[0]?.prices?.[0]?.amount
                     ? Math.round(product.variants[0].prices[0].amount / 100)
                     : null;
-                  const weight =
+                  const rawWeight =
                     product.metadata?.weight
                       ? String(product.metadata.weight).replace(/["\\]/g, '')
                       : '500g';
+                  const weight = useLanguageStore.getState().translateWeight(rawWeight);
+                  const localizedTitle = useLanguageStore.getState().translateProductName(product.title);
+                  const localizedRegion = useLanguageStore.getState().translateRegion(regionName);
 
                   return (
                     <div
@@ -604,9 +625,9 @@ export default function Shop() {
                           const isFav = isInWishlist(product.id);
                           toggleWishlist(product);
                           if (!isFav) {
-                            toast.success(`Added to Favorites! ❤️`, { duration: 2000 });
+                            toast.success(lang === 'mr' ? 'आवडत्या यादीत जोडले! ❤️' : 'Added to Favorites! ❤️', { duration: 2000 });
                           } else {
-                            toast('Removed from Favorites', { icon: '💔', duration: 1500 });
+                            toast(lang === 'mr' ? 'आवडत्या यादीतून काढले' : 'Removed from Favorites', { icon: '💔', duration: 1500 });
                           }
                         }}
                         className={`absolute top-3 right-3 z-10 p-2 rounded-full backdrop-blur-md shadow-xs transition-all hover:scale-115 active:scale-90 cursor-pointer ${
@@ -614,7 +635,7 @@ export default function Shop() {
                             ? 'bg-red-50 text-red-500 border border-red-200'
                             : 'bg-white/85 hover:bg-white text-gray-400 hover:text-red-500'
                         }`}
-                        title={isInWishlist(product.id) ? 'Remove from Favorites' : 'Add to Favorites'}
+                        title={isInWishlist(product.id) ? (lang === 'mr' ? 'आवडत्या यादीतून काढा' : 'Remove from Favorites') : (lang === 'mr' ? 'आवडत्या यादीत जोडा' : 'Add to Favorites')}
                         aria-label="Toggle Wishlist"
                       >
                         <Heart
@@ -632,12 +653,12 @@ export default function Shop() {
                         {product.thumbnail ? (
                           <img
                             src={product.thumbnail}
-                            alt={product.title}
+                            alt={localizedTitle}
                             className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
-                            No Image
+                            {lang === 'mr' ? 'चित्र उपलब्ध नाही' : 'No Image'}
                           </div>
                         )}
                       </Link>
@@ -647,13 +668,13 @@ export default function Shop() {
                         <Link
                           to={`/in/product/${product.handle}`}
                           className="text-gray-900 font-bold text-sm hover:text-[#70BF4F] line-clamp-1 mb-1 transition-colors"
-                          title={product.title}
+                          title={localizedTitle}
                         >
-                          {product.title}
+                          {localizedTitle}
                         </Link>
 
                         <p className="text-xs text-gray-400 mb-3 line-clamp-1">
-                          Authentic {regionName} Speciality
+                          {lang === 'mr' ? `अस्सल ${localizedRegion} विशेष पदार्थ` : `Authentic ${regionName} Speciality`}
                         </p>
 
                         <div className="flex items-center justify-between mt-auto mb-3">

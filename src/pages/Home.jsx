@@ -22,6 +22,7 @@ import {
   Clock
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useLanguageStore } from '../store/languageStore';
 
 // 1. HERO SLIDES DATA (Module 24266)
 const HERO_SLIDES = [
@@ -288,6 +289,7 @@ function ReelCard({ reel }) {
 const REGIONS = ['All Products', 'Nashik', 'Vidarbha', 'Konkan', 'Pune'];
 
 export default function Home() {
+  const { t, lang, translateCategory } = useLanguageStore();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState('All Products');
@@ -414,15 +416,19 @@ export default function Home() {
               {/* Left Column: Text & CTA Button */}
               <div className="md:col-span-7 text-center md:text-left space-y-4">
                 <span className="inline-block bg-white/20 backdrop-blur-md border border-white/30 text-white font-extrabold uppercase tracking-[0.2em] text-[11px] sm:text-xs px-3.5 py-1.5 rounded-full shadow-sm">
-                  {activeSlide.badge}
+                  {lang === 'mr' ? '🌿 नाईक फूड्स मूळ परंपरा' : activeSlide.badge}
                 </span>
 
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight font-manrope">
-                  {activeSlide.title}
+                  {lang === 'mr' 
+                    ? (activeSlide.id === 1 ? t('heroTitle1') : activeSlide.id === 2 ? t('heroTitle2') : t('heroTitle3'))
+                    : activeSlide.title}
                 </h1>
 
                 <p className="text-white/90 text-sm sm:text-base md:text-lg max-w-xl mx-auto md:mx-0 leading-relaxed font-medium">
-                  {activeSlide.subtitle}
+                  {lang === 'mr'
+                    ? (activeSlide.id === 1 ? t('heroSubtitle1') : activeSlide.id === 2 ? t('heroSubtitle2') : t('heroSubtitle3'))
+                    : activeSlide.subtitle}
                 </p>
 
                 <div className="pt-3">
@@ -430,7 +436,11 @@ export default function Home() {
                     to={activeSlide.buttonLink}
                     className="hero-cta-btn inline-flex items-center gap-2 bg-white text-[#161915] hover:bg-[#F2F7F5] px-7 py-3.5 rounded-2xl font-black text-sm sm:text-base shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 group"
                   >
-                    <span>{activeSlide.buttonText}</span>
+                    <span>
+                      {lang === 'mr'
+                        ? (activeSlide.id === 1 ? t('exploreCollection') : activeSlide.id === 2 ? t('locateShop') : t('explorePickles'))
+                        : activeSlide.buttonText}
+                    </span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </div>
@@ -495,29 +505,29 @@ export default function Home() {
             <div className="flex items-center justify-center gap-3 p-2">
               <Truck className="w-6 h-6 text-[#70BF4F] flex-shrink-0" />
               <div className="text-left">
-                <h4 className="text-sm font-bold text-gray-900">Free Delivery</h4>
-                <p className="text-xs text-gray-500">On orders above ₹499</p>
+                <h4 className="text-sm font-bold text-gray-900">{t('freeDelivery')}</h4>
+                <p className="text-xs text-gray-500">{lang === 'mr' ? '₹४९९ वरील सर्व ऑर्डरवर' : 'On orders above ₹499'}</p>
               </div>
             </div>
             <div className="flex items-center justify-center gap-3 p-2">
               <ShieldCheck className="w-6 h-6 text-[#70BF4F] flex-shrink-0" />
               <div className="text-left">
-                <h4 className="text-sm font-bold text-gray-900">100% Authentic</h4>
-                <p className="text-xs text-gray-500">Traditional recipes</p>
+                <h4 className="text-sm font-bold text-gray-900">{t('pureTaste')}</h4>
+                <p className="text-xs text-gray-500">{lang === 'mr' ? 'अस्सल पारंपरिक पद्धत' : 'Traditional recipes'}</p>
               </div>
             </div>
             <div className="flex items-center justify-center gap-3 p-2">
               <CheckCircle2 className="w-6 h-6 text-[#70BF4F] flex-shrink-0" />
               <div className="text-left">
-                <h4 className="text-sm font-bold text-gray-900">No Preservatives</h4>
-                <p className="text-xs text-gray-500">Pure &amp; natural</p>
+                <h4 className="text-sm font-bold text-gray-900">{lang === 'mr' ? '१००% नैसर्गिक व शुद्ध' : 'No Preservatives'}</h4>
+                <p className="text-xs text-gray-500">{lang === 'mr' ? 'आरोग्यदायी व चविष्ट' : 'Pure & natural'}</p>
               </div>
             </div>
             <div className="flex items-center justify-center gap-3 p-2">
               <HeartHandshake className="w-6 h-6 text-[#70BF4F] flex-shrink-0" />
               <div className="text-left">
-                <h4 className="text-sm font-bold text-gray-900">FSSAI Licensed</h4>
-                <p className="text-xs text-gray-500">Certified hygiene</p>
+                <h4 className="text-sm font-bold text-gray-900">{lang === 'mr' ? 'FSSAI प्रमाणित दर्जा' : 'FSSAI Licensed'}</h4>
+                <p className="text-xs text-gray-500">{lang === 'mr' ? 'परवाना क्र. ११५२१०३६०००४५८' : 'Certified hygiene'}</p>
               </div>
             </div>
           </div>
@@ -529,10 +539,10 @@ export default function Home() {
         <div className="flex justify-between items-end mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-[#161915] mb-1 font-manrope">
-              Featured Categories
+              {t('exploreCategories')}
             </h2>
             <p className="text-gray-500 text-sm">
-              Authentic regional specialties curated for you.
+              {t('categoriesSubtitle')}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -573,9 +583,11 @@ export default function Home() {
               <div className="p-4 bg-white flex items-center justify-between">
                 <div className="text-left">
                   <h3 className="font-extrabold text-[#161915] text-sm sm:text-base group-hover:text-[#70BF4F] transition-colors">
-                    {cat.title}
+                    {translateCategory(cat.title)}
                   </h3>
-                  <p className="text-xs text-gray-400 font-medium">{cat.count}</p>
+                  <p className="text-xs text-gray-400 font-medium">
+                    {lang === 'mr' ? `${cat.count.replace('Items', 'पदार्थ')}` : cat.count}
+                  </p>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-[#F2F7F5] text-[#70BF4F] flex items-center justify-center group-hover:bg-[#70BF4F] group-hover:text-white transition-all">
                   <ArrowUpRight className="w-4 h-4 group-hover:rotate-45 transition-transform" />
@@ -586,7 +598,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. PROMO BANNERS GRID (Module 74581 - 3 Split Promo Cards) */}
+      {/* 4. PROMO BANNERS GRID */}
       <section className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           
@@ -603,8 +615,8 @@ export default function Home() {
 
             {/* Circular Offer Badge */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6 w-16 h-16 rounded-full bg-[#136091] text-white flex flex-col items-center justify-center z-10 shadow-[0_8px_16px_rgba(19,96,145,0.2)]">
-              <span className="text-[10px] font-black uppercase tracking-wider">OFFER</span>
-              <span className="text-lg font-black leading-none">10%</span>
+              <span className="text-[10px] font-black uppercase tracking-wider">{lang === 'mr' ? 'सूट' : 'OFFER'}</span>
+              <span className="text-lg font-black leading-none">{lang === 'mr' ? '१०%' : '10%'}</span>
             </div>
 
             {/* Left Product Image */}
@@ -623,23 +635,22 @@ export default function Home() {
             {/* Right Text Details */}
             <div className="w-full sm:w-1/2 z-10 text-center sm:text-left space-y-2 mt-4 sm:mt-0">
               <span className="inline-block bg-[#70BF4F] text-white text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-md">
-                Pure &amp; Natural
+                {lang === 'mr' ? 'शुद्ध व अस्सल चव' : 'Pure & Natural'}
               </span>
               <h3 className="text-xl sm:text-2xl font-black text-[#161915] leading-tight">
-                Traditional Snacks &amp; Pickles
+                {lang === 'mr' ? 'पारंपारिक स्नॅक्स व लोणची' : 'Traditional Snacks & Pickles'}
               </h3>
               <p className="text-gray-600 text-xs sm:text-sm font-semibold">
-                From Our Kitchen to Yours
+                {lang === 'mr' ? 'घरगुती पद्धतीची अस्सल मेजवानी' : 'From Our Kitchen to Yours'}
               </p>
               <div className="pt-2">
                 <span className="inline-flex items-center gap-1.5 bg-[#70BF4F] text-white px-4 py-2 rounded-xl text-xs font-extrabold shadow hover:bg-[#5ea63f] transition-colors">
-                  <span>Shop Collection</span>
+                  <span>{t('shopNow')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
             </div>
           </Link>
-
           {/* Right 2 Stacked Cards (6 cols) */}
           <div className="md:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
             
@@ -653,11 +664,15 @@ export default function Home() {
                 style={{ backgroundImage: "url('/backgrounds/bg03.png')" }}
               />
               <div className="relative z-10 space-y-1">
-                <h4 className="text-lg font-black text-[#161915]">Homemade Pickles</h4>
-                <p className="text-xs text-gray-500 font-bold">Authentic Maharashtrian Taste</p>
+                <h4 className="text-lg font-black text-[#161915]">
+                  {lang === 'mr' ? 'घरगुती रुचकर लोणची' : 'Homemade Pickles'}
+                </h4>
+                <p className="text-xs text-gray-500 font-bold">
+                  {lang === 'mr' ? 'अस्सल मराठमोळी चव' : 'Authentic Maharashtrian Taste'}
+                </p>
                 <div className="pt-1">
                   <span className="text-[#D9A400] text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
-                    EXPLORE <ArrowRight className="w-3 h-3" />
+                    {lang === 'mr' ? 'पहा' : 'EXPLORE'} <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -684,11 +699,15 @@ export default function Home() {
                 style={{ backgroundImage: "url('/backgrounds/bg03.png')" }}
               />
               <div className="relative z-10 space-y-1">
-                <h4 className="text-lg font-black text-[#161915]">Fast &amp; Flavorful</h4>
-                <p className="text-xs text-gray-500 font-bold">Delicious Meals, Anytime</p>
+                <h4 className="text-lg font-black text-[#161915]">
+                  {lang === 'mr' ? 'झटपट व खमंग पोहे / चिवडा' : 'Fast & Flavorful'}
+                </h4>
+                <p className="text-xs text-gray-500 font-bold">
+                  {lang === 'mr' ? 'कधीही तयार चविष्ट नाश्ता' : 'Delicious Meals, Anytime'}
+                </p>
                 <div className="pt-1">
                   <span className="text-[#E05243] text-xs font-black uppercase tracking-wider inline-flex items-center gap-1">
-                    BROWSE <ArrowRight className="w-3 h-3" />
+                    {lang === 'mr' ? 'खरेदी करा' : 'BROWSE'} <ArrowRight className="w-3 h-3" />
                   </span>
                 </div>
               </div>
@@ -715,10 +734,10 @@ export default function Home() {
         <div className="flex justify-between items-end mb-6">
           <div>
             <h2 className="text-2xl sm:text-3xl font-black text-[#161915] mb-1 font-manrope">
-              Best Sellers Collection
+              {lang === 'mr' ? 'सर्वाधिक पसंतीचे खाद्यपदार्थ' : 'Best Sellers Collection'}
             </h2>
             <p className="text-gray-500 text-sm">
-              Explore Maharashtra's most loved authentic delicacies.
+              {lang === 'mr' ? 'महाराष्ट्रातील खवय्यांचे सर्वात आवडते पारंपरिक पदार्थ.' : "Explore Maharashtra's most loved authentic delicacies."}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -749,7 +768,9 @@ export default function Home() {
                   : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
               }`}
             >
-              {region}
+              {lang === 'mr' 
+                ? (region === 'All Products' ? 'सर्व पदार्थ' : region === 'Nashik' ? 'नाशिक' : region === 'Vidarbha' ? 'विदर्भ' : region === 'Konkan' ? 'कोकण' : region === 'Pune' ? 'पुणे' : region)
+                : region}
             </button>
           ))}
         </div>
@@ -846,20 +867,22 @@ export default function Home() {
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-7 space-y-4 text-center md:text-left">
               <span className="inline-block bg-white/20 backdrop-blur-md border border-white/30 text-white font-extrabold uppercase tracking-widest text-xs px-3.5 py-1 rounded-full">
-                Authentic Maharashtra Flavors
+                {lang === 'mr' ? 'अस्सल मराठमोळा स्वाद' : 'Authentic Maharashtra Flavors'}
               </span>
               <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight font-manrope">
-                Traditional Snacks &amp; Pickles Sale
+                {lang === 'mr' ? 'सण-उत्सवाचे खमंग पदार्थ व लोणची विशेष विक्री' : 'Traditional Snacks & Pickles Sale'}
               </h2>
               <p className="text-white/90 text-sm sm:text-base max-w-lg font-medium">
-                Crunchy namkeen, tangy pickles, and traditional sweets. Authentic taste made in our own kitchen.
+                {lang === 'mr' 
+                  ? 'कुरकुरीत चकली, पोहे चिवडा, घरगुती लोणची आणि गोडधोड पदार्थ. आमच्या अस्सल स्वयंपाकघरातून थेट तुमच्या दारी.' 
+                  : 'Crunchy namkeen, tangy pickles, and traditional sweets. Authentic taste made in our own kitchen.'}
               </p>
               <div className="pt-2">
                 <Link
                   to="/store"
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF8C00] to-[#FF6B35] text-white px-7 py-3 rounded-2xl font-black text-sm shadow-[0_8px_20px_rgba(255,107,53,0.4)] hover:scale-105 transition-all"
                 >
-                  <span>Shop Now</span>
+                  <span>{t('shopNow')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
@@ -884,13 +907,13 @@ export default function Home() {
       <section className="py-12 sm:py-16 max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-xl mx-auto mb-10">
           <span className="text-[#70BF4F] font-extrabold text-xs uppercase tracking-[0.2em] block mb-1">
-            EXPERIENCE NAIK FOODS
+            {lang === 'mr' ? 'नाईक फूड्स अनुभव' : 'EXPERIENCE NAIK FOODS'}
           </span>
           <h2 className="text-3xl sm:text-4xl font-black text-[#161915] font-manrope">
-            Behind the Scenes
+            {lang === 'mr' ? 'आमची पारंपरिक बनवण्याची रीत' : 'Behind the Scenes'}
           </h2>
           <p className="text-gray-500 text-sm mt-1">
-            Watch our traditional recipes in the making.
+            {lang === 'mr' ? 'बघा आमचे अस्सल पदार्थ कसे तयार होतात.' : 'Watch our traditional recipes in the making.'}
           </p>
         </div>
 
@@ -911,13 +934,13 @@ export default function Home() {
           <div className="flex justify-between items-end mb-10">
             <div>
               <span className="text-[#70BF4F] font-extrabold text-xs uppercase tracking-[0.2em] block mb-1">
-                TESTIMONIALS
+                {lang === 'mr' ? 'ग्राहकांचे अनुभव' : 'TESTIMONIALS'}
               </span>
               <h2 className="text-3xl sm:text-4xl font-black text-[#161915] font-manrope">
-                What Our Customers Say
+                {t('reviewsTitle')}
               </h2>
               <p className="text-gray-500 text-sm mt-1">
-                Real feedback from genuine Maharashtrian food lovers.
+                {t('reviewsSub')}
               </p>
             </div>
             
@@ -1019,17 +1042,17 @@ export default function Home() {
         <div className="flex justify-between items-end mb-8">
           <div>
             <h2 className="text-3xl sm:text-4xl font-black text-[#161915] font-manrope">
-              Regular Articles
+              {lang === 'mr' ? 'खाद्य संस्कृती व पाककृती' : 'Regular Articles'}
             </h2>
             <p className="text-gray-500 text-sm mt-1">
-              Stories and recipes from our authentic Maharashtrian kitchen.
+              {lang === 'mr' ? 'आमच्या पारंपरिक स्वयंपाकघरातील खास गोष्टी आणि रेसिपीज.' : 'Stories and recipes from our authentic Maharashtrian kitchen.'}
             </p>
           </div>
           <Link
             to="/blog"
             className="hidden sm:inline-flex items-center gap-1.5 text-[#70BF4F] font-bold text-sm hover:underline"
           >
-            <span>View All</span>
+            <span>{t('viewAll')}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -1078,7 +1101,7 @@ export default function Home() {
             to="/blog"
             className="inline-flex items-center gap-2 bg-[#70BF4F] hover:bg-[#5aad2f] text-white px-8 py-3.5 rounded-2xl font-black text-sm shadow-[0_10px_20px_rgba(112,191,79,0.2)] hover:scale-105 transition-all"
           >
-            <span>Explore the Journal</span>
+            <span>{lang === 'mr' ? 'सर्व लेख व पाककृती पहा' : 'Explore the Journal'}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -1095,17 +1118,18 @@ export default function Home() {
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight font-manrope">
-                Join the Naik Foods <br className="hidden sm:inline" />
-                Community
+                {lang === 'mr' ? 'नाईक फूड्स परिवाराशी जोडा' : 'Join the Naik Foods Community'}
               </h2>
               <p className="text-white/90 text-base sm:text-lg max-w-lg font-medium">
-                Get authentic recipes and exclusive offers delivered to your inbox.
+                {lang === 'mr' 
+                  ? 'पारंपरिक पाककृती आणि विशेष सवलतींची माहिती थेट मिळवा.' 
+                  : 'Get authentic recipes and exclusive offers delivered to your inbox.'}
               </p>
 
               <form onSubmit={handleSubscribe} className="pt-2 flex flex-col sm:flex-row gap-3 max-w-md mx-auto lg:mx-0">
                 <input
                   type="email"
-                  placeholder="Your Email Address"
+                  placeholder={lang === 'mr' ? 'तुमचा ईमेल आयडी टाका...' : 'Your Email Address'}
                   value={newsletterEmail}
                   onChange={(e) => setNewsletterEmail(e.target.value)}
                   className="flex-1 bg-white text-[#161915] placeholder-gray-400 px-5 py-3.5 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/80 shadow-md"
@@ -1114,7 +1138,7 @@ export default function Home() {
                   type="submit"
                   className="bg-[#161915] text-white hover:bg-black font-extrabold px-7 py-3.5 rounded-2xl text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>Subscribe</span>
+                  <span>{lang === 'mr' ? 'सबस्क्राइब करा' : 'Subscribe'}</span>
                   <Send className="w-4 h-4" />
                 </button>
               </form>

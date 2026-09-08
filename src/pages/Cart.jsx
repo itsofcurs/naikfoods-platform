@@ -1,4 +1,5 @@
 import { useCartStore } from '../store/cartStore';
+import { useLanguageStore } from '../store/languageStore';
 import { Link } from 'react-router-dom';
 import { Trash2, Tag, CheckCircle2, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -8,6 +9,7 @@ import AddToCartButton from '../components/AddToCartButton';
 import FreeShippingBar from '../components/FreeShippingBar';
 
 export default function Cart() {
+  const { t, lang } = useLanguageStore();
   const { items, removeFromCart, updateQuantity, cartTotal } = useCartStore();
   const [recommendations, setRecommendations] = useState([]);
   const [promoCode, setPromoCode] = useState('');
@@ -78,15 +80,15 @@ export default function Cart() {
           <div className="w-16 h-16 bg-green-50 text-[#70BF4F] rounded-full flex items-center justify-center mx-auto mb-4">
             <Tag className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Your cart is currently empty</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('cartEmpty')}</h2>
           <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto">
-            Discover our hand-pounded authentic Maharashtrian masalas, pickles, and traditional snacks.
+            {lang === 'mr' ? 'आमचे अस्सल मराठमोळे मसाले, लोणची आणि कुरकुरीत पदार्थ पाहून खरेदी सुरू करा.' : 'Discover our hand-pounded authentic Maharashtrian masalas, pickles, and traditional snacks.'}
           </p>
           <Link
             to="/in/store"
             className="inline-flex items-center gap-2 bg-[#70BF4F] text-white px-8 py-3.5 rounded-2xl font-bold hover:bg-[#5ca040] transition-all shadow-md"
           >
-            Explore Delicacies <ArrowRight className="w-4 h-4" />
+            {t('startShopping')} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       ) : (
@@ -101,9 +103,9 @@ export default function Cart() {
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-[#F8FAF6] text-gray-700 text-xs font-bold uppercase tracking-wider border-b border-gray-100">
                     <tr>
-                      <th className="p-4 sm:p-5">Delicacy</th>
-                      <th className="p-4 sm:p-5">Quantity</th>
-                      <th className="p-4 sm:p-5 text-right">Price</th>
+                      <th className="p-4 sm:p-5">{lang === 'mr' ? 'खाद्यपदार्थ' : 'Delicacy'}</th>
+                      <th className="p-4 sm:p-5">{lang === 'mr' ? 'प्रमाण' : 'Quantity'}</th>
+                      <th className="p-4 sm:p-5 text-right">{lang === 'mr' ? 'किंमत' : 'Price'}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
@@ -131,7 +133,7 @@ export default function Cart() {
                                 {item.product.title}
                               </Link>
                               <p className="text-xs text-gray-500 mt-0.5 font-medium">
-                                Net Wt: {item.variant.title || 'Standard Pack'}
+                                {lang === 'mr' ? 'वजन' : 'Net Wt'}: {item.variant.title || (lang === 'mr' ? 'प्रमाणित पॅक' : 'Standard Pack')}
                               </p>
                             </div>
                           </td>
@@ -174,7 +176,7 @@ export default function Cart() {
               {recommendations.length > 0 && (
                 <div className="mt-8">
                   <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 font-serif">
-                    You Might Also Like
+                    {t('frequentlyBoughtTogether')}
                   </h2>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {recommendations.map((product) => (
@@ -219,13 +221,13 @@ export default function Cart() {
             <div className="w-full lg:w-96 flex-shrink-0">
               <div className="bg-white rounded-3xl p-6 sm:p-7 border border-gray-100 shadow-sm space-y-6 sticky top-24">
                 <h2 className="text-xl font-black text-gray-900 border-b border-gray-100 pb-3 font-serif">
-                  Order Summary
+                  {t('orderSummary')}
                 </h2>
 
                 {/* Promo Code Input & Discovery Chips */}
                 <div className="space-y-3">
                   <span className="text-xs font-bold text-gray-700 uppercase tracking-wider block">
-                    Have a Promotion Code?
+                    {t('applyCoupon')}
                   </span>
                   <div className="flex gap-2">
                     <input
@@ -240,7 +242,7 @@ export default function Cart() {
                       onClick={() => handleApplyPromo()}
                       className="bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#70BF4F] transition-colors cursor-pointer"
                     >
-                      Apply
+                      {t('applyPromo')}
                     </button>
                   </div>
 
@@ -251,28 +253,28 @@ export default function Cart() {
                       onClick={() => handleApplyPromo('FESTIVE10')}
                       className="text-[11px] bg-green-50 text-[#70BF4F] font-bold border border-green-200 px-2 py-0.5 rounded-md hover:bg-green-100 transition-colors"
                     >
-                      FESTIVE10 (10% OFF)
+                      FESTIVE10 ({lang === 'mr' ? '१०% सूट' : '10% OFF'})
                     </button>
                     <button
                       type="button"
                       onClick={() => handleApplyPromo('SWAD50')}
                       className="text-[11px] bg-amber-50 text-amber-800 font-bold border border-amber-200 px-2 py-0.5 rounded-md hover:bg-amber-100 transition-colors"
                     >
-                      SWAD50 (₹50 OFF)
+                      SWAD50 ({lang === 'mr' ? '₹५० सूट' : '₹50 OFF'})
                     </button>
                   </div>
 
                   {appliedPromo && (
                     <div className="flex items-center justify-between text-xs bg-emerald-50 text-emerald-800 p-2.5 rounded-xl border border-emerald-200">
                       <span className="font-bold flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> {appliedPromo} applied
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> {appliedPromo} {lang === 'mr' ? 'लागू झाले' : 'applied'}
                       </span>
                       <button
                         type="button"
                         onClick={handleRemovePromo}
                         className="text-red-500 font-bold hover:underline"
                       >
-                        Remove
+                        {t('remove')}
                       </button>
                     </div>
                   )}
@@ -281,22 +283,22 @@ export default function Cart() {
                 {/* Pricing Line Items */}
                 <div className="space-y-3 text-sm text-gray-600 border-t border-b border-gray-100 py-4">
                   <div className="flex justify-between font-medium">
-                    <span>Subtotal</span>
+                    <span>{t('subtotal')}</span>
                     <span className="text-gray-900 font-bold">₹{subtotal}</span>
                   </div>
 
                   {appliedDiscount > 0 && (
                     <div className="flex justify-between text-emerald-600 font-bold">
-                      <span>Discount ({appliedPromo})</span>
+                      <span>{lang === 'mr' ? 'सवलत' : 'Discount'} ({appliedPromo})</span>
                       <span>-₹{appliedDiscount}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between font-medium">
-                    <span>Shipping</span>
+                    <span>{t('deliveryFee')}</span>
                     <span>
                       {shippingFee === 0 ? (
-                        <strong className="text-[#70BF4F]">FREE</strong>
+                        <strong className="text-[#70BF4F]">{t('free')}</strong>
                       ) : (
                         `₹${shippingFee}.00`
                       )}
@@ -304,7 +306,7 @@ export default function Cart() {
                   </div>
 
                   <div className="flex justify-between font-black text-lg text-gray-900 pt-2 border-t border-dashed border-gray-200">
-                    <span>Total Amount</span>
+                    <span>{t('total')}</span>
                     <span>₹{totalAmount}</span>
                   </div>
                 </div>
@@ -313,7 +315,7 @@ export default function Cart() {
                   to="/in/checkout"
                   className="block text-center w-full bg-[#70BF4F] hover:bg-[#5ca040] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-wider transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
-                  Proceed to Checkout
+                  {t('proceedToCheckout')}
                 </Link>
               </div>
             </div>

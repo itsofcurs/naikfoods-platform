@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { User, LogIn, Sparkles, X, ShieldCheck, ArrowRight, Smartphone, Mail, CheckCircle2 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
+import { useLanguageStore } from '../store/languageStore';
 
 export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }) {
   const { login, register } = useAuthStore();
+  const { t, lang } = useLanguageStore();
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'otp'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,11 +62,18 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
           </button>
 
           <div className="inline-flex items-center gap-1.5 bg-[#70BF4F]/20 text-[#70BF4F] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2 border border-[#70BF4F]/30">
-            <Sparkles className="w-3.5 h-3.5" /> 1-Click Express Checkout
+            <Sparkles className="w-3.5 h-3.5" /> 
+            {lang === 'mr' ? '१-क्लिक जलद चेकआउट' : '1-Click Express Checkout'}
           </div>
-          <h3 className="text-xl font-black text-white">Sign In for Member Benefits</h3>
+          <h3 className="text-xl font-black text-white">
+            {lang === 'mr' ? 'विशेष लाभांसाठी साइन इन करा' : 'Sign In for Member Benefits'}
+          </h3>
           <p className="text-xs text-gray-300 mt-1">
-            Sign in to earn <strong className="text-amber-400">+50 Welcome Swad Coins</strong> and save delivery addresses.
+            {lang === 'mr' ? (
+              <>साइन इन करून मिळवा <strong className="text-amber-400">+५० स्वागत स्वाद नाणी</strong> आणि जतन केलेले पत्ते.</>
+            ) : (
+              <>Sign in to earn <strong className="text-amber-400">+50 Welcome Swad Coins</strong> and save delivery addresses.</>
+            )}
           </p>
         </div>
 
@@ -78,7 +87,7 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            Email / Password
+            {lang === 'mr' ? 'ईमेल / पासवर्ड' : 'Email / Password'}
           </button>
           <button
             onClick={() => setActiveTab('otp')}
@@ -88,7 +97,7 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
-            Mobile Number (OTP)
+            {lang === 'mr' ? 'मोबाईल नंबर (OTP)' : 'Mobile Number (OTP)'}
           </button>
         </div>
 
@@ -97,7 +106,9 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
           {activeTab === 'login' ? (
             <form onSubmit={handleEmailLogin} className="space-y-3">
               <div>
-                <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Email Address</label>
+                <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                  {lang === 'mr' ? 'ईमेल पत्ता' : 'Email Address'}
+                </label>
                 <input
                   type="email"
                   required
@@ -109,10 +120,12 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Password</label>
+                <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                  {lang === 'mr' ? 'पासवर्ड' : 'Password'}
+                </label>
                 <input
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder={lang === 'mr' ? 'पासवर्ड प्रविष्ट करा' : 'Enter your password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white"
@@ -124,13 +137,17 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
                 disabled={loading}
                 className="w-full bg-[#70BF4F] hover:bg-[#5ea73f] text-white font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer text-sm"
               >
-                {loading ? 'Signing in...' : 'Sign In & Proceed to Checkout'}
+                {loading 
+                  ? (lang === 'mr' ? 'लॉगिन होत आहे...' : 'Signing in...') 
+                  : (lang === 'mr' ? 'साइन इन करा आणि खरेदी पूर्ण करा' : 'Sign In & Proceed to Checkout')}
               </button>
             </form>
           ) : (
             <form onSubmit={otpSent ? handleVerifyOtp : handleSendOtp} className="space-y-3">
               <div>
-                <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Mobile Number</label>
+                <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                  {lang === 'mr' ? 'मोबाईल नंबर' : 'Mobile Number'}
+                </label>
                 <div className="flex gap-2">
                   <span className="bg-gray-100 border border-gray-200 rounded-xl px-3 py-3 text-sm font-bold text-gray-600">
                     +91
@@ -149,7 +166,9 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
 
               {otpSent && (
                 <div className="animate-in fade-in">
-                  <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Enter 4-Digit OTP</label>
+                  <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                    {lang === 'mr' ? '४-अंकी OTP प्रविष्ट करा' : 'Enter 4-Digit OTP'}
+                  </label>
                   <input
                     type="text"
                     maxLength={4}
@@ -160,7 +179,7 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
                     className="w-full text-center tracking-widest text-lg font-black bg-gray-50 border border-gray-200 rounded-xl p-2.5 focus:outline-none focus:border-[#70BF4F] focus:bg-white"
                   />
                   <p className="text-[11px] text-green-600 font-bold mt-1 text-center">
-                    Demo OTP is <span className="underline font-black">1234</span>
+                    {lang === 'mr' ? 'डेमो OTP आहे ' : 'Demo OTP is '}<span className="underline font-black">1234</span>
                   </p>
                 </div>
               )}
@@ -170,7 +189,11 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
                 disabled={loading}
                 className="w-full bg-[#70BF4F] hover:bg-[#5ea73f] text-white font-bold py-3 rounded-xl transition-all shadow-md cursor-pointer text-sm"
               >
-                {loading ? 'Verifying...' : otpSent ? 'Verify OTP & Proceed' : 'Get OTP on WhatsApp / SMS'}
+                {loading 
+                  ? (lang === 'mr' ? 'पडताळणी सुरू आहे...' : 'Verifying...') 
+                  : otpSent 
+                  ? (lang === 'mr' ? 'OTP तपासा आणि पुढे जा' : 'Verify OTP & Proceed') 
+                  : (lang === 'mr' ? 'WhatsApp / SMS द्वारे OTP मिळवा' : 'Get OTP on WhatsApp / SMS')}
               </button>
             </form>
           )}
@@ -182,7 +205,7 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
               type="button"
               className="text-xs font-bold text-gray-600 hover:text-gray-900 py-2 inline-flex items-center gap-1.5 transition-colors cursor-pointer"
             >
-              <span>Or Continue as Guest without signing in</span>
+              <span>{lang === 'mr' ? 'किंवा लॉगिन न करता अतिथी म्हणून पुढे जा' : 'Or Continue as Guest without signing in'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -191,7 +214,7 @@ export default function CheckoutAuthModal({ isOpen, onClose, onContinueAsGuest }
         {/* Security Badge Footer */}
         <div className="p-3 bg-gray-50 border-t border-gray-100 flex items-center justify-center gap-1.5 text-[11px] text-gray-500">
           <ShieldCheck className="w-3.5 h-3.5 text-[#70BF4F]" />
-          256-Bit SSL Encrypted & 100% Private
+          {lang === 'mr' ? '२५६-बिट SSL सुरक्षित आणि १००% गोपनीय' : '256-Bit SSL Encrypted & 100% Private'}
         </div>
       </div>
     </div>

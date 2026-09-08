@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import { useSwadCoinsStore } from '../store/swadCoinsStore';
+import { useLanguageStore } from '../store/languageStore';
 import { 
   MapPin, Search, Loader2, Navigation, ShieldCheck, CheckCircle2, 
   CreditCard, Smartphone, Banknote, Sparkles, Coins, ArrowRight, 
@@ -25,6 +26,7 @@ function MapCenterListener({ onCenterChange }) {
 }
 
 export default function Checkout() {
+  const { t, lang } = useLanguageStore();
   const navigate = useNavigate();
   const { items, clearCart } = useCartStore();
   const rawCartTotal = useCartStore((state) => state.cartTotal());
@@ -279,6 +281,8 @@ export default function Checkout() {
       <div className="bg-[#FAFBF9] min-h-screen py-8 lg:py-12">
         <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
           
+
+
           {/* Checkout Steps Indicator */}
           <div className="max-w-xl mx-auto mb-8">
             <div className="flex items-center justify-between relative">
@@ -287,13 +291,13 @@ export default function Checkout() {
               <div className={`relative z-10 flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold ${
                 step === 1 ? 'bg-[#70BF4F] text-white shadow-md' : 'bg-green-100 text-green-800'
               }`}>
-                <span>1. Delivery Address</span>
+                <span>{lang === 'mr' ? '१. डिलिव्हरी पत्ता' : '1. Delivery Address'}</span>
               </div>
 
               <div className={`relative z-10 flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold ${
                 step === 2 ? 'bg-[#70BF4F] text-white shadow-md' : 'bg-gray-100 text-gray-500'
               }`}>
-                <span>2. Payment & COD</span>
+                <span>{lang === 'mr' ? '२. पेमेंट व COD' : '2. Payment & COD'}</span>
               </div>
             </div>
           </div>
@@ -310,16 +314,20 @@ export default function Checkout() {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                          <MapPin className="text-[#70BF4F] w-5 h-5" /> Pin Your Delivery Location
+                          <MapPin className="text-[#70BF4F] w-5 h-5" /> 
+                          {lang === 'mr' ? 'नकाशावर पत्ता निश्चित करा' : 'Pin Your Delivery Location'}
                         </h2>
-                        <p className="text-xs text-gray-500">Live reverse geocoding via OpenStreetMap</p>
+                        <p className="text-xs text-gray-500">
+                          {lang === 'mr' ? 'अचूक पिनपॉइंट डिलिव्हरी ट्रॅकिंग' : 'Live reverse geocoding via OpenStreetMap'}
+                        </p>
                       </div>
                       <button
                         type="button"
                         onClick={handleUseCurrentLocation}
                         className="inline-flex items-center gap-1.5 text-xs font-bold text-[#70BF4F] bg-[#70BF4F]/10 hover:bg-[#70BF4F]/20 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
                       >
-                        <Navigation className="w-3.5 h-3.5" /> Use Current Location
+                        <Navigation className="w-3.5 h-3.5" /> 
+                        {lang === 'mr' ? 'सध्याचे ठिकाण वापरा' : 'Use Current Location'}
                       </button>
                     </div>
 
@@ -329,7 +337,7 @@ export default function Checkout() {
                         <Search className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
                         <input
                           type="text"
-                          placeholder="Search building, locality or street (e.g. Deccan Gymkhana, Pune)..."
+                          placeholder={lang === 'mr' ? 'इमारत, परिसर किंवा रस्ता शोधा (उदा. डेक्कन, पुणे)...' : 'Search building, locality or street (e.g. Deccan Gymkhana, Pune)...'}
                           value={searchQuery}
                           onChange={handleSearchChange}
                           onFocus={() => {
@@ -368,7 +376,7 @@ export default function Checkout() {
                     <div className="h-64 sm:h-80 w-full rounded-2xl overflow-hidden relative z-0 mb-4 border border-gray-200 shadow-inner">
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-[1000] pointer-events-none flex flex-col items-center">
                         <div className="bg-[#161915] text-white text-[10px] font-black px-2 py-0.5 rounded shadow mb-1 whitespace-nowrap">
-                          Deliver Here 📍
+                          {lang === 'mr' ? 'येथे डिलिव्हरी करा 📍' : 'Deliver Here 📍'}
                         </div>
                         <MapPin className="w-9 h-9 text-[#EB001B] fill-[#EB001B] drop-shadow-md" />
                       </div>
@@ -392,7 +400,9 @@ export default function Checkout() {
                     <div className="bg-[#F2F7F5] p-3.5 rounded-2xl text-xs text-gray-800 border border-green-200/60 flex items-start gap-2.5">
                       <MapPin className="w-4 h-4 text-[#70BF4F] flex-shrink-0 mt-0.5" />
                       <div>
-                        <span className="font-black text-gray-900 block mb-0.5">Detected Street:</span>
+                        <span className="font-black text-gray-900 block mb-0.5">
+                          {lang === 'mr' ? 'शोधलेला पत्ता:' : 'Detected Street:'}
+                        </span>
                         <p className="text-gray-600 leading-relaxed">{address}</p>
                       </div>
                     </div>
@@ -400,11 +410,15 @@ export default function Checkout() {
 
                   {/* Manual Detailed Address Fields */}
                   <form onSubmit={handleProceedToPayment} className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-xs space-y-4">
-                    <h3 className="text-lg font-black text-gray-900">Complete Address Information</h3>
+                    <h3 className="text-lg font-black text-gray-900">
+                      {lang === 'mr' ? 'पूर्ण पत्ता माहिती' : 'Complete Address Information'}
+                    </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Full Name</label>
+                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                          {lang === 'mr' ? 'पूर्ण नाव' : 'Full Name'}
+                        </label>
                         <input
                           type="text"
                           required
@@ -415,7 +429,9 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Mobile Number (For Courier OTP)</label>
+                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                          {lang === 'mr' ? 'मोबाईल क्रमांक (कूरियर OTP साठी)' : 'Mobile Number (For Courier OTP)'}
+                        </label>
                         <input
                           type="tel"
                           required
@@ -426,11 +442,13 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">House / Flat No. & Building Name</label>
+                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                          {lang === 'mr' ? 'घर / फ्लॅट क्र. आणि इमारतीचे नाव' : 'House / Flat No. & Building Name'}
+                        </label>
                         <input
                           type="text"
                           required
-                          placeholder="e.g. Flat 402, Sujata Apartments"
+                          placeholder={lang === 'mr' ? 'उदा. फ्लॅट ४०२, सुजाता अपार्टमेंट्स' : 'e.g. Flat 402, Sujata Apartments'}
                           value={addressDetails.flat}
                           onChange={(e) => setAddressDetails({ ...addressDetails, flat: e.target.value })}
                           className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white"
@@ -438,10 +456,12 @@ export default function Checkout() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">Landmark (Optional)</label>
+                        <label className="block text-xs font-bold uppercase text-gray-600 mb-1">
+                          {lang === 'mr' ? 'जवळची खूण / लँडमार्क (ऐच्छिक)' : 'Landmark (Optional)'}
+                        </label>
                         <input
                           type="text"
-                          placeholder="e.g. Near Deccan Gymkhana"
+                          placeholder={lang === 'mr' ? 'उदा. डेक्कन जिमखाना जवळ' : 'e.g. Near Deccan Gymkhana'}
                           value={addressDetails.landmark}
                           onChange={(e) => setAddressDetails({ ...addressDetails, landmark: e.target.value })}
                           className="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white"
@@ -451,20 +471,26 @@ export default function Checkout() {
 
                     {/* Address Tag Selector */}
                     <div>
-                      <label className="block text-xs font-bold uppercase text-gray-600 mb-2">Save Address As</label>
+                      <label className="block text-xs font-bold uppercase text-gray-600 mb-2">
+                        {lang === 'mr' ? 'पत्ता प्रकार' : 'Save Address As'}
+                      </label>
                       <div className="flex gap-3">
-                        {['Home', 'Work', 'Other'].map((tag) => (
+                        {[
+                          { key: 'Home', label: lang === 'mr' ? 'घर' : 'Home' },
+                          { key: 'Work', label: lang === 'mr' ? 'कार्यालय' : 'Work' },
+                          { key: 'Other', label: lang === 'mr' ? 'इतर' : 'Other' }
+                        ].map(({ key, label }) => (
                           <button
-                            key={tag}
+                            key={key}
                             type="button"
-                            onClick={() => setAddressDetails({ ...addressDetails, tag })}
+                            onClick={() => setAddressDetails({ ...addressDetails, tag: key })}
                             className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                              addressDetails.tag === tag
+                              addressDetails.tag === key
                                 ? 'bg-[#1B261A] text-white border-[#1B261A] shadow-xs'
                                 : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
                             }`}
                           >
-                            {tag}
+                            {label}
                           </button>
                         ))}
                       </div>
@@ -474,7 +500,7 @@ export default function Checkout() {
                       type="submit"
                       className="w-full bg-[#70BF4F] hover:bg-[#5ea73f] text-white py-4 rounded-2xl font-bold text-base shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer mt-4"
                     >
-                      Confirm Address & Proceed to Payment →
+                      {lang === 'mr' ? 'पत्ता निश्चित करा आणि पेमेंटकडे जा →' : 'Confirm Address & Proceed to Payment →'}
                     </button>
                   </form>
                 </div>
@@ -487,7 +513,9 @@ export default function Checkout() {
                     <div className="flex items-start gap-3">
                       <MapPin className="w-5 h-5 text-[#70BF4F] flex-shrink-0 mt-0.5" />
                       <div>
-                        <p className="text-xs text-gray-500 font-bold">Delivering to ({addressDetails.tag}):</p>
+                        <p className="text-xs text-gray-500 font-bold">
+                          {lang === 'mr' ? `डिलिव्हरी पत्ता (${addressDetails.tag === 'Home' ? 'घर' : addressDetails.tag === 'Work' ? 'कार्यालय' : 'इतर'}):` : `Delivering to (${addressDetails.tag}):`}
+                        </p>
                         <p className="text-sm font-bold text-gray-900">{addressDetails.fullName} • {addressDetails.flat}</p>
                       </div>
                     </div>
@@ -495,7 +523,7 @@ export default function Checkout() {
                       onClick={() => setStep(1)}
                       className="text-xs font-bold text-[#70BF4F] hover:underline cursor-pointer"
                     >
-                      Change Address
+                      {lang === 'mr' ? 'पत्ता बदला' : 'Change Address'}
                     </button>
                   </div>
 
@@ -505,8 +533,12 @@ export default function Checkout() {
                       <div className="flex items-center gap-3">
                         <Coins className="w-6 h-6 text-amber-600 animate-spin-slow" />
                         <div>
-                          <p className="text-sm font-black text-amber-900">Naik Swad Coins Balance: {coins} Coins</p>
-                          <p className="text-xs text-amber-700">1 Coin = ₹1 Direct Cash Discount</p>
+                          <p className="text-sm font-black text-amber-900">
+                            {lang === 'mr' ? `नाईक स्वाद नाणी शिल्लक: ${coins} नाणी` : `Naik Swad Coins Balance: ${coins} Coins`}
+                          </p>
+                          <p className="text-xs text-amber-700">
+                            {lang === 'mr' ? '१ नाणे = ₹१ तात्काळ रोख सवलत' : '1 Coin = ₹1 Direct Cash Discount'}
+                          </p>
                         </div>
                       </div>
                       
@@ -519,14 +551,16 @@ export default function Checkout() {
                             : 'bg-white text-amber-900 border border-amber-300 hover:bg-amber-100'
                         }`}
                       >
-                        {useCoins ? `Applied (-₹${coinsDeduction}) ✓` : `Redeem ₹${coins}`}
+                        {useCoins ? (lang === 'mr' ? `लागू झाले (-₹${coinsDeduction}) ✓` : `Applied (-₹${coinsDeduction}) ✓`) : (lang === 'mr' ? `वापरा ₹${coins}` : `Redeem ₹${coins}`)}
                       </button>
                     </div>
                   </div>
 
                   {/* Payment Matrix */}
                   <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-xs space-y-4">
-                    <h3 className="text-lg font-black text-gray-900 mb-2">Select Payment Method</h3>
+                    <h3 className="text-lg font-black text-gray-900 mb-2">
+                      {lang === 'mr' ? 'पेमेंट पद्धत निवडा' : 'Select Payment Method'}
+                    </h3>
 
                     {/* Option 1: Instant UPI */}
                     <div 
@@ -540,13 +574,17 @@ export default function Checkout() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-3">
                           <Smartphone className="w-5 h-5 text-[#70BF4F]" />
-                          <span className="font-bold text-sm text-gray-900">UPI Instant (GPay / PhonePe / Paytm / QR)</span>
+                          <span className="font-bold text-sm text-gray-900">
+                            {lang === 'mr' ? 'तात्काळ UPI (GPay / PhonePe / Paytm / QR)' : 'UPI Instant (GPay / PhonePe / Paytm / QR)'}
+                          </span>
                         </div>
                         <span className="bg-[#70BF4F] text-white text-[10px] font-black px-2 py-0.5 rounded-full">
-                          FASTEST & FREE
+                          {lang === 'mr' ? 'जलद आणि मोफत' : 'FASTEST & FREE'}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 pl-8">Instant approval with zero transaction surcharge</p>
+                      <p className="text-xs text-gray-500 pl-8">
+                        {lang === 'mr' ? 'शून्य अतिरिक्त शुल्कासह त्वरित खात्री' : 'Instant approval with zero transaction surcharge'}
+                      </p>
                     </div>
 
                     {/* Option 2: Cards & Net Banking */}
@@ -561,7 +599,9 @@ export default function Checkout() {
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-3">
                           <CreditCard className="w-5 h-5 text-gray-700" />
-                          <span className="font-bold text-sm text-gray-900">Credit / Debit Cards & Net Banking</span>
+                          <span className="font-bold text-sm text-gray-900">
+                            {lang === 'mr' ? 'क्रेडिट / डेबिट कार्ड व नेट बँकिंग' : 'Credit / Debit Cards & Net Banking'}
+                          </span>
                         </div>
                       </div>
                       <p className="text-xs text-gray-500 pl-8">Visa, MasterCard, RuPay, ICICI, HDFC, SBI & all banks</p>
@@ -583,22 +623,26 @@ export default function Checkout() {
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-3">
                           <Banknote className="w-5 h-5 text-amber-700" />
-                          <span className="font-bold text-sm text-gray-900">Cash on Delivery (COD)</span>
+                          <span className="font-bold text-sm text-gray-900">
+                            {lang === 'mr' ? 'कॅश ऑन डिलिव्हरी (COD)' : 'Cash on Delivery (COD)'}
+                          </span>
                         </div>
                         <span className="text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-0.5 rounded-md">
-                          +₹40 Handling
+                          +₹40 {lang === 'mr' ? 'हाताळणी' : 'Handling'}
                         </span>
                       </div>
                       <p className="text-xs text-gray-600 pl-8">
-                        रोख रक्कम वितरण सेवा उपलब्ध • Pay cash to courier agent upon doorstep delivery.
+                        {lang === 'mr' 
+                          ? 'रोख रक्कम वितरण सेवा उपलब्ध • पार्सल हाती मिळाल्यावर कुरियर प्रतिनिधीकडे रोख पैसे द्या.'
+                          : 'Pay cash to courier agent upon doorstep delivery.'}
                       </p>
 
                       {!isCodAllowed && (
                         <div className="mt-2 pl-8 flex items-center gap-1.5 text-xs text-red-600 font-bold">
                           <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
                           {rawCartTotal < 299
-                            ? `COD requires minimum order of ₹299 (Add ₹${Math.round(299 - rawCartTotal)} more)`
-                            : 'Orders above ₹1,500 require prepaid payment for secure courier handling.'}
+                            ? (lang === 'mr' ? `COD साठी किमान ₹२९९ ची ऑर्डर आवश्यक आहे (अजून ₹${Math.round(299 - rawCartTotal)} जोडा)` : `COD requires minimum order of ₹299 (Add ₹${Math.round(299 - rawCartTotal)} more)`)
+                            : (lang === 'mr' ? '₹१,५०० वरील ऑर्डरसाठी ऑनलाइन प्रीपेड पेमेंट आवश्यक आहे.' : 'Orders above ₹1,500 require prepaid payment for secure courier handling.')}
                         </div>
                       )}
                     </div>
@@ -612,11 +656,11 @@ export default function Checkout() {
                     >
                       {isProcessing ? (
                         <>
-                          <Loader2 className="w-5 h-5 animate-spin" /> Processing Secure Order...
+                          <Loader2 className="w-5 h-5 animate-spin" /> {lang === 'mr' ? 'सुरक्षित ऑर्डर प्रक्रिया सुरू आहे...' : 'Processing Secure Order...'}
                         </>
                       ) : (
                         <>
-                          <ShieldCheck className="w-5 h-5" /> Pay ₹{finalOrderTotal} & Place Order
+                          <ShieldCheck className="w-5 h-5" /> {lang === 'mr' ? `₹${finalOrderTotal} भरा आणि ऑर्डर पूर्ण करा` : `Pay ₹${finalOrderTotal} & Place Order`}
                         </>
                       )}
                     </button>
@@ -630,8 +674,10 @@ export default function Checkout() {
             <div className="lg:col-span-4 sticky top-28 space-y-4">
               <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-xl overflow-hidden">
                 <h3 className="text-lg font-black text-gray-900 mb-4 pb-3 border-b border-gray-100 flex items-center justify-between">
-                  <span>Order Summary</span>
-                  <span className="text-xs font-bold text-[#70BF4F] bg-green-50 px-2 py-0.5 rounded-full">{items.length} Items</span>
+                  <span>{t('orderSummary')}</span>
+                  <span className="text-xs font-bold text-[#70BF4F] bg-green-50 px-2 py-0.5 rounded-full">
+                    {items.length} {lang === 'mr' ? 'पदार्थ' : 'Items'}
+                  </span>
                 </h3>
 
                 <div className="space-y-3 mb-6 max-h-56 overflow-y-auto pr-1">
@@ -644,7 +690,7 @@ export default function Checkout() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 truncate">{item.product.title}</p>
-                        <p className="text-gray-500">Qty: {item.quantity}</p>
+                        <p className="text-gray-500">{lang === 'mr' ? 'प्रमाण' : 'Qty'}: {item.quantity}</p>
                       </div>
                       <span className="font-bold text-gray-900">
                         ₹{((item.variant.prices?.[0]?.amount || 0) * item.quantity) / 100}
@@ -656,37 +702,38 @@ export default function Checkout() {
                 {/* Price Itemization */}
                 <div className="space-y-2 pt-3 border-t border-gray-100 text-xs">
                   <div className="flex justify-between text-gray-600">
-                    <span>Items Subtotal</span>
+                    <span>{t('subtotal')}</span>
                     <span className="font-bold text-gray-900">₹{rawCartTotal}</span>
                   </div>
 
                   {useCoins && coinsDeduction > 0 && (
                     <div className="flex justify-between text-amber-700 font-bold bg-amber-50 p-1.5 rounded-lg">
-                      <span>Swad Coins Discount</span>
+                      <span>{lang === 'mr' ? 'स्वाद नाणी सवलत' : 'Swad Coins Discount'}</span>
                       <span>-₹{coinsDeduction}</span>
                     </div>
                   )}
 
                   <div className="flex justify-between text-gray-600">
-                    <span>Express Delivery</span>
-                    <span className="font-bold text-green-600">{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span>
+                    <span>{t('deliveryFee')}</span>
+                    <span className="font-bold text-green-600">{deliveryFee === 0 ? t('free') : `₹${deliveryFee}`}</span>
                   </div>
 
                   {paymentMethod === 'cod' && (
                     <div className="flex justify-between text-gray-600">
-                      <span>COD Courier Handling</span>
+                      <span>{lang === 'mr' ? 'COD हाताळणी शुल्क' : 'COD Courier Handling'}</span>
                       <span className="font-bold text-gray-900">+₹40</span>
                     </div>
                   )}
 
                   <div className="flex justify-between items-baseline pt-3 border-t border-gray-200 text-base font-black text-gray-900">
-                    <span>Total Amount</span>
+                    <span>{t('total')}</span>
                     <span className="text-xl text-[#70BF4F]">₹{finalOrderTotal}</span>
                   </div>
 
                   <div className="pt-2 text-center">
                     <span className="text-[11px] text-amber-700 font-extrabold flex items-center justify-center gap-1">
-                      <Sparkles className="w-3 h-3" /> Will earn {Math.floor(finalOrderTotal * 0.05)} Swad Coins!
+                      <Sparkles className="w-3 h-3" /> 
+                      {lang === 'mr' ? `या ऑर्डरवर +${Math.floor(finalOrderTotal * 0.05)} स्वाद नाणी मिळतील!` : `Will earn ${Math.floor(finalOrderTotal * 0.05)} Swad Coins!`}
                     </span>
                   </div>
                 </div>

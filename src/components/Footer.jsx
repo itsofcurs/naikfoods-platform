@@ -5,8 +5,11 @@ import {
   Phone,
   Clock
 } from 'lucide-react';
+import { useLanguageStore } from '../store/languageStore';
 
 export default function Footer() {
+  const { t, translateCategory } = useLanguageStore();
+
   return (
     <footer className="w-full relative text-white pt-16 md:pt-24 font-sans overflow-hidden">
       {/* Background Gradient */}
@@ -39,8 +42,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-[#161915]/80 text-lg leading-relaxed max-w-sm font-bold mx-auto md:mx-0">
-              Authentic flavors from{' '}
-              <span className="text-[#161915]">Vidarbha &amp; Konkan</span>, delivered with love.
+              {t('heritageCallout')}
             </p>
 
             <div className="flex justify-center md:justify-start gap-4">
@@ -72,7 +74,7 @@ export default function Footer() {
                 </svg>
               </a>
 
-              {/* WhatsApp (Exact Official Path from Original Scraper) */}
+              {/* WhatsApp */}
               <a
                 href="https://wa.me/919730046247?text=Hi!%20I%20have%20a%20question%20about%20my%20order."
                 target="_blank"
@@ -91,7 +93,7 @@ export default function Footer() {
           {/* Column 2: SHOP (2 cols) */}
           <div className="lg:col-span-2 space-y-6 mx-auto md:mx-0">
             <h3 className="text-sm font-black tracking-[0.2em] text-[#70BF4F] uppercase border-b-2 border-[#161915]/10 pb-2">
-              Shop
+              {t('shop')}
             </h3>
             <ul className="space-y-4">
               <li>
@@ -99,7 +101,7 @@ export default function Footer() {
                   to="/store?category=snacks-and-namkeen"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Snacks and Namkeen
+                  {translateCategory('Snacks and Namkeen')}
                 </Link>
               </li>
               <li>
@@ -107,7 +109,7 @@ export default function Footer() {
                   to="/store?category=pickles-and-condiments"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Pickles &amp; Condiments
+                  {translateCategory('Pickles & Condiments')}
                 </Link>
               </li>
               <li>
@@ -115,7 +117,7 @@ export default function Footer() {
                   to="/store?category=sweets-and-bakery"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Sweets &amp; Bakery
+                  {translateCategory('Sweets & Bakery')}
                 </Link>
               </li>
               <li>
@@ -123,7 +125,7 @@ export default function Footer() {
                   to="/store?category=dairy-and-beverages"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Dairy &amp; Beverages
+                  {translateCategory('Dairy & Beverages')}
                 </Link>
               </li>
               <li>
@@ -131,7 +133,7 @@ export default function Footer() {
                   to="/store?category=mukhvas-and-digestives"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Mukhvas &amp; Digestives
+                  {translateCategory('Mukhvas & Digestives')}
                 </Link>
               </li>
             </ul>
@@ -140,7 +142,7 @@ export default function Footer() {
           {/* Column 3: Quick Links (2 cols) */}
           <div className="lg:col-span-2 space-y-6 mx-auto md:mx-0">
             <h3 className="text-sm font-black tracking-[0.2em] text-[#70BF4F] uppercase border-b-2 border-[#161915]/10 pb-2">
-              Quick Links
+              {t('quickLinks')}
             </h3>
             <ul className="space-y-4">
               <li>
@@ -148,7 +150,7 @@ export default function Footer() {
                   to="/"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Home
+                  {t('home')}
                 </Link>
               </li>
               <li>
@@ -156,7 +158,7 @@ export default function Footer() {
                   to="/in/about"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  About
+                  {t('about')}
                 </Link>
               </li>
               <li>
@@ -164,7 +166,7 @@ export default function Footer() {
                   to="/in/blog"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Blog
+                  {t('blogs')}
                 </Link>
               </li>
               <li>
@@ -172,7 +174,7 @@ export default function Footer() {
                   to="/in/store"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Store
+                  {t('shop')}
                 </Link>
               </li>
               <li>
@@ -180,7 +182,7 @@ export default function Footer() {
                   to="/in/contact"
                   className="text-[15px] text-white font-bold hover:text-[#161915] hover:translate-x-1 inline-block transition-all duration-300"
                 >
-                  Contact
+                  {t('contact')}
                 </Link>
               </li>
             </ul>
@@ -189,7 +191,7 @@ export default function Footer() {
           {/* Column 4: Visit Our Store Card (4 cols) */}
           <div className="lg:col-span-4 space-y-6 bg-white/20 backdrop-blur-xl p-8 rounded-[40px] shadow-2xl border border-white/30 self-start mx-auto md:mx-0 text-left w-full max-w-md">
             <h3 className="text-xl font-black tracking-tight text-[#70BF4F]">
-              Visit Our Store
+              {t('visitStoreTitle')}
             </h3>
 
             <div className="space-y-5">
@@ -203,9 +205,7 @@ export default function Footer() {
                 >
                   <MapPin className="w-5 h-5 text-white shrink-0 group-hover:text-[#161915] transition-colors mt-0.5" />
                   <p className="text-white font-bold text-sm leading-relaxed group-hover:text-[#161915] transition-colors">
-                    <span className="block whitespace-nowrap">Seva Mitra Mandal Chowk</span>
-                    <span className="block whitespace-nowrap">Near Fadgate Police Chowki</span>
-                    <span className="block whitespace-nowrap">Shukrawar Peth, Pune 411002</span>
+                    {t('storeAddress')}
                   </p>
                 </a>
               </div>
@@ -225,7 +225,7 @@ export default function Footer() {
               <div className="flex flex-row flex-wrap gap-3 items-center justify-start">
                 <Clock className="w-5 h-5 text-white shrink-0" />
                 <p className="text-white text-sm font-bold italic">
-                  9 AM - 10 PM Daily
+                  {t('storeHours')}
                 </p>
               </div>
 
@@ -240,7 +240,7 @@ export default function Footer() {
                   type="button"
                   className="w-full py-4 bg-white text-[#70BF4F] rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-[#70BF4F] hover:text-white transition-all duration-300 shadow-md cursor-pointer"
                 >
-                  Get Directions
+                  {t('getDirections')}
                 </button>
               </a>
             </div>
@@ -253,7 +253,7 @@ export default function Footer() {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
             
             <div className="text-white text-xs sm:text-sm font-bold text-center lg:text-left order-2 lg:order-1">
-              © 2026 Naik Foods • Designed &amp; Developed by Bits and Volts
+              {t('copyright')}
             </div>
 
             <div className="flex items-center gap-6 order-1 lg:order-2">
@@ -261,13 +261,13 @@ export default function Footer() {
                 to="/in/terms-and-conditions"
                 className="text-white text-xs sm:text-sm font-semibold hover:text-[#161915] hover:underline transition-colors cursor-pointer"
               >
-                Terms & Conditions
+                {t('termsLink')}
               </Link>
               <Link
                 to="/in/privacy-policy"
                 className="text-white text-xs sm:text-sm font-semibold hover:text-[#161915] hover:underline transition-colors cursor-pointer"
               >
-                Privacy Policy
+                {t('privacyLink')}
               </Link>
             </div>
 

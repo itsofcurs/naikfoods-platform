@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { MapPin, Sparkles, Flame, Check, ShoppingBag, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
+import { useLanguageStore } from '../store/languageStore';
 import SpiceMeter from './SpiceMeter';
 
 const REGIONS = [
@@ -193,6 +194,8 @@ export default function RegionalTasteMap() {
   const [selectedRegionId, setSelectedRegionId] = useState('west-mh');
   const [addedIds, setAddedIds] = useState({});
   const addToCart = useCartStore((state) => state.addToCart);
+  const lang = useLanguageStore((state) => state.lang);
+  const isMr = lang === 'mr';
 
   const activeRegion = REGIONS.find((r) => r.id === selectedRegionId) || REGIONS[0];
 
@@ -224,13 +227,15 @@ export default function RegionalTasteMap() {
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-900 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-3 shadow-xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-            स्वाद महाराष्ट्राचा • Culinary Geography of Maharashtra
+            {isMr ? 'स्वाद महाराष्ट्राचा • अस्सल प्रांतिक खाद्य संस्कृती' : 'स्वाद महाराष्ट्राचा • Culinary Geography of Maharashtra'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-            Taste of Maharashtra <span className="text-[#70BF4F]">Regional Explorer</span>
+            {isMr ? 'महाराष्ट्राच्या अस्सल प्रांतिक चवींची सफर' : <>Taste of Maharashtra <span className="text-[#70BF4F]">Regional Explorer</span></>}
           </h2>
           <p className="mt-3 text-base text-gray-600">
-            From the fiery Saoji curries of Vidarbha to the coconut-infused Malvani masalas of Konkan, explore the authentic regional culinary traditions preserved in Naik Foods recipes.
+            {isMr 
+              ? 'विदर्भाच्या झणझणीत सावजी मसाल्यांपासून ते कोकणच्या सुगंधी मालवणी मसाल्यांपर्यंत — नाईक फूड्समध्ये जपलेली अस्सल प्रांतिक खाद्य परंपरा जाणून घ्या.'
+              : 'From the fiery Saoji curries of Vidarbha to the coconut-infused Malvani masalas of Konkan, explore the authentic regional culinary traditions preserved in Naik Foods recipes.'}
           </p>
         </div>
 
@@ -250,8 +255,8 @@ export default function RegionalTasteMap() {
               >
                 <MapPin className={`w-4 h-4 ${isActive ? 'text-[#70BF4F]' : 'text-gray-400'}`} />
                 <div className="text-left">
-                  <div className="leading-tight">{region.name}</div>
-                  <div className={`text-[10px] ${isActive ? 'text-gray-300' : 'text-gray-400'}`}>{region.marathi}</div>
+                  <div className="leading-tight">{isMr ? region.marathi : region.name}</div>
+                  <div className={`text-[10px] ${isActive ? 'text-gray-300' : 'text-gray-400'}`}>{isMr ? region.name : region.marathi}</div>
                 </div>
               </button>
             );
@@ -270,23 +275,27 @@ export default function RegionalTasteMap() {
 
               <div>
                 <div className="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-white/30">
-                  {activeRegion.marathi}
+                  {isMr ? activeRegion.marathi : activeRegion.name}
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-black mb-2">{activeRegion.name}</h3>
+                <h3 className="text-2xl sm:text-3xl font-black mb-2">{isMr ? activeRegion.marathi : activeRegion.name}</h3>
                 <p className="text-amber-200 font-semibold text-sm mb-4">{activeRegion.tagline}</p>
                 <p className="text-white/90 text-sm leading-relaxed mb-6">{activeRegion.description}</p>
               </div>
 
               <div className="space-y-4 pt-6 border-t border-white/20">
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1">Traditional Pairing</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1">
+                    {isMr ? 'पारंपरिक मेजवानी जोडी' : 'Traditional Pairing'}
+                  </span>
                   <p className="text-sm font-bold text-amber-100 flex items-center gap-1.5">
                     🍲 {activeRegion.pairWith}
                   </p>
                 </div>
 
                 <div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">Regional Spice Profile</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-white/80 block mb-1.5">
+                    {isMr ? 'तिखटपणा प्रमाण' : 'Regional Spice Profile'}
+                  </span>
                   <div className="bg-black/20 p-2.5 rounded-xl backdrop-blur-xs">
                     <SpiceMeter level={activeRegion.spiceLevel} />
                   </div>
@@ -298,14 +307,18 @@ export default function RegionalTasteMap() {
             <div className="lg:col-span-7 p-6 sm:p-8 bg-[#FAFBF9]">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h4 className="text-lg font-black text-gray-900">Featured Regional Specialties</h4>
-                  <p className="text-xs text-gray-500">Pounded according to authentic traditional ratios</p>
+                  <h4 className="text-lg font-black text-gray-900">
+                    {isMr ? 'खास प्रांतिक वैशिष्ट्ये' : 'Featured Regional Specialties'}
+                  </h4>
+                  <p className="text-xs text-gray-500">
+                    {isMr ? 'पारंपरिक आणि चवदार प्रमाणासह तयार केलेले' : 'Pounded according to authentic traditional ratios'}
+                  </p>
                 </div>
                 <Link
                   to="/in/store"
                   className="text-xs font-bold text-[#70BF4F] hover:text-[#5ca83e] flex items-center gap-1 group"
                 >
-                  View All Products <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  {isMr ? 'सर्व उत्पादने पहा' : 'View All Products'} <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
 
@@ -321,15 +334,17 @@ export default function RegionalTasteMap() {
                         <div className="aspect-square bg-gray-50 rounded-xl overflow-hidden mb-3 relative">
                           <img 
                             src={item.image} 
-                            alt={item.title} 
+                            alt={isMr ? item.marathi : item.title} 
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
                           />
                           <span className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
                             {item.weight}
                           </span>
                         </div>
-                        <h5 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">{item.title}</h5>
-                        <p className="text-[11px] text-gray-500 mt-0.5 font-medium">{item.marathi}</p>
+                        <h5 className="font-bold text-gray-900 text-sm leading-snug line-clamp-2">
+                          {isMr ? item.marathi : item.title}
+                        </h5>
+                        <p className="text-[11px] text-gray-500 mt-0.5 font-medium">{isMr ? item.title : item.marathi}</p>
                       </div>
 
                       <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
@@ -344,11 +359,11 @@ export default function RegionalTasteMap() {
                         >
                           {isAdded ? (
                             <>
-                              <Check className="w-3.5 h-3.5" /> Added
+                              <Check className="w-3.5 h-3.5" /> {isMr ? 'जोडले' : 'Added'}
                             </>
                           ) : (
                             <>
-                              <ShoppingBag className="w-3.5 h-3.5" /> Add to Cart
+                              <ShoppingBag className="w-3.5 h-3.5" /> {isMr ? 'कार्टमध्ये जोडा' : 'Add to Cart'}
                             </>
                           )}
                         </button>

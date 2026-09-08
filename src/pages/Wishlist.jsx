@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingBag, Trash2, ArrowRight, Sparkles, Check } from 'lucide-react';
 import { useWishlistStore } from '../store/wishlistStore';
 import { useCartStore } from '../store/cartStore';
+import { useLanguageStore } from '../store/languageStore';
 
 export default function Wishlist() {
   const { items, removeFromWishlist, clearWishlist } = useWishlistStore();
   const addToCart = useCartStore((state) => state.addToCart);
+  const { t, lang } = useLanguageStore();
 
   const handleMoveToCart = (product) => {
     const defaultVariant = product.variants?.[0] || {
@@ -25,10 +27,10 @@ export default function Wishlist() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-200">
           <div>
             <div className="inline-flex items-center gap-1.5 bg-rose-100 text-rose-800 text-xs font-black uppercase tracking-wider px-3 py-1 rounded-full mb-2">
-              <Heart className="w-3.5 h-3.5 fill-current" /> आवडते पदार्थ • Your Favorites
+              <Heart className="w-3.5 h-3.5 fill-current" /> {lang === 'mr' ? 'आवडती यादी' : 'आवडते पदार्थ • Your Favorites'}
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-gray-900">
-              My Wishlist <span className="text-gray-400 text-2xl font-normal">({items.length})</span>
+              {t('myWishlist')} <span className="text-gray-400 text-2xl font-normal">({items.length})</span>
             </h1>
           </div>
 
@@ -37,7 +39,7 @@ export default function Wishlist() {
               onClick={clearWishlist}
               className="text-xs font-bold text-gray-500 hover:text-red-600 transition-colors flex items-center gap-1 self-start sm:self-auto cursor-pointer"
             >
-              <Trash2 className="w-4 h-4" /> Clear All
+              <Trash2 className="w-4 h-4" /> {lang === 'mr' ? 'सर्व काढून टाका' : 'Clear All'}
             </button>
           )}
         </div>
@@ -47,15 +49,15 @@ export default function Wishlist() {
             <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <Heart className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Your Wishlist is Empty</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{t('wishlistEmpty')}</h2>
             <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-              Explore authentic stone-ground masalas, crunchy chaklis, and traditional Maharashtrian sweets to save your favorites here.
+              {t('exploreToSave')}
             </p>
             <Link
               to="/in/store"
               className="bg-[#70BF4F] hover:bg-[#5ca040] text-white px-8 py-3.5 rounded-2xl font-bold text-sm transition-all inline-flex items-center gap-2 shadow-md"
             >
-              Explore Shop <ArrowRight className="w-4 h-4" />
+              {t('shopNow')} <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         ) : (
@@ -79,7 +81,7 @@ export default function Wishlist() {
                     
                     <button
                       onClick={() => removeFromWishlist(product.id)}
-                      title="Remove from wishlist"
+                      title={lang === 'mr' ? 'यादीतून काढा' : 'Remove from wishlist'}
                       className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 hover:bg-rose-50 text-rose-500 shadow-sm flex items-center justify-center transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -94,7 +96,9 @@ export default function Wishlist() {
                       >
                         {product.title}
                       </Link>
-                      <p className="text-xs text-gray-500 font-medium">100% Authentic Recipe</p>
+                      <p className="text-xs text-gray-500 font-medium">
+                        {lang === 'mr' ? '१००% पारंपारिक पाककृती' : '100% Authentic Recipe'}
+                      </p>
                     </div>
 
                     <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
@@ -104,7 +108,7 @@ export default function Wishlist() {
                         onClick={() => handleMoveToCart(product)}
                         className="bg-[#70BF4F] hover:bg-[#5da341] text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
                       >
-                        <ShoppingBag className="w-3.5 h-3.5" /> Move to Cart
+                        <ShoppingBag className="w-3.5 h-3.5" /> {lang === 'mr' ? 'पिशवीत जोडा' : 'Move to Cart'}
                       </button>
                     </div>
                   </div>

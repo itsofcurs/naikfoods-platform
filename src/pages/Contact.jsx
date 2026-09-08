@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
+import { useLanguageStore } from '../store/languageStore';
 import toast from 'react-hot-toast';
 
 export default function Contact() {
+  const lang = useLanguageStore((state) => state.lang);
+  const isMr = lang === 'mr';
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -15,13 +19,17 @@ export default function Contact() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
-      toast.error('Please fill in the required fields');
+      toast.error(isMr ? 'कृपया सर्व आवश्यक रकाने भरा' : 'Please fill in the required fields');
       return;
     }
     setSubmitting(true);
     setTimeout(() => {
       setSubmitting(false);
-      toast.success('Thank you! Your message has been received. Our team will get back to you within 24 hours.');
+      toast.success(
+        isMr 
+          ? 'धन्यवाद! तुमचा संदेश आम्हाला मिळाला आहे. आमचे प्रतिनिधी २४ तासांत संपर्क करतील.' 
+          : 'Thank you! Your message has been received. Our team will get back to you within 24 hours.'
+      );
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
     }, 800);
   };
@@ -30,13 +38,15 @@ export default function Contact() {
     <div className="container mx-auto px-4 lg:px-8 py-12">
       <div className="text-center max-w-2xl mx-auto mb-12">
         <span className="text-[#70BF4F] font-bold text-xs uppercase tracking-wider block mb-1">
-          Get in Touch
+          {isMr ? 'संपर्क साधा' : 'Get in Touch'}
         </span>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          We’d Love to Hear From You
+          {isMr ? 'आम्हाला तुमच्याशी संवाद साधायला नक्की आवडेल' : 'We’d Love to Hear From You'}
         </h1>
         <p className="text-gray-600 text-sm">
-          Have questions about your order, our traditional recipes, or bulk/festive gifting? Reach out to us.
+          {isMr 
+            ? 'ऑर्डर, पारंपारिक उत्पादने किंवा सण-उत्सव भेट बॉक्सेसबद्दल काही प्रश्न असल्यास आमच्याशी संपर्क साधा.'
+            : 'Have questions about your order, our traditional recipes, or bulk/festive gifting? Reach out to us.'}
         </p>
       </div>
 
@@ -45,22 +55,22 @@ export default function Contact() {
         <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm space-y-6 flex flex-col justify-between">
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">
-              Contact Information
+              {isMr ? 'संपर्क तपशील' : 'Contact Information'}
             </h2>
 
             <div className="space-y-5 text-sm text-gray-600">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-[#70BF4F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="block text-gray-900">Headquarters</strong>
-                  <span>Naik Foods, Pune, Maharashtra, India - 411001</span>
+                  <strong className="block text-gray-900">{isMr ? 'मुख्य कार्यालय / दुकान' : 'Headquarters'}</strong>
+                  <span>{isMr ? 'सेवा मित्र मंडळ चौक, फडगेट पोलीस चौकी जवळ, शुक्रवार पेठ, पुणे ४११००२, महाराष्ट्र' : 'Naik Foods, Shukrawar Peth, Pune, Maharashtra, India - 411002'}</span>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
                 <Phone className="w-5 h-5 text-[#70BF4F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="block text-gray-900">Phone & WhatsApp</strong>
+                  <strong className="block text-gray-900">{isMr ? 'फोन व व्हॉट्सॲप' : 'Phone & WhatsApp'}</strong>
                   <span>+91 97300 46247</span>
                 </div>
               </div>
@@ -68,7 +78,7 @@ export default function Contact() {
               <div className="flex items-start gap-3">
                 <Mail className="w-5 h-5 text-[#70BF4F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="block text-gray-900">Email</strong>
+                  <strong className="block text-gray-900">{isMr ? 'ईमेल' : 'Email'}</strong>
                   <span>support@naikfoods.co.in</span>
                 </div>
               </div>
@@ -76,8 +86,8 @@ export default function Contact() {
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-[#70BF4F] mt-0.5 flex-shrink-0" />
                 <div>
-                  <strong className="block text-gray-900">Operating Hours</strong>
-                  <span>Mon – Sat: 9:00 AM – 7:00 PM IST</span>
+                  <strong className="block text-gray-900">{isMr ? 'वेळ' : 'Operating Hours'}</strong>
+                  <span>{isMr ? 'सोम – शनि: सकाळी ९:०० ते संध्याकाळी ७:००' : 'Mon – Sat: 9:00 AM – 7:00 PM IST'}</span>
                 </div>
               </div>
             </div>
@@ -90,25 +100,27 @@ export default function Contact() {
               rel="noopener noreferrer"
               className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 text-sm"
             >
-              <MessageCircle className="w-4 h-4" /> Chat on WhatsApp
+              <MessageCircle className="w-4 h-4" /> {isMr ? 'व्हॉट्सॲपवर चॅट करा' : 'Chat on WhatsApp'}
             </a>
           </div>
         </div>
 
         {/* Contact Form */}
         <div className="lg:col-span-2 bg-white p-8 rounded-xl border border-gray-100 shadow-sm">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
+            {isMr ? 'आम्हाला संदेश पाठवा' : 'Send Us a Message'}
+          </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                  Full Name *
+                  {isMr ? 'पूर्ण नाव *' : 'Full Name *'}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Priya Deshmukh"
+                  placeholder={isMr ? 'प्रिया देशमुख' : 'Priya Deshmukh'}
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:border-[#70BF4F]"
@@ -117,7 +129,7 @@ export default function Contact() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                  Email Address *
+                  {isMr ? 'ईमेल पत्ता *' : 'Email Address *'}
                 </label>
                 <input
                   type="email"
@@ -133,7 +145,7 @@ export default function Contact() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                  Phone Number
+                  {isMr ? 'मोबाईल नंबर' : 'Phone Number'}
                 </label>
                 <input
                   type="tel"
@@ -146,11 +158,11 @@ export default function Contact() {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                  Subject
+                  {isMr ? 'विषय' : 'Subject'}
                 </label>
                 <input
                   type="text"
-                  placeholder="Order Inquiry / Feedback"
+                  placeholder={isMr ? 'ऑर्डर चौकशी / अभिप्राय' : 'Order Inquiry / Feedback'}
                   value={formData.subject}
                   onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                   className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:border-[#70BF4F]"
@@ -160,12 +172,12 @@ export default function Contact() {
 
             <div>
               <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-                Your Message *
+                {isMr ? 'तुमचा संदेश *' : 'Your Message *'}
               </label>
               <textarea
                 rows={5}
                 required
-                placeholder="How can we help you today?"
+                placeholder={isMr ? 'आम्ही तुमची कशी मदत करू शकतो?' : 'How can we help you today?'}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 className="w-full bg-white border border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:border-[#70BF4F]"
@@ -175,16 +187,18 @@ export default function Contact() {
             <button
               type="submit"
               disabled={submitting}
-              className="bg-[#70BF4F] hover:bg-[#5ca040] text-white px-8 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 text-sm shadow-sm"
+              className="bg-[#70BF4F] hover:bg-[#5ca040] text-white px-8 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 text-sm shadow-sm cursor-pointer"
             >
-              {submitting ? 'Sending...' : 'Send Message'}
+              {submitting 
+                ? (isMr ? 'पाठवत आहे...' : 'Sending...') 
+                : (isMr ? 'संदेश पाठवा' : 'Send Message')}
               <Send className="w-4 h-4" />
             </button>
           </form>
         </div>
       </div>
 
-      {/* Google Maps Store Location (Exact iframe embed from Naik Foods) */}
+      {/* Google Maps Store Location */}
       <section className="mt-12 max-w-6xl mx-auto">
         <div className="w-full h-[320px] md:h-[480px] rounded-[24px] md:rounded-[36px] overflow-hidden shadow-xl border-8 border-white bg-white">
           <iframe

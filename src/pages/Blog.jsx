@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguageStore } from '../store/languageStore';
 import { Calendar, Clock, ArrowRight, Tag, Send, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -8,11 +9,17 @@ export const BLOG_POSTS = [
     id: 1,
     slug: 'secrets-of-crispy-methi-chakali',
     title: 'The Secret Behind Crisp & Fragrant Methi Chakali',
+    titleMr: 'खमंग आणि कुरकुरीत मेथी चकलीचे पारंपरिक रहस्य',
     excerpt: 'Learn the traditional ratios of roasted Bhajani flour and fresh fenugreek leaves that make Maharashtrian Chakali irresistibly crisp without absorbing excess oil.',
+    excerptMr: 'भाजणीचे अचूक प्रमाण आणि मेथीच्या पानांचा स्वाद — तेलकट न होता अतिशय कुरकुरीत चकली बनवण्याची पारंपरिक पद्धत जाणून घ्या.',
     category: 'Snacks & Namkeen',
+    categoryMr: 'स्नॅक्स व फरसाण',
     readTime: '4 min read',
+    readTimeMr: '४ मिनिटे वाचन',
     date: 'Sep 02, 2026',
+    dateMr: '२ सप्टेंबर २०२६',
     author: 'Mrs. Priya Naik',
+    authorMr: 'सौ. प्रिया नाईक',
     image: 'https://res.cloudinary.com/dskzfipt3/image/upload/v1779968324/medusa/1779968322289-IMG_3854.JPG.jpeg.jpg',
     content: `
       Chakali is not just a festive snack; in Maharashtra, it is an emotion. The distinct spiral shape, the crispy bite, and the burst of spices like cumin, carom seeds, and dry fenugreek (methi) leaves create an unmatched tea-time companion.
@@ -22,81 +29,71 @@ export const BLOG_POSTS = [
 
       ### Adding the Twist of Methi
       At Naik Foods, we add carefully selected dehydrated methi leaves that add an earthy bitterness balancing the deep savory spices.
+    `,
+    contentMr: `
+      चकली हा महाराष्ट्रात फक्त दिवाळीचा फराळ नसून एक भावना आहे. सुरेख काटेरी वेढा, प्रत्येक घासात कुरकुरीतपणा आणि जिरे, ओवा व मेथीच्या पानांचा सुवास संध्याकाळच्या चहाची रंगत वाढवतो.
+
+      ### भाजणीचे महत्त्व
+      अस्सल मराठमोळ्या चकलीचा आत्मा हा 'भाजणी' मध्ये असतो. तांदूळ, चणा डाळ, उडीद डाळ आणि धने मंद आचेवर खमंग भाजून जात्यावर दळलेली भाजणी चकलीला खरी चव देते.
+
+      ### मेथीचा स्वाद
+      नाईक फूड्समध्ये आम्ही खास वाळवलेली मेथीची पाने वापरतो, ज्यामुळे चकलीला एक अप्रतिम सुगंध आणि चव मिळते.
     `
   },
   {
     id: 2,
     slug: 'traditional-ambadi-bhaji-lonche-heritage',
     title: 'Ambadi Lonche: A Forgotten Gem of Marathwada & Vidarbha',
+    titleMr: 'अंबाडी लोणचे: मराठवाडा व विदर्भाचा विस्मरणात गेलेला अनमोल ठेवा',
     excerpt: 'Ambadi (Roselle / Sorrel leaves) pickle has been a staple in rural Maharashtra for centuries. Discover its natural gut-healthy tanginess and medicinal benefits.',
+    excerptMr: 'अंबाडीच्या पानांचे नैसर्गिक आंबट-तिखट लोणचे — पचनास उत्तम आणि आरोग्यासाठी अत्यंत गुणकारी असलेला पारंपरिक वारसा.',
     category: 'Pickles & Condiments',
+    categoryMr: 'लोणची व ठेचा',
     readTime: '5 min read',
+    readTimeMr: '५ मिनिटे वाचन',
     date: 'Aug 24, 2026',
+    dateMr: '२४ ऑगस्ट २०२६',
     author: 'Late Sarita Naik Legacy',
+    authorMr: 'कै. सरिता नाईक वारसा',
     image: 'https://res.cloudinary.com/dskzfipt3/image/upload/v1780121990/medusa/1780121988900-pomelli_photoshoot_image_1_1_0529%20%287%29.png.jpg',
     content: `
       Ambadi (Gongura or Roselle) is packed with Vitamin C, Iron, and natural antioxidants. In traditional Maharashtrian households, preparing Ambadi pickle is an art.
 
       ### How It Is Made
       Tender sorrel leaves are hand-plucked, cleaned, and sautéed with mustard oil, roasted fenugreek powder, crushed garlic, and Kolhapuri red chili flakes. The result is a tongue-tingling pickle that elevates simple Dal-Rice or Bhakri into a royal feast.
+    `,
+    contentMr: `
+      अंबाडीच्या पानांमध्ये भरपूर प्रमाणात व्हिटॅमिन सी, लोह आणि नैसर्गिक अँटीऑक्सिडंट्स असतात.
+
+      ### कसे बनवले जाते?
+      कोवळी पाने निवडून, मोहरीच्या तेलात, भाजलेल्या मेथी दाण्यांची पूड, ठेचलेला लसूण आणि कोल्हापुरी लाल तिखट घालून हे लोणचे तयार केले जाते. गरमागरम वरण-भात किंवा ज्वारीच्या भाकरीसोबत हा एक शाही बेत ठरतो.
     `
   },
   {
     id: 3,
     slug: 'why-jowar-is-the-superfood-you-need',
     title: 'Why Jowar (Sorghum) Is the Ultimate Modern Superfood',
+    titleMr: 'ज्वारी: आधुनिक आरोग्यासाठी परिपूर्ण सुपरफूड का आहे?',
     excerpt: 'Gluten-free, fiber-rich, and diabetic-friendly: why shifting to traditional millet snacks like Jwari Bhel & Jowar Chivda transforms your daily digestion and energy.',
+    excerptMr: 'ग्लुटेन-मुक्त, भरपूर फायबर आणि मधुमेहासाठी उपयुक्त: ज्वारीची भेळ आणि चिवड्यासारखे पारंपरिक स्नॅक्स आरोग्यासाठी का सर्वोत्तम आहेत ते जाणून घ्या.',
     category: 'Health & Wellness',
+    categoryMr: 'आरोग्य व पोषण',
     readTime: '3 min read',
+    readTimeMr: '३ मिनिटे वाचन',
     date: 'Aug 15, 2026',
+    dateMr: '१५ ऑगस्ट २०२६',
     author: 'Naik Foods Culinary Team',
+    authorMr: 'नाईक फूड्स टीम',
     image: 'https://res.cloudinary.com/dskzfipt3/image/upload/v1781146398/medusa/1781146396686-pomelli_photoshoot_image_1_1_0526%20%282%29%20%282%29.png.jpg',
     content: `
       Millets have been the backbone of rural Indian nutrition for over 3,000 years. Sorghum (Jowar) stands out due to its high dietary fiber, complex carbohydrates, and zero gluten content.
 
       Snacking on puffed Jowar (Jwari Bhel) gives you long-lasting energy without glucose spikes, making it an ideal choice for healthy living.
-    `
-  },
-  {
-    id: 4,
-    slug: 'solapuri-shengdana-chutney-fiery-staple',
-    title: 'Authentic Solapuri Shengdana Chutney: The Fiery Staple',
-    excerpt: 'Hand-pounded roasted peanuts, raw garlic pods, and spicy Byadgi chillies—uncover why this iconic dry chutney is found in every Maharashtrian kitchen.',
-    category: 'Spices & Chutneys',
-    readTime: '4 min read',
-    date: 'Aug 02, 2026',
-    author: 'Chef Anjali Naik',
-    image: 'https://res.cloudinary.com/dskzfipt3/image/upload/v1781146398/medusa/1781146396686-pomelli_photoshoot_image_1_1_0526%20%282%29%20%282%29.png.jpg',
-    content: `
-      Solapur is world-renowned for its coarse, nutty peanut chutney. The secret lies in pounding the warm roasted groundnuts just enough to release their natural oils without turning into a paste.
-    `
-  },
-  {
-    id: 5,
-    slug: 'royal-legacy-puneri-bakarwadi',
-    title: 'The Royal Crunch: Story & Secrets of Puneri Bakarwadi',
-    excerpt: 'Explore how a sweet, spicy, and tangy coconut-sesame masala spiral wrapped in gram flour became the crowning jewel of Maharashtra tea-time snacking.',
-    category: 'Snacks & Namkeen',
-    readTime: '5 min read',
-    date: 'Jul 20, 2026',
-    author: 'Mrs. Priya Naik',
-    image: 'https://res.cloudinary.com/dskzfipt3/image/upload/v1779968324/medusa/1779968322289-IMG_3854.JPG.jpeg.jpg',
-    content: `
-      Bakarwadi is a complex symphony of poppy seeds, desiccated coconut, roasted sesame, and traditional spices rolled inside a crisp golden disc.
-    `
-  },
-  {
-    id: 6,
-    slug: 'traditional-mango-murabba-heritage',
-    title: 'Grandma’s Sun-Cooked Aam Murabba & Chhunda',
-    excerpt: 'From Raw Rajapuri mangoes to saffron syrup: how slow sun-cooking preserves pure sweetness and immunity-boosting spices without artificial chemicals.',
-    category: 'Pickles & Condiments',
-    readTime: '4 min read',
-    date: 'Jul 05, 2026',
-    author: 'Late Sarita Naik Legacy',
-    image: 'https://res.cloudinary.com/dskzfipt3/image/upload/v1780121990/medusa/1780121988900-pomelli_photoshoot_image_1_1_0529%20%287%29.png.jpg',
-    content: `
-      In Maharashtra, summer afternoons were always marked by glass jars of freshly grated mangoes left on terraces to sun-ripen into glorious sweet Murabba.
+    `,
+    contentMr: `
+      भरडधान्ये ही हजारो वर्षांपासून आपल्या आहाराचा मुख्य आधार आहेत. ज्वारीमध्ये उच्च फायबर आणि शून्य ग्लुटेन असल्यामुळे ती पचनास हलकी आणि ऊर्जा देणारी असते.
+
+      भाजलेल्या ज्वारीची भेळ खाल्ल्याने शरीराला दीर्घकाळ ऊर्जा मिळते आणि रक्तातील साखरेचे प्रमाण नियंत्रित राहण्यास मदत होते.
     `
   }
 ];
@@ -106,139 +103,124 @@ export default function Blog() {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [isSubscribing, setIsSubscribing] = useState(false);
 
+  const lang = useLanguageStore((state) => state.lang);
+  const isMr = lang === 'mr';
+
   const categories = useMemo(() => {
     const set = new Set(['All']);
-    BLOG_POSTS.forEach(b => set.add(b.category));
+    BLOG_POSTS.forEach(b => set.add(isMr ? b.categoryMr : b.category));
     return Array.from(set);
-  }, []);
+  }, [isMr]);
 
   const filteredBlogs = useMemo(() => {
     if (selectedCategory === 'All') return BLOG_POSTS;
-    return BLOG_POSTS.filter(b => b.category === selectedCategory);
-  }, [selectedCategory]);
+    return BLOG_POSTS.filter(b => (isMr ? b.categoryMr : b.category) === selectedCategory);
+  }, [selectedCategory, isMr]);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
     if (!newsletterEmail || !newsletterEmail.includes('@')) {
-      toast.error('Please enter a valid email address');
+      toast.error(isMr ? 'कृपया योग्य ईमेल टाका.' : 'Please enter a valid email.');
       return;
     }
     setIsSubscribing(true);
-    // Simulate / Connect subscription
     setTimeout(() => {
       setIsSubscribing(false);
-      toast.success('Welcome to the family! Check your inbox soon.');
+      toast.success(isMr ? 'वृत्तपत्राची सदस्यता यशस्वीरित्या घेतली!' : 'Successfully subscribed to Culinary Gazette!');
       setNewsletterEmail('');
     }, 600);
   };
 
   return (
-    <div className="w-full bg-[#FAFAF8] min-h-screen font-sans text-[#161915] selection:bg-[#70BF4F]/20 selection:text-[#161915]">
-      
-      {/* TOP HERO BANNER (Exact Match with Original Website) */}
+    <div className="w-full bg-[#FDFCF7] min-h-screen pb-20 font-sans text-[#161915]">
+      {/* Top Banner */}
       <section className="relative w-full bg-[#70BF4F] py-14 md:py-20 overflow-hidden text-center text-white">
-        {/* Vegetable Pattern Watermark Overlay */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-20"
           style={{ backgroundImage: 'url("/banners/Hero-Banner.png")' }}
         />
         <div className="relative z-10 max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-2.5 font-manrope">
-            Our Blogs
+          <span className="inline-block bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-black tracking-widest uppercase mb-3">
+            {isMr ? 'अस्सल पाककृती व संस्कृती' : 'Naik Heritage & Recipes'}
+          </span>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-2 font-serif">
+            {isMr ? 'पाककृती, आरोग्य व खाद्य परंपरा' : 'Culinary Gazette & Stories'}
           </h1>
-          <p className="text-white/95 text-sm sm:text-base md:text-lg font-medium max-w-2xl mx-auto mb-4">
-            Insights, traditional tips, and Maharashtrian culinary updates.
+          <p className="text-white/90 text-sm sm:text-base md:text-lg font-medium max-w-2xl mx-auto">
+            {isMr 
+              ? 'महाराष्ट्रातील पारंपरिक मसाले, आजींच्या जुन्या कृती आणि पौष्टिक धान्यांची माहितीपूर्ण सफर.'
+              : 'Heirloom family recipes, spice-grinding secrets, and wellness insights from the heart of Pune.'}
           </p>
-          {/* Breadcrumb */}
-          <nav className="flex items-center justify-center gap-2 text-xs sm:text-sm text-white/80 font-medium">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
-            <span>›</span>
-            <span className="text-white font-bold">Our Blogs</span>
-          </nav>
         </div>
       </section>
 
-      <div className="max-w-[1350px] mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
-        
-        {/* Category Filter Chips */}
-        <div className="mb-10 sm:mb-12 flex justify-center flex-wrap gap-2 sm:gap-3">
-          {categories.map((cat) => {
-            const isSelected = selectedCategory === cat;
-            return (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 cursor-pointer shadow-sm ${
-                  isSelected
-                    ? 'bg-[#70BF4F] text-white shadow-[#70BF4F]/30 shadow-md scale-105'
-                    : 'bg-white text-[#161915] border border-[#EAEDE9] hover:bg-[#F2F7F5] hover:border-[#70BF4F]/40'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
+      <div className="container mx-auto px-4 lg:px-8 py-10">
+        {/* Category Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
+                selectedCategory === cat
+                  ? 'bg-[#70BF4F] text-white shadow-md'
+                  : 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {cat === 'All' ? (isMr ? 'सर्व लेख' : 'All Stories') : cat}
+            </button>
+          ))}
         </div>
 
-        {/* Blog Posts 3-Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 sm:mb-24">
+        {/* Blog Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredBlogs.map((post) => (
             <article
               key={post.id}
-              className="group bg-white rounded-[20px] border border-[#F0F2EF] overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.03)] hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col h-full"
+              className="bg-white rounded-3xl border border-[#EAEDE9] overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col group"
             >
-              {/* Image Container */}
-              <Link to={`/in/blog/${post.slug}`} className="block relative h-60 w-full overflow-hidden bg-[#fafaf8]">
+              <div className="aspect-video w-full overflow-hidden bg-gray-100 relative">
                 <img
                   src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'https://res.cloudinary.com/dskzfipt3/image/upload/v1779968324/medusa/1779968322289-IMG_3854.JPG.jpeg.jpg';
-                  }}
+                  alt={isMr ? post.titleMr : post.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <span className="absolute top-4 left-4 bg-white/95 backdrop-blur-md text-[#70BF4F] text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-gray-100">
-                  <Tag className="w-3.5 h-3.5 text-[#70BF4F]" />
-                  {post.category}
+                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-black text-[#70BF4F] shadow-sm uppercase">
+                  {isMr ? post.categoryMr : post.category}
                 </span>
-              </Link>
+              </div>
 
-              {/* Card Body */}
-              <div className="p-6 sm:p-7 flex flex-col flex-grow">
-                {/* Meta Date & Read Time */}
-                <div className="flex items-center gap-4 text-xs font-semibold text-gray-400 mb-3">
-                  <span className="flex items-center gap-1.5">
+              <div className="p-6 flex flex-col flex-grow">
+                <div className="flex items-center gap-4 text-xs text-gray-400 mb-3 font-medium">
+                  <span className="flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5 text-[#70BF4F]" />
-                    {post.date}
+                    {isMr ? post.dateMr : post.date}
                   </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-[#70BF4F]" />
-                    {post.readTime}
+                    {isMr ? post.readTimeMr : post.readTime}
                   </span>
                 </div>
 
-                {/* Title */}
-                <h2 className="text-lg sm:text-xl font-bold text-[#161915] mb-3 line-clamp-2 group-hover:text-[#70BF4F] transition-colors leading-snug">
-                  <Link to={`/in/blog/${post.slug}`}>{post.title}</Link>
+                <h2 className="text-xl font-bold text-gray-900 group-hover:text-[#70BF4F] transition-colors mb-2 font-serif line-clamp-2">
+                  <Link to={`/in/blog/${post.slug}`}>
+                    {isMr ? post.titleMr : post.title}
+                  </Link>
                 </h2>
 
-                {/* Excerpt */}
-                <p className="text-gray-600 text-sm mb-6 line-clamp-3 flex-grow leading-relaxed">
-                  {post.excerpt}
+                <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3">
+                  {isMr ? post.excerptMr : post.excerpt}
                 </p>
 
-                {/* Footer Action */}
-                <div className="pt-4 border-t border-[#F2F7F5] flex items-center justify-between text-xs">
-                  <span className="text-gray-500 font-medium">By {post.author}</span>
+                <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-gray-500">
+                    {isMr ? post.authorMr : post.author}
+                  </span>
                   <Link
                     to={`/in/blog/${post.slug}`}
-                    className="text-[#70BF4F] font-black text-sm flex items-center gap-1.5 hover:gap-2.5 transition-all group-hover:text-[#5ea342]"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#70BF4F] hover:text-[#5ca040]"
                   >
-                    <span>Read Article</span>
-                    <ArrowRight className="w-4 h-4" />
+                    {isMr ? 'पूर्ण वाचा' : 'Read Story'} <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </div>
@@ -246,65 +228,38 @@ export default function Blog() {
           ))}
         </div>
 
-        {/* COMMUNITY NEWSLETTER BANNER (Exact Match with Original Website) */}
-        <section className="relative w-full rounded-[32px] overflow-hidden bg-[#70BF4F] px-6 sm:px-12 py-10 sm:py-14 shadow-[0_20px_40px_rgba(112,191,79,0.2)] text-white">
-          {/* Background Decorative Pattern */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 z-0 bg-cover bg-center pointer-events-none opacity-15"
-            style={{ backgroundImage: 'url("/backgrounds/bg01.png")' }}
-          />
+        {/* Newsletter Signup */}
+        <div className="mt-16 bg-gradient-to-br from-[#F8FAF6] to-white p-8 sm:p-12 rounded-3xl border border-[#EAEDE9] text-center max-w-3xl mx-auto shadow-sm">
+          <h3 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2 font-serif">
+            {isMr ? 'आजीच्या अस्सल पाककृती थेट ईमेलवर मिळवा' : 'Receive Grandma’s Secret Recipes in Your Inbox'}
+          </h3>
+          <p className="text-gray-600 text-sm mb-6 max-w-xl mx-auto">
+            {isMr 
+              ? 'सणासुदीच्या खास ऑफर, नवीन उत्पादने आणि पारंपारिक पाककृतींसाठी आजच सामील व्हा.'
+              : 'Join over 15,000+ food lovers who receive our seasonal recipe gazettes, spice-pairing guides, and exclusive discounts.'}
+          </p>
 
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white leading-tight font-manrope">
-                Join the Naik Foods <br className="hidden sm:inline" />
-                Community
-              </h2>
-              <p className="text-white/90 text-base sm:text-lg max-w-lg font-medium">
-                Get authentic recipes and exclusive offers delivered to your inbox.
-              </p>
-
-              {/* Subscribe Form */}
-              <form onSubmit={handleSubscribe} className="pt-2 flex flex-col sm:flex-row gap-3 max-w-md mx-auto lg:mx-0">
-                <input
-                  type="email"
-                  placeholder="Your Email Address"
-                  value={newsletterEmail}
-                  onChange={(e) => setNewsletterEmail(e.target.value)}
-                  className="flex-1 bg-white text-[#161915] placeholder-gray-400 px-5 py-3.5 rounded-2xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white/80 shadow-md"
-                />
-                <button
-                  type="submit"
-                  disabled={isSubscribing}
-                  className="bg-[#161915] text-white hover:bg-black font-extrabold px-7 py-3.5 rounded-2xl text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <span>Subscribe</span>
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
-            </div>
-
-            {/* Right Illustration Graphic */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="relative w-64 sm:w-80 h-auto max-h-64 flex items-center justify-center">
-                <img
-                  src="/Images/NewsLetter01.png"
-                  alt="Naik Foods Newsletter"
-                  className="max-h-56 w-auto object-contain drop-shadow-2xl"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = '/logo.png';
-                  }}
-                />
-              </div>
-            </div>
-
-          </div>
-        </section>
-
+          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <input
+              type="email"
+              required
+              placeholder={isMr ? 'तुमचा ईमेल पत्ता टाका...' : 'Enter your email address...'}
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
+              className="flex-grow bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#70BF4F]"
+            />
+            <button
+              type="submit"
+              disabled={isSubscribing}
+              className="bg-[#70BF4F] hover:bg-[#5ca040] text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+            >
+              {isSubscribing 
+                ? (isMr ? 'नोंदणी होत आहे...' : 'Subscribing...') 
+                : (isMr ? 'सदस्यता घ्या' : 'Subscribe')}
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
