@@ -113,28 +113,99 @@ export default function Checkout() {
 
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
-    if (val.trim().length > 2) {
+    const cleanQuery = val.trim();
+    if (cleanQuery.length >= 2) {
       setIsSearching(true);
       setShowDropdown(true);
 
       searchTimeoutRef.current = setTimeout(async () => {
         try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
-              val
-            )}&countrycodes=in&limit=6&addressdetails=1`,
-            { headers: { 'Accept-Language': 'en' } }
-          );
-          if (res.ok) {
-            const data = await res.json();
-            setSearchResults(data || []);
+          const isPinCode = /^\d{6}$/.test(cleanQuery);
+          let results = [];
+
+          // 1. If 6-digit Indian PIN Code, search postal code directly
+          if (isPinCode) {
+            try {
+              const pinRes = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=jsonv2&postalcode=${encodeURIComponent(
+                  cleanQuery
+                )}&country=India&addressdetails=1`,
+                { headers: { 'Accept-Language': 'en' } }
+              );
+              if (pinRes.ok) {
+                const pinData = await pinRes.json();
+                if (pinData && pinData.length > 0) {
+                  results = pinData;
+                }
+              }
+            } catch {}
           }
+
+          // 2. Query Nominatim with Indian West / Maharashtra bounding bias
+          if (results.length === 0) {
+            try {
+              const nomRes = await fetch(
+                `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
+                  cleanQuery
+                )}&countrycodes=in&viewbox=72.0,22.0,81.0,15.0&bounded=0&limit=8&addressdetails=1`,
+                { headers: { 'Accept-Language': 'en' } }
+              );
+              if (nomRes.ok) {
+                const nomData = await nomRes.json();
+                if (nomData && nomData.length > 0) {
+                  results = nomData;
+                }
+              }
+            } catch {}
+          }
+
+          // 3. Photon API fallback (OpenStreetMap index with high typo tolerance)
+          if (results.length === 0) {
+            try {
+              const photonRes = await fetch(
+                `https://photon.komoot.io/api/?q=${encodeURIComponent(
+                  cleanQuery
+                )}&lat=18.5204&lon=73.8567&limit=8&lang=en`
+              );
+              if (photonRes.ok) {
+                const photonData = await photonRes.json();
+                if (photonData?.features?.length > 0) {
+                  results = photonData.features.map((f) => {
+                    const props = f.properties || {};
+                    const parts = [
+                      props.name,
+                      props.street,
+                      props.district || props.suburb,
+                      props.city,
+                      props.state,
+                      props.postcode,
+                      props.country
+                    ].filter(Boolean);
+                    return {
+                      lat: f.geometry.coordinates[1],
+                      lon: f.geometry.coordinates[0],
+                      display_name: parts.join(', '),
+                      address: {
+                        postcode: props.postcode,
+                        city: props.city,
+                        state: props.state,
+                        road: props.street || props.name,
+                        suburb: props.district || props.suburb
+                      }
+                    };
+                  });
+                }
+              }
+            } catch {}
+          }
+
+          setSearchResults(results || []);
         } catch (err) {
           console.error('Search places error:', err);
         } finally {
           setIsSearching(false);
         }
-      }, 300);
+      }, 250);
     } else {
       setSearchResults([]);
       setShowDropdown(false);

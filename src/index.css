@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --color-brand: #70BF4F;
@@ -17,6 +18,10 @@ body {
   color: #1E293B;
   background-color: #FFFFFF;
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header {
+  background-color: rgba(255, 255, 255, 0.96);
 }
 
 /* ==========================================================================
