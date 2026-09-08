@@ -141,12 +141,12 @@ export default function AajiChatbot() {
       {isOpen && (
         <div 
           ref={chatDrawerRef}
-          className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden max-h-[620px] h-[560px] transition-all animate-in fade-in slide-in-from-bottom-5"
+          className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] bg-white dark:bg-[#0F172A] rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden max-h-[620px] h-[560px] transition-all animate-in fade-in slide-in-from-bottom-5"
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-[#70BF4F] to-[#5ca040] text-white p-4 flex items-center justify-between shadow-md">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white text-2xl flex items-center justify-center shadow">
+              <div className="w-10 h-10 rounded-full bg-white dark:bg-[#131E35] text-2xl flex items-center justify-center shadow">
                 👵
               </div>
               <div>
@@ -173,7 +173,7 @@ export default function AajiChatbot() {
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#FDFCF7]">
+          <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#FDFCF7] dark:bg-[#070B14]">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -185,18 +185,18 @@ export default function AajiChatbot() {
                   className={`max-w-[88%] p-3.5 rounded-2xl text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
                     msg.sender === 'user'
                       ? 'bg-[#70BF4F] text-white rounded-br-none shadow-sm'
-                      : 'bg-white text-gray-800 rounded-bl-none border border-gray-100 shadow-sm'
+                      : 'bg-white dark:bg-[#131E35] text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-100 dark:border-gray-800 shadow-sm'
                   }`}
                 >
                   {msg.text}
 
                   {/* Interactive Action Chip */}
                   {msg.action && (
-                    <div className="mt-3 pt-2.5 border-t border-gray-100/80">
+                    <div className="mt-3 pt-2.5 border-t border-gray-100/80 dark:border-gray-700/60">
                       <Link
                         to={msg.action.link}
                         onClick={() => setIsOpen(false)}
-                        className="inline-flex items-center gap-1.5 bg-[#70BF4F]/10 hover:bg-[#70BF4F] text-[#70BF4F] hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 group cursor-pointer"
+                        className="inline-flex items-center gap-1.5 bg-[#70BF4F]/10 dark:bg-[#70BF4F]/20 hover:bg-[#70BF4F] text-[#70BF4F] dark:text-[#86EFAC] hover:text-white dark:hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 group cursor-pointer border border-[#70BF4F]/20"
                       >
                         <span>{lang === 'mr' ? msg.action.labelMr : msg.action.labelEn}</span>
                         <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
@@ -204,28 +204,28 @@ export default function AajiChatbot() {
                     </div>
                   )}
                 </div>
-                <span className="text-[10px] text-gray-400 mt-1 px-1">{msg.time}</span>
+                <span className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 px-1">{msg.time}</span>
               </div>
             ))}
 
             {/* Thinking / Cognitive State */}
             {isThinking && (
-              <div className="flex items-center gap-2 bg-amber-50/80 border border-amber-200/60 p-3 rounded-2xl text-amber-900 text-xs font-semibold max-w-[85%] shadow-xs animate-pulse">
-                <Sparkles className="w-4 h-4 text-amber-600 animate-spin" />
-                <span>{thinkingStep}</span>
+              <div className="flex items-center gap-2.5 bg-amber-50 dark:bg-[#131E35] border border-amber-200/80 dark:border-amber-400/40 p-3 rounded-2xl text-amber-900 dark:text-amber-300 text-xs font-semibold max-w-[88%] shadow-xs animate-pulse">
+                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 animate-spin shrink-0" />
+                <span className="leading-snug">{thinkingStep}</span>
               </div>
             )}
             <div ref={chatEndRef} />
           </div>
 
           {/* Quick Prompt Chips */}
-          <div className="px-3 py-2 bg-white border-t border-gray-100 flex gap-1.5 overflow-x-auto hide-scrollbar">
+          <div className="px-3 py-2 bg-white dark:bg-[#0F172A] border-t border-gray-100 dark:border-gray-800 flex gap-1.5 overflow-x-auto hide-scrollbar">
             {currentChips.map((chip, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleSend(chip.replace(/^[^\s]+\s/, ''))}
-                className="whitespace-nowrap bg-gray-50 hover:bg-green-50 text-gray-700 hover:text-[#70BF4F] text-[11px] font-bold px-2.5 py-1 rounded-full border border-gray-200 transition-colors shrink-0 cursor-pointer"
+                className="whitespace-nowrap bg-gray-50 dark:bg-[#131E35] hover:bg-green-50 dark:hover:bg-[#1E293B] text-gray-700 dark:text-gray-300 hover:text-[#70BF4F] dark:hover:text-[#86EFAC] text-[11px] font-bold px-2.5 py-1 rounded-full border border-gray-200 dark:border-gray-700 transition-colors shrink-0 cursor-pointer shadow-2xs"
               >
                 {chip}
               </button>
@@ -233,32 +233,32 @@ export default function AajiChatbot() {
           </div>
 
           {/* Input & WhatsApp Action */}
-          <div className="p-3 bg-white border-t border-gray-100 flex items-center gap-2">
+          <div className="p-3 bg-white dark:bg-[#0F172A] border-t border-gray-100 dark:border-gray-800 flex items-center gap-2">
             <input
               type="text"
               placeholder={lang === 'mr' ? 'उपलब्ध पदार्थ, पाककृती, डिलिव्हरी किंवा धोरणांबद्दल विचारा...' : 'Ask about available products, policies, recipes...'}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#70BF4F]"
+              className="flex-1 bg-gray-50 dark:bg-[#131E35] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-gray-700 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white dark:focus:bg-[#1E293B]"
             />
             <button
               type="button"
               onClick={() => handleSend()}
-              className="bg-[#70BF4F] hover:bg-[#5ca040] text-white p-2.5 rounded-xl transition-colors cursor-pointer shrink-0"
+              className="bg-[#70BF4F] hover:bg-[#5ca040] text-white p-2.5 rounded-xl transition-colors cursor-pointer shrink-0 shadow-sm"
             >
               <Send className="w-4 h-4" />
             </button>
           </div>
 
           {/* Direct WhatsApp Transfer Footer */}
-          <div className="bg-gray-50 px-4 py-2 text-center text-[11px] text-gray-500 border-t border-gray-100 flex items-center justify-between">
+          <div className="bg-gray-50 dark:bg-[#0B1324] px-4 py-2 text-center text-[11px] text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
             <span>{lang === 'mr' ? 'थेट प्रतिनिधीशी बोलायचे आहे?' : 'Need human assistance?'}</span>
             <a
               href="https://wa.me/919730046247?text=Hi!%20I%20have%20a%20question%20for%20Naik%20Foods%20team."
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#70BF4F] font-bold flex items-center gap-1 hover:underline"
+              className="text-[#70BF4F] dark:text-[#86EFAC] font-bold flex items-center gap-1 hover:underline"
             >
               {lang === 'mr' ? 'व्हॉट्सॲप सपोर्ट' : 'WhatsApp Support'} <ExternalLink className="w-3 h-3" />
             </a>
