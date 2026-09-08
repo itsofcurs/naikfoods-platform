@@ -1,9 +1,30 @@
 // High-performance location search engine with instant autocomplete (Zomato/Swiggy-style)
 
 export const MAHARASHTRA_LOCALITIES = [
-  // Pune Peths & Central
+  // User Requested Highlights & Pune Localities
   { name: 'Sujata Apartment, Kasat Nagar, Pune', landmark: 'Near Shri Krishna Colony, 4th Floor', suburb: 'Kasat Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4721, lon: 73.8614 },
   { name: 'Sujata Apartment, Shri Krishna Colony Lane No 3, Pune', landmark: 'Near Ganesh Niwas', suburb: 'Kasat Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4735, lon: 73.8598 },
+  { name: 'Kasat Nagar, Pune', landmark: 'Near Bibvewadi / Kondhwa Road', suburb: 'Kasat Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4725, lon: 73.8610 },
+  { name: 'MMIT College Pune (Marathwada Mitra Mandal Institute of Technology)', landmark: 'Vadgaon Shinde Road, Lohgaon', suburb: 'Lohgaon', city: 'Pune', state: 'Maharashtra', pincode: '411047', lat: 18.6080, lon: 73.9310 },
+  { name: 'VIT College Bibwewadi (Vishwakarma Institute of Technology)', landmark: 'Upper Indira Nagar, Bibvewadi', suburb: 'Bibvewadi', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4636, lon: 73.8682 },
+  { name: 'VIIT College Kondhwa (Vishwakarma Institute of Information Technology)', landmark: 'Near Saswad Road', suburb: 'Kondhwa', city: 'Pune', state: 'Maharashtra', pincode: '411048', lat: 18.4590, lon: 73.8835 },
+
+  // Famous Pune Colleges & Educational Landmarks
+  { name: 'COEP Technological University (College of Engineering Pune)', landmark: 'Wellesley Road, Shivajinagar', suburb: 'Shivajinagar', city: 'Pune', state: 'Maharashtra', pincode: '411005', lat: 18.5293, lon: 73.8565 },
+  { name: 'PICT College (Pune Institute of Computer Technology)', landmark: 'Near Bharati Vidyapeeth, Katraj', suburb: 'Dhankawadi', city: 'Pune', state: 'Maharashtra', pincode: '411043', lat: 18.4575, lon: 73.8508 },
+  { name: 'MIT World Peace University (MIT-WPU)', landmark: 'Paud Road, Kothrud', suburb: 'Kothrud', city: 'Pune', state: 'Maharashtra', pincode: '411038', lat: 18.5180, lon: 73.8152 },
+  { name: 'Cummins College of Engineering for Women', landmark: 'Karve Nagar, Hingne Budruk', suburb: 'Karve Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411052', lat: 18.4890, lon: 73.8175 },
+  { name: 'Fergusson College (FC)', landmark: 'FC Road, Deccan Gymkhana', suburb: 'Shivajinagar', city: 'Pune', state: 'Maharashtra', pincode: '411004', lat: 18.5236, lon: 73.8417 },
+  { name: 'BMCC (Brihan Maharashtra College of Commerce)', landmark: 'BMCC Road, Deccan Gymkhana', suburb: 'Deccan Gymkhana', city: 'Pune', state: 'Maharashtra', pincode: '411004', lat: 18.5250, lon: 73.8375 },
+  { name: 'SP College (Sir Parashurambhau College)', landmark: 'Tilak Road, Sadashiv Peth', suburb: 'Sadashiv Peth', city: 'Pune', state: 'Maharashtra', pincode: '411030', lat: 18.5082, lon: 73.8490 },
+  { name: 'Symbiosis International University, Viman Nagar', landmark: 'Symbiosis Road, Near Airport', suburb: 'Viman Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411014', lat: 18.5645, lon: 73.9100 },
+  { name: 'Bharati Vidyapeeth Deemed University', landmark: 'Pune-Satara Road, Katraj', suburb: 'Dhankawadi', city: 'Pune', state: 'Maharashtra', pincode: '411043', lat: 18.4550, lon: 73.8520 },
+  { name: 'Sinhgad College of Engineering (SCOE)', landmark: 'Sinhgad Road, Vadgaon Budruk', suburb: 'Vadgaon Budruk', city: 'Pune', state: 'Maharashtra', pincode: '411041', lat: 18.4650, lon: 73.8360 },
+  { name: 'DY Patil College of Engineering, Akurdi', landmark: 'Sector 29, Nigdi Pradhikaran', suburb: 'Akurdi', city: 'Pune', state: 'Maharashtra', pincode: '411044', lat: 18.6470, lon: 73.7600 },
+  { name: 'AISSMS College of Engineering', landmark: 'Near RTO, Kennedy Road', suburb: 'Shivajinagar', city: 'Pune', state: 'Maharashtra', pincode: '411001', lat: 18.5310, lon: 73.8650 },
+  { name: 'PES Modern College of Engineering', landmark: 'Jangali Maharaj Road, Shivajinagar', suburb: 'Shivajinagar', city: 'Pune', state: 'Maharashtra', pincode: '411005', lat: 18.5280, lon: 73.8500 },
+
+  // Pune Popular Food & Culture Landmarks
   { name: 'Sujata Mastani, Sadashiv Peth', landmark: 'Near Khunya Murlidhar', suburb: 'Sadashiv Peth', city: 'Pune', state: 'Maharashtra', pincode: '411030', lat: 18.5126, lon: 73.8519 },
   { name: 'Sujata Mastani, Aranyeshwar Padmavati Road', landmark: 'Aranyeshwar Park Society', suburb: 'Sahakar Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411009', lat: 18.4872, lon: 73.8546 },
   { name: 'Sujata Society, Bund Garden Road', landmark: 'Opposite Bund Garden', suburb: 'Bund Garden', city: 'Pune', state: 'Maharashtra', pincode: '411001', lat: 18.5362, lon: 73.8785 },
@@ -14,7 +35,7 @@ export const MAHARASHTRA_LOCALITIES = [
   { name: 'Sujata Mastani, Vasant Vihar Bibvewadi', landmark: 'Prabodhankar Thakare Path', suburb: 'Bibvewadi', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4795, lon: 73.8612 },
   { name: 'SUJATA COACH PVT LTD', landmark: 'Near Swargate / Bibvewadi', suburb: 'Pune', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4750, lon: 73.8600 },
 
-  // Pune Core Localities & Landmarks
+  // Pune Core Peths & Localities
   { name: 'Deccan Gymkhana, Pune', landmark: 'FC Road / Sambhaji Park', suburb: 'Deccan Gymkhana', city: 'Pune', state: 'Maharashtra', pincode: '411004', lat: 18.5173, lon: 73.8415 },
   { name: 'Fergusson College Road (FC Road)', landmark: 'Goodluck Chowk', suburb: 'Shivajinagar', city: 'Pune', state: 'Maharashtra', pincode: '411004', lat: 18.5236, lon: 73.8417 },
   { name: 'Jangali Maharaj Road (JM Road)', landmark: 'Sambhaji Park', suburb: 'Shivajinagar', city: 'Pune', state: 'Maharashtra', pincode: '411005', lat: 18.5284, lon: 73.8475 },
@@ -68,7 +89,66 @@ export const MAHARASHTRA_LOCALITIES = [
   { name: 'Dhayari, Pune', landmark: 'Dhayari Phata / DSK Vishwa', suburb: 'Dhayari', city: 'Pune', state: 'Maharashtra', pincode: '411041', lat: 18.4500, lon: 73.8150 },
   { name: 'Camp, MG Road, Pune', landmark: 'Aurora Towers / SGS Mall', suburb: 'Camp', city: 'Pune', state: 'Maharashtra', pincode: '411001', lat: 18.5186, lon: 73.8785 },
   { name: 'Pune Railway Station', landmark: 'Main Station Entrance', suburb: 'Agarkar Nagar', city: 'Pune', state: 'Maharashtra', pincode: '411001', lat: 18.5289, lon: 73.8744 },
-  { name: 'Pune Airport (PNQ), Lohegaon', landmark: 'Departure Terminal', suburb: 'Lohegaon', city: 'Pune', state: 'Maharashtra', pincode: '411032', lat: 18.5822, lon: 73.9197 }
+  { name: 'Pune Airport (PNQ), Lohegaon', landmark: 'Departure Terminal', suburb: 'Lohegaon', city: 'Pune', state: 'Maharashtra', pincode: '411032', lat: 18.5822, lon: 73.9197 },
+  { name: 'Savitribai Phule Pune University (SPPU)', landmark: 'Ganeshkhind Main Gate', suburb: 'Ganeshkhind', city: 'Pune', state: 'Maharashtra', pincode: '411007', lat: 18.5529, lon: 73.8262 },
+  { name: 'PCCOE (Pimpri Chinchwad College of Engineering)', landmark: 'Sector 26, Pradhikaran, Nigdi', suburb: 'Nigdi', city: 'Pune', state: 'Maharashtra', pincode: '411044', lat: 18.6538, lon: 73.7695 },
+  { name: 'MIT ADT University, Loni Kalbhor', landmark: 'Rajbaug Educational Complex, Solapur Highway', suburb: 'Loni Kalbhor', city: 'Pune', state: 'Maharashtra', pincode: '412201', lat: 18.4905, lon: 74.0245 },
+  { name: 'NIBM Road, Kondhwa, Pune', landmark: 'Near Cloud 9 / Bizzbay Mall', suburb: 'Kondhwa', city: 'Pune', state: 'Maharashtra', pincode: '411048', lat: 18.4770, lon: 73.8960 },
+  { name: 'Wanowrie, Pune', landmark: 'Kedari Petrol Pump / Jagtap Chowk', suburb: 'Wanowrie', city: 'Pune', state: 'Maharashtra', pincode: '411040', lat: 18.4950, lon: 73.8980 },
+  { name: 'Market Yard, Gultekdi, Pune', landmark: 'Shree Chhatrapati Shivaji Market Yard', suburb: 'Gultekdi', city: 'Pune', state: 'Maharashtra', pincode: '411037', lat: 18.4890, lon: 73.8670 },
+  { name: 'Wagholi, Pune', landmark: 'Nagar Road / Lexicon International', suburb: 'Wagholi', city: 'Pune', state: 'Maharashtra', pincode: '412207', lat: 18.5800, lon: 73.9800 },
+  { name: 'Ravet, Pune', landmark: 'DY Patil Ravet Campus / BRTS Road', suburb: 'Ravet', city: 'Pune', state: 'Maharashtra', pincode: '412101', lat: 18.6475, lon: 73.7380 },
+  { name: 'Tathawade, Pune', landmark: 'JSPM / Indira College Campus', suburb: 'Tathawade', city: 'Pune', state: 'Maharashtra', pincode: '411033', lat: 18.6180, lon: 73.7540 },
+  { name: 'Bhosari, PCMC, Pune', landmark: 'MIDC / Pune-Nashik Highway', suburb: 'Bhosari', city: 'Pune', state: 'Maharashtra', pincode: '411026', lat: 18.6250, lon: 73.8450 },
+  { name: 'Chakan, Pune', landmark: 'Talegaon Chowk / Automobile Hub', suburb: 'Chakan', city: 'Pune', state: 'Maharashtra', pincode: '410501', lat: 18.7600, lon: 73.8600 },
+
+  // Mumbai & Mumbai Metropolitan Region (MMR)
+  { name: 'Bandra West, Linking Road, Mumbai', landmark: 'Near Bandra Station / Bandstand', suburb: 'Bandra West', city: 'Mumbai', state: 'Maharashtra', pincode: '400050', lat: 19.0596, lon: 72.8295 },
+  { name: 'Andheri West, Lokhandwala Complex, Mumbai', landmark: 'Near Infinity Mall', suburb: 'Andheri West', city: 'Mumbai', state: 'Maharashtra', pincode: '400053', lat: 19.1363, lon: 72.8277 },
+  { name: 'Dadar West, Shivaji Park, Mumbai', landmark: 'Near Sena Bhavan / Chaitya Bhoomi', suburb: 'Dadar West', city: 'Mumbai', state: 'Maharashtra', pincode: '400028', lat: 19.0269, lon: 72.8397 },
+  { name: 'Powai, Hiranandani Gardens, Mumbai', landmark: 'Near IIT Bombay Main Gate', suburb: 'Powai', city: 'Mumbai', state: 'Maharashtra', pincode: '400076', lat: 19.1176, lon: 72.9060 },
+  { name: 'Juhu Beach, Mumbai', landmark: 'Juhu Tara Road / Hotel JW Marriott', suburb: 'Juhu', city: 'Mumbai', state: 'Maharashtra', pincode: '400049', lat: 19.0988, lon: 72.8264 },
+  { name: 'Colaba, Gateway of India, Mumbai', landmark: 'Taj Mahal Palace / Colaba Causeway', suburb: 'Colaba', city: 'Mumbai', state: 'Maharashtra', pincode: '400001', lat: 18.9220, lon: 72.8347 },
+  { name: 'Marine Drive & Nariman Point, Mumbai', landmark: 'NCPA / Marine Drive Promenade', suburb: 'Churchgate', city: 'Mumbai', state: 'Maharashtra', pincode: '400021', lat: 18.9260, lon: 72.8230 },
+  { name: 'Borivali West, Mumbai', landmark: 'Near Shimpoli / Gorai Creek', suburb: 'Borivali West', city: 'Mumbai', state: 'Maharashtra', pincode: '400092', lat: 19.2307, lon: 72.8567 },
+  { name: 'Ghatkopar East, Mumbai', landmark: 'R-City Mall / 90 Feet Road', suburb: 'Ghatkopar East', city: 'Mumbai', state: 'Maharashtra', pincode: '400077', lat: 19.0860, lon: 72.9090 },
+  { name: 'Vashi, Sector 17, Navi Mumbai', landmark: 'Inorbit Mall / Vashi Station', suburb: 'Vashi', city: 'Navi Mumbai', state: 'Maharashtra', pincode: '400703', lat: 19.0771, lon: 72.9986 },
+  { name: 'CBD Belapur, Navi Mumbai', landmark: 'CIDCO Bhavan / Belapur Station', suburb: 'CBD Belapur', city: 'Navi Mumbai', state: 'Maharashtra', pincode: '400614', lat: 19.0180, lon: 73.0400 },
+  { name: 'Thane West, Gokhale Road, Thane', landmark: 'Near Talao Pali / Viviana Mall', suburb: 'Thane West', city: 'Thane', state: 'Maharashtra', pincode: '400601', lat: 19.1860, lon: 72.9750 },
+  { name: 'Kalyan West, Shivaji Chowk', landmark: 'Near Kalyan Station / Agra Road', suburb: 'Kalyan West', city: 'Kalyan', state: 'Maharashtra', pincode: '421301', lat: 19.2437, lon: 73.1355 },
+  { name: 'Dombivli East, Phadke Road', landmark: 'Near Dombivli Railway Station', suburb: 'Dombivli East', city: 'Dombivli', state: 'Maharashtra', pincode: '421201', lat: 19.2184, lon: 73.0867 },
+
+  // Nashik
+  { name: 'College Road, Nashik', landmark: 'Near BYK College / Circle Cinema', suburb: 'College Road', city: 'Nashik', state: 'Maharashtra', pincode: '422005', lat: 19.9975, lon: 73.7660 },
+  { name: 'Panchavati, Godavari Ghat, Nashik', landmark: 'Kalaram Temple / Ramkund', suburb: 'Panchavati', city: 'Nashik', state: 'Maharashtra', pincode: '422003', lat: 20.0050, lon: 73.7920 },
+  { name: 'Gangapur Road, Nashik', landmark: 'Near Jehan Circle / KTHM College', suburb: 'Gangapur Road', city: 'Nashik', state: 'Maharashtra', pincode: '422013', lat: 20.0120, lon: 73.7580 },
+  { name: 'CIDCO, Nashik', landmark: 'Near Lekha Nagar / Trimurti Chowk', suburb: 'CIDCO', city: 'Nashik', state: 'Maharashtra', pincode: '422009', lat: 19.9650, lon: 73.7550 },
+
+  // Chhatrapati Sambhajinagar (Aurangabad)
+  { name: 'Cannaught Place, CIDCO, Chhatrapati Sambhajinagar (Aurangabad)', landmark: 'Near Prozone Mall / Town Centre, Aurangabad', suburb: 'CIDCO', city: 'Chhatrapati Sambhajinagar', state: 'Maharashtra', pincode: '431003', lat: 19.8762, lon: 75.3670 },
+  { name: 'Kranti Chowk, Chhatrapati Sambhajinagar (Aurangabad)', landmark: 'Chhatrapati Shivaji Maharaj Statue, Aurangabad Central', suburb: 'Kranti Chowk', city: 'Chhatrapati Sambhajinagar', state: 'Maharashtra', pincode: '431001', lat: 19.8700, lon: 75.3260 },
+  { name: 'Dr. BAMU (Babasaheb Ambedkar Marathwada University), Aurangabad', landmark: 'University Campus Gate, Chhatrapati Sambhajinagar', suburb: 'University Area', city: 'Chhatrapati Sambhajinagar', state: 'Maharashtra', pincode: '431004', lat: 19.9020, lon: 75.3050 },
+
+  // Nagpur
+  { name: 'Dharampeth, Laxmi Nagar, Nagpur', landmark: 'Coffee House Chowk / West High Court Road', suburb: 'Dharampeth', city: 'Nagpur', state: 'Maharashtra', pincode: '440010', lat: 21.1420, lon: 79.0650 },
+  { name: 'Sitabuldi, Main Market, Nagpur', landmark: 'Near Sitabuldi Fort / Metro Interchange', suburb: 'Sitabuldi', city: 'Nagpur', state: 'Maharashtra', pincode: '440012', lat: 21.1470, lon: 79.0830 },
+  { name: 'VNIT Nagpur (Visvesvaraya National Institute of Technology)', landmark: 'South Ambazari Road', suburb: 'Ambazari', city: 'Nagpur', state: 'Maharashtra', pincode: '440010', lat: 21.1255, lon: 79.0515 },
+  { name: 'IT Park Gayatri Nagar, Nagpur', landmark: 'Parsodi, Near VNIT', suburb: 'Gayatri Nagar', city: 'Nagpur', state: 'Maharashtra', pincode: '440022', lat: 21.1180, lon: 79.0550 },
+
+  // Kolhapur
+  { name: 'Mahalaxmi Ambabai Temple, Kolhapur', landmark: 'Bhavani Mandap / Old Palace', suburb: 'Bhavani Mandap', city: 'Kolhapur', state: 'Maharashtra', pincode: '416012', lat: 16.6946, lon: 74.2238 },
+  { name: 'Rajarampuri, 2nd Lane, Kolhapur', landmark: 'Near Janata Bazaar', suburb: 'Rajarampuri', city: 'Kolhapur', state: 'Maharashtra', pincode: '416008', lat: 16.6910, lon: 74.2480 },
+  { name: 'Tarabai Park, Kolhapur', landmark: 'Near Circuit House / Collector Office', suburb: 'Tarabai Park', city: 'Kolhapur', state: 'Maharashtra', pincode: '416003', lat: 16.7110, lon: 74.2380 },
+  { name: 'Shivaji University, Kolhapur', landmark: 'Vidyanagar, Old Pune-Bangalore Road', suburb: 'Vidyanagar', city: 'Kolhapur', state: 'Maharashtra', pincode: '416004', lat: 16.6780, lon: 74.2560 },
+
+  // Solapur
+  { name: 'Navi Peth, Main Market, Solapur', landmark: 'Near Siddheshwar Temple', suburb: 'Navi Peth', city: 'Solapur', state: 'Maharashtra', pincode: '413007', lat: 17.6715, lon: 75.9064 },
+  { name: 'Saat Rasta Chowk, Solapur', landmark: 'Near Old Employment Chowk / ST Stand', suburb: 'Saat Rasta', city: 'Solapur', state: 'Maharashtra', pincode: '413001', lat: 17.6620, lon: 75.9120 },
+
+  // Satara & Sangli
+  { name: 'Powai Naka, Satara', landmark: 'Shivaji Circle / Radhika Road', suburb: 'Powai Naka', city: 'Satara', state: 'Maharashtra', pincode: '415001', lat: 17.6890, lon: 73.9980 },
+  { name: 'Vishrambag, Sangli', landmark: 'Walchand College Road / Sangli Station Link', suburb: 'Vishrambag', city: 'Sangli', state: 'Maharashtra', pincode: '416415', lat: 16.8480, lon: 74.6020 },
+  { name: 'Walchand College of Engineering, Sangli', landmark: 'A/P Vishrambag', suburb: 'Vishrambag', city: 'Sangli', state: 'Maharashtra', pincode: '416415', lat: 16.8450, lon: 74.6010 }
 ];
 
 // Common abbreviation expansions
@@ -94,7 +174,13 @@ const ABBREVIATIONS = {
   chauk: 'chowk',
   mrg: 'marg',
   gln: 'galli',
-  flt: 'flat'
+  flt: 'flat',
+  clg: 'college',
+  coll: 'college',
+  univ: 'university',
+  inst: 'institute',
+  tech: 'technology',
+  engg: 'engineering'
 };
 
 export function expandAbbreviations(query) {
@@ -111,7 +197,9 @@ export function searchLocalLocations(query) {
   const clean = query.toLowerCase().trim();
   if (!clean || clean.length < 1) return [];
 
+  const genericStopWords = new Set(['pune', 'maharashtra', 'india', 'near', 'rd', 'road', 'street', 'college', 'clg']);
   const tokens = clean.split(/\s+/).filter(Boolean);
+  const specificTokens = tokens.filter((t) => !genericStopWords.has(t));
   const expandedQuery = expandAbbreviations(clean).toLowerCase();
   const expandedTokens = expandedQuery.split(/\s+/).filter(Boolean);
 
@@ -121,6 +209,12 @@ export function searchLocalLocations(query) {
     // Direct string match
     if (haystack.includes(clean) || haystack.includes(expandedQuery)) return true;
 
+    // Must match all specific tokens if any exist
+    if (specificTokens.length > 0) {
+      const matchesAllSpecific = specificTokens.every((t) => haystack.includes(t));
+      if (matchesAllSpecific) return true;
+    }
+
     // Token match
     const matchesAllTokens = tokens.every((t) => haystack.includes(t));
     if (matchesAllTokens) return true;
@@ -128,111 +222,11 @@ export function searchLocalLocations(query) {
     const matchesAllExpandedTokens = expandedTokens.every((t) => haystack.includes(t));
     if (matchesAllExpandedTokens) return true;
 
-    // Partial prefix match
-    const matchesAnySignificant = tokens.some((t) => t.length >= 3 && haystack.includes(t));
-    if (matchesAnySignificant) return true;
+    // Single token prefix match
+    if (tokens.length === 1 && tokens[0].length >= 3 && haystack.includes(tokens[0])) {
+      return true;
+    }
 
     return false;
   }).slice(0, 8);
-}
-
-// Full Hybrid Autocomplete (Local 0ms + Online Photon / Nominatim Fallbacks)
-export async function searchLocationsHybrid(query, currentPos = { lat: 18.5204, lng: 73.8567 }) {
-  const clean = query.trim();
-  if (!clean) return [];
-
-  // 1. Instant local indexed items
-  const localMatches = searchLocalLocations(clean).map((loc) => ({
-    display_name: `${loc.name}, ${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city}, ${loc.pincode}`,
-    lat: loc.lat,
-    lon: loc.lon,
-    title: loc.name,
-    subtitle: `${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city}`,
-    address: {
-      postcode: loc.pincode,
-      suburb: loc.suburb,
-      city: loc.city,
-      state: loc.state,
-      road: loc.name
-    },
-    source: 'local'
-  }));
-
-  // 2. Fetch live geocoder with expansion & Pune proximity
-  let apiMatches = [];
-  const expanded = expandAbbreviations(clean);
-  const searchQueries = [
-    expanded,
-    clean,
-    `${expanded}, Pune`,
-    `${clean.split(/\s+/)[0]}, Pune`
-  ];
-
-  for (const q of searchQueries) {
-    if (apiMatches.length >= 6) break;
-
-    try {
-      const photonUrl = `https://photon.komoot.io/api/?q=${encodeURIComponent(
-        q
-      )}&lat=${currentPos.lat || 18.5204}&lon=${currentPos.lng || 73.8567}&limit=6&lang=en`;
-      const res = await fetch(photonUrl);
-      if (res.ok) {
-        const data = await res.json();
-        if (data?.features?.length > 0) {
-          const formatted = data.features
-            .filter((f) => f.properties.country === 'India' || !f.properties.country)
-            .map((f) => {
-              const props = f.properties || {};
-              const title = props.name || props.street || clean;
-              const subtitle = [props.street !== title ? props.street : null, props.district || props.suburb, props.city, props.state].filter(Boolean).join(', ');
-              const full = [title, subtitle].filter(Boolean).join(', ');
-              return {
-                display_name: full,
-                title,
-                subtitle: subtitle || 'India',
-                lat: f.geometry.coordinates[1],
-                lon: f.geometry.coordinates[0],
-                address: {
-                  postcode: props.postcode,
-                  city: props.city,
-                  state: props.state,
-                  road: props.street || props.name,
-                  suburb: props.district || props.suburb
-                },
-                source: 'photon'
-              };
-            });
-          apiMatches = [...apiMatches, ...formatted];
-        }
-      }
-    } catch {}
-  }
-
-  // Deduplicate by name & proximity
-  const combined = [...localMatches, ...apiMatches];
-  const seen = new Set();
-  const deduped = [];
-
-  for (const item of combined) {
-    const key = `${item.title.toLowerCase()}-${Math.round(item.lat * 100)}-${Math.round(item.lon * 100)}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      deduped.push(item);
-    }
-  }
-
-  // 3. Pinpoint option if no exact full matches
-  if (!deduped.some((d) => d.title.toLowerCase() === clean.toLowerCase())) {
-    deduped.push({
-      display_name: `${clean} (Deliver to this pin location)`,
-      title: clean,
-      subtitle: `📍 Drop delivery pin at current map position`,
-      lat: currentPos.lat || 18.5204,
-      lon: currentPos.lng || 73.8567,
-      address: { road: clean, city: 'Pune', state: 'Maharashtra' },
-      isCustomPin: true
-    });
-  }
-
-  return deduped.slice(0, 8);
 }
