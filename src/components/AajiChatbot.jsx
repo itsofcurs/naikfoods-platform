@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Sparkles, ExternalLink, Bot, RotateCcw, ArrowRight, ShieldCheck } from 'lucide-react';
+import { MessageSquare, X, Send, Sparkles, ExternalLink, Bot, RotateCcw, ArrowRight, ShieldCheck, Key, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguageStore } from '../store/languageStore';
 import { processAajiQuery } from '../services/aajiRagEngine';
+import toast from 'react-hot-toast';
 
 const DEFAULT_CHIPS_EN = [
   '🛍️ How to check available products?',
@@ -31,6 +32,8 @@ export default function AajiChatbot() {
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
   const [thinkingStep, setThinkingStep] = useState('');
+  const [showKeyInput, setShowKeyInput] = useState(false);
+  const [geminiKey, setGeminiKey] = useState(() => localStorage.getItem('naikfoods_gemini_api_key') || '');
   const chatEndRef = useRef(null);
 
   useEffect(() => {
@@ -54,7 +57,19 @@ export default function AajiChatbot() {
     }
   }, [messages, isOpen, isThinking]);
 
-  const handleSend = (userQuery) => {
+  const handleSaveKey = (e) => {
+    e.preventDefault();
+    if (geminiKey.trim()) {
+      localStorage.setItem('naikfoods_gemini_api_key', geminiKey.trim());
+      toast.success(lang === 'mr' ? 'Gemini API की सेव्ह झाली! 🚀' : 'Gemini API Key saved! Live AI activated! 🚀');
+    } else {
+      localStorage.removeItem('naikfoods_gemini_api_key');
+      toast('Using built-in neural RAG engine', { icon: 'ℹ️' });
+    }
+    setShowKeyInput(false);
+  };
+
+  const handleSend = async (userQuery) => {
     const text = (userQuery || input).trim();
     if (!text) return;
 
@@ -69,25 +84,35 @@ export default function AajiChatbot() {
     setIsThinking(true);
     setThinkingStep(lang === 'mr' ? 'आजी विचार करत आहे व माहिती शोधत आहे... 🧠💭' : 'Aaji is thinking & searching recipe documents... 🧠💭');
 
-    // Multi-stage RAG thinking simulation
-    setTimeout(() => {
-      setThinkingStep(lang === 'mr' ? 'सुरक्षा नियम व माहिती पडताळत आहे... 🛡️' : 'Verifying safety guardrails & policies... 🛡️');
-      
-      setTimeout(() => {
-        const queryResult = processAajiQuery(text, lang);
+    // Dynamic Thinking Pipeline + RAG / LLM execution
+    try {
+      const queryResult = await processAajiQuery(text, lang, geminiKey);
 
-        const botReply = {
+      const botReply = {
+        sender: 'bot',
+        text: queryResult.text,
+        action: queryResult.action || null,
+        isLLM: queryResult.isLLM || false,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      setMessages((prev) => [...prev, botReply]);
+    } catch (err) {
+      console.error('Aaji AI processing error:', err);
+      setMessages((prev) => [
+        ...prev,
+        {
           sender: 'bot',
-          text: queryResult.text,
-          action: queryResult.action || null,
+          text: lang === 'mr' 
+            ? 'बाळ, मला समजण्यात थोडी अडचण आली. कृपया पुन्हा विचारून पहा किंवा व्हॉट्सॲपवर संपर्क करा.'
+            : 'Dear child, I encountered a brief glitch. Please try asking again or contact our family on WhatsApp.',
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        };
-
-        setMessages((prev) => [...prev, botReply]);
-        setIsThinking(false);
-        setThinkingStep('');
-      }, 350);
-    }, 400);
+        }
+      ]);
+    } finally {
+      setIsThinking(false);
+      setThinkingStep('');
+    }
   };
 
   const currentChips = lang === 'mr' ? DEFAULT_CHIPS_MR : DEFAULT_CHIPS_EN;
@@ -114,7 +139,7 @@ export default function AajiChatbot() {
 
       {/* Expandable Chat Drawer */}
       {isOpen && (
-        <div className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[410px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden max-h-[620px] h-[550px] transition-all animate-in fade-in slide-in-from-bottom-5">
+        <div className="fixed bottom-6 left-4 sm:left-6 z-50 w-[calc(100vw-2rem)] sm:w-[420px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden max-h-[620px] h-[560px] transition-all animate-in fade-in slide-in-from-bottom-5">
           {/* Header */}
           <div className="bg-gradient-to-r from-[#70BF4F] to-[#5ca040] text-white p-4 flex items-center justify-between shadow-md">
             <div className="flex items-center gap-3">
@@ -123,22 +148,52 @@ export default function AajiChatbot() {
               </div>
               <div>
                 <h3 className="font-extrabold text-sm flex items-center gap-1.5 font-serif">
-                  {lang === 'mr' ? 'आजी AI (बुद्धिमत्ता व RAG)' : 'Aaji AI (RAG Assistant)'} <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  {lang === 'mr' ? 'आजी AI (बुद्धिमत्ता व RAG)' : 'Aaji AI (RAG + LLM)'} <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 </h3>
                 <p className="text-[10px] text-white/90 font-medium flex items-center gap-1">
                   <ShieldCheck className="w-3 h-3 text-emerald-200 inline" />
-                  {lang === 'mr' ? '२४/७ ५-स्तरीय सुरक्षित व अधिकृत मार्गदर्शक' : '24/7 Hardened 5-Layer Customer Guide'}
+                  {geminiKey ? '⚡ Gemini Live AI • 5-Layer Hardened' : '२४/७ ५-स्तरीय सुरक्षित व अधिकृत मार्गदर्शक'}
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setShowKeyInput(!showKeyInput)}
+                className="text-white/80 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+                title="Configure Gemini API Key"
+              >
+                <Key className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="text-white/80 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
+
+          {/* Gemini API Key Configuration Drawer / Popover */}
+          {showKeyInput && (
+            <form onSubmit={handleSaveKey} className="bg-amber-50 p-3 border-b border-amber-200 flex items-center gap-2 text-xs">
+              <input
+                type="password"
+                placeholder="Enter Gemini API Key (Optional)..."
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+                className="flex-1 bg-white border border-amber-300 rounded-lg px-2.5 py-1.5 text-xs text-gray-800 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-[#70BF4F] hover:bg-[#5ca040] text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-pointer"
+              >
+                <Check className="w-3.5 h-3.5" /> Save
+              </button>
+            </form>
+          )}
 
           {/* Chat Messages */}
           <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-[#FDFCF7]">
