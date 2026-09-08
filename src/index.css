@@ -186,6 +186,20 @@ html.dark .bg-\[\#136091\] {
   color: #FFFFFF !important;
 }
 
+/* ==========================================================================
+   PRODUCT IMAGES & VISUAL CLARITY IN DARK MODE
+   Fixes dark mode image darkening/blackening caused by mix-blend-multiply
+   ========================================================================== */
+html.dark .mix-blend-multiply,
+html.dark img.mix-blend-multiply,
+html.dark [class*="mix-blend-multiply"] {
+  mix-blend-mode: normal !important;
+}
+
+html.dark img {
+  mix-blend-mode: normal;
+}
+
 /* High-Contrast Hero Banner CTA Button */
 .hero-cta-btn {
   transition: all 0.3s ease;
@@ -257,3 +271,4 @@ html.dark ::-webkit-scrollbar-thumb {
 ::-webkit-scrollbar-thumb:hover {
   background: #70BF4F;
 }
+

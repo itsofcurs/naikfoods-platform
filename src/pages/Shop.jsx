@@ -661,7 +661,7 @@ export default function Shop() {
                           <img
                             src={product.thumbnail}
                             alt={localizedTitle}
-                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">

@@ -139,7 +139,7 @@ export default function ProductDetails() {
               <img
                 src={selectedImage || product.thumbnail}
                 alt={localizedTitle}
-                className="max-h-full max-w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+                className="max-h-full max-w-full object-contain mix-blend-multiply dark:mix-blend-normal transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
                 <DietaryBadge type="veg" />
@@ -188,7 +188,7 @@ export default function ProductDetails() {
                       selectedImage === img.url ? 'border-[#70BF4F] shadow-sm' : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={img.url} alt="" className="w-full h-full object-contain mix-blend-multiply" />
+                    <img src={img.url} alt="" className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal" />
                   </button>
                 ))}
               </div>

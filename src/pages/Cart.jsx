@@ -119,7 +119,7 @@ export default function Cart() {
                                 <img
                                   src={item.product.thumbnail}
                                   alt={item.product.title}
-                                  className="w-full h-full object-contain mix-blend-multiply"
+                                  className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                                 />
                               ) : (
                                 <div className="w-full h-full bg-gray-200" />
@@ -192,7 +192,7 @@ export default function Cart() {
                             <img
                               src={product.thumbnail}
                               alt={product.title}
-                              className="w-full h-full object-contain mix-blend-multiply"
+                              className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal"
                             />
                           ) : (
                             <div className="w-full h-full bg-gray-200" />
