@@ -232,27 +232,27 @@ STRICT 5-LAYER SECURITY RULES:
     }
   };
 
-  try {
-    // Try Gemini 1.5 Flash (fallback to gemini-2.0-flash / gemini-1.5-pro)
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`;
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+  const candidateModels = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro'];
 
-    if (response.ok) {
-      const data = await response.json();
-      const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (generatedText) {
-        return sanitizeOutput(generatedText.trim());
+  for (const model of candidateModels) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey.trim()}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (generatedText) {
+          return sanitizeOutput(generatedText.trim());
+        }
       }
-    } else {
-      const errText = await response.text();
-      console.warn('Gemini API returned error:', response.status, errText);
+    } catch (err) {
+      console.warn(`Gemini API call with ${model} failed:`, err);
     }
-  } catch (err) {
-    console.warn('Gemini API call failed:', err);
   }
 
   return null;
