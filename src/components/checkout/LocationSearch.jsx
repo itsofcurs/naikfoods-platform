@@ -91,8 +91,8 @@ export default function LocationSearch({
           type="text"
           placeholder={
             isMr
-              ? 'इमारत, कॉलनी, सोस., रस्ता किंवा परिसर शोधा (उदा. सुजाता अपार्टमेंट्स, डेक्कन)...'
-              : 'Search building, society, apartment, street (e.g. Sujata Apartment, Kothrud)...'
+              ? 'इमारत, सोसायटी, कॉलनी, रस्ता किंवा परिसर शोधा...'
+              : 'Search building, society, apartment, area anywhere in India...'
           }
           value={searchQuery}
           onChange={(e) => onSearchQueryChange(e.target.value)}

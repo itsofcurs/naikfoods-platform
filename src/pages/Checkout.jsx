@@ -26,14 +26,14 @@ export default function Checkout() {
 
   // Address State
   const [position, setPosition] = useState(DEFAULT_CENTER);
-  const [address, setAddress] = useState('Pune, Maharashtra, India');
+  const [address, setAddress] = useState('');
 
   const [addressDetails, setAddressDetails] = useState({
-    fullName: customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : 'Rohan Jadhav',
-    phone: customer?.phone || '9876543210',
-    flat: 'Flat 402, Sujata Apartments',
-    landmark: 'Near Deccan Gymkhana',
-    pincode: '411004',
+    fullName: customer ? `${customer.first_name || ''} ${customer.last_name || ''}`.trim() : '',
+    phone: customer?.phone || '',
+    flat: '',
+    landmark: '',
+    pincode: '',
     tag: 'Home', // 'Home' | 'Work' | 'Other'
   });
 

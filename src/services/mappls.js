@@ -153,12 +153,13 @@ export async function reverseGeocodeMappls(lat, lng, apiKey) {
         if (item) {
           const streetStr = item.street || item.poi || item.subLocality || item.locality || '';
           const localityStr = item.locality || item.subLocality || item.subDistrict || '';
-          const cityStr = item.city || item.district || 'Pune';
+          const cityStr = item.city || item.district || '';
           const pincodeStr = item.pincode || item.postcode || '';
-          const stateStr = item.state || 'Maharashtra';
+          const stateStr = item.state || '';
+          const fallbackParts = [streetStr, localityStr, cityStr, stateStr, pincodeStr].filter(Boolean);
 
           return {
-            formatted_address: item.formatted_address || `${streetStr ? streetStr + ', ' : ''}${localityStr}, ${cityStr} ${pincodeStr}`,
+            formatted_address: item.formatted_address || fallbackParts.join(', ') || 'Selected Location, India',
             street: streetStr,
             locality: localityStr,
             city: cityStr,
@@ -176,12 +177,12 @@ export async function reverseGeocodeMappls(lat, lng, apiKey) {
 
   // Generic fallback if network fails
   return {
-    formatted_address: `Delivery Location (${lat.toFixed(4)}, ${lng.toFixed(4)}), Pune, Maharashtra`,
-    street: `Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
-    locality: 'Pune',
-    city: 'Pune',
+    formatted_address: `Delivery Location (${lat.toFixed(5)}, ${lng.toFixed(5)})`,
+    street: `Location (${lat.toFixed(5)}, ${lng.toFixed(5)})`,
+    locality: '',
+    city: '',
     pincode: '',
-    state: 'Maharashtra',
+    state: '',
     lat,
     lng
   };
@@ -234,7 +235,7 @@ export async function searchPlacesMappls(query, center = { lat: 18.5204, lng: 73
 
           addResult({
             title: s.placeName || s.name || clean,
-            subtitle: s.placeAddress || s.address || 'Maharashtra, India',
+            subtitle: s.placeAddress || s.address || 'India',
             display_name: s.placeAddress ? `${s.placeName || ''}, ${s.placeAddress}` : (s.name || clean),
             distance: distStr,
             eLoc: s.eLoc,
@@ -249,12 +250,12 @@ export async function searchPlacesMappls(query, center = { lat: 18.5204, lng: 73
     console.warn('[Mappls Live Atlas] Search error:', err);
   }
 
-  // 2. Always include 1-click Pin Drop action for custom user search query
+  // 2. Always include 1-click Pin Drop action for custom user search query anywhere in India
   if (!results.some((r) => r.title.toLowerCase() === clean.toLowerCase())) {
     addResult({
       title: clean,
-      subtitle: `📍 Drop delivery pin for "${clean}" at map center`,
-      display_name: `${clean}, Pune, Maharashtra`,
+      subtitle: `📍 Drop delivery pin for "${clean}" at map location`,
+      display_name: clean,
       distance: '0 m',
       lat: center.lat,
       lng: center.lng,
