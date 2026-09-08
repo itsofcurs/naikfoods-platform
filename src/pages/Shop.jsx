@@ -2,6 +2,8 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { getProducts, getCollections } from '../api';
 import { Link, useSearchParams } from 'react-router-dom';
 import AddToCartButton from '../components/AddToCartButton';
+import ProductBadgePill, { getProductSpiceLevel } from '../components/ProductBadges';
+import SpiceMeter from '../components/SpiceMeter';
 import { useWishlistStore } from '../store/wishlistStore';
 import { useLanguageStore } from '../store/languageStore';
 import toast from 'react-hot-toast';
@@ -623,6 +625,14 @@ export default function Shop() {
                       key={product.id}
                       className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group flex flex-col h-full relative"
                     >
+                      {/* Dietary & Process Badges (Pills above thumbnail) */}
+                      <ProductBadgePill
+                        product={product}
+                        isMr={lang === 'mr'}
+                        max={1}
+                        className="absolute top-3 left-3 z-10"
+                      />
+
                       {/* Interactive Wishlist Heart Icon */}
                       <button
                         type="button"
@@ -680,9 +690,12 @@ export default function Shop() {
                           {localizedTitle}
                         </Link>
 
-                        <p className="text-xs text-gray-400 mb-3 line-clamp-1">
-                          {lang === 'mr' ? `अस्सल ${localizedRegion} विशेष पदार्थ` : `Authentic ${regionName} Speciality`}
-                        </p>
+                        <div className="flex items-center justify-between mb-2 gap-1">
+                          <p className="text-xs text-gray-400 line-clamp-1">
+                            {lang === 'mr' ? `अस्सल ${localizedRegion}` : `Authentic ${regionName}`}
+                          </p>
+                          <SpiceMeter level={getProductSpiceLevel(product)} compact />
+                        </div>
 
                         <div className="flex items-center justify-between mt-auto mb-3">
                           <span className="font-bold text-gray-900 text-base">

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { getProduct } from '../api';
 import AddToCartButton from '../components/AddToCartButton';
 import SpiceMeter from '../components/SpiceMeter';
-import DietaryBadge from '../components/DietaryBadge';
+import ProductBadgePill, { getProductSpiceLevel } from '../components/ProductBadges';
 import { useWishlistStore } from '../store/wishlistStore';
 import { useLanguageStore } from '../store/languageStore';
 import {
@@ -107,13 +107,7 @@ export default function ProductDetails() {
   const localizedTitle = translateProductName(product.title);
 
   // Determine spice level based on title/tags
-  const titleLower = product.title.toLowerCase();
-  let spiceLevel = 2; // Default medium
-  if (titleLower.includes('paan') || titleLower.includes('mukhwas') || titleLower.includes('sweet') || titleLower.includes('gulab') || titleLower.includes('banana')) {
-    spiceLevel = 1; // Mild
-  } else if (titleLower.includes('kolhapuri') || titleLower.includes('thecha') || titleLower.includes('lasun') || titleLower.includes('chilli')) {
-    spiceLevel = 3; // Hot
-  }
+  const spiceLevel = getProductSpiceLevel(product);
 
   return (
     <div className="w-full bg-[#FDFCF7] min-h-screen pb-16 font-sans text-[#161915]">
@@ -204,6 +198,7 @@ export default function ProductDetails() {
                   {categoryTitle}
                 </span>
                 <SpiceMeter level={spiceLevel} />
+                <ProductBadgePill product={product} isMr={lang === 'mr'} max={3} />
               </div>
 
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-2 font-serif tracking-tight">

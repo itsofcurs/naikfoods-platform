@@ -2,6 +2,8 @@ import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getProducts } from '../api';
 import AddToCartButton from '../components/AddToCartButton';
+import ProductBadgePill, { getProductSpiceLevel } from '../components/ProductBadges';
+import SpiceMeter from '../components/SpiceMeter';
 import RegionalTasteMap from '../components/RegionalTasteMap';
 import { useWishlistStore } from '../store/wishlistStore';
 import {
@@ -804,6 +806,14 @@ export default function Home() {
               className="flex-shrink-0 w-64 sm:w-72 bg-white rounded-2xl border border-[#F0F2EF] overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group relative"
             >
               {/* Interactive Wishlist Heart Icon */}
+              {/* Dietary & Process Badges (Pills above thumbnail) */}
+              <ProductBadgePill
+                product={product}
+                isMr={lang === 'mr'}
+                max={1}
+                className="absolute top-3 left-3 z-10"
+              />
+
               <button
                 type="button"
                 onClick={(e) => {
@@ -856,13 +866,17 @@ export default function Home() {
                 >
                   {product.title}
                 </Link>
-                <p className="text-xs text-gray-400 mb-3 line-clamp-1">
-                  Authentic Maharashtrian Speciality
-                </p>
+
+                <div className="flex items-center justify-between mb-2 gap-1">
+                  <p className="text-xs text-gray-400 line-clamp-1">
+                    {lang === 'mr' ? 'अस्सल महाराष्ट्रीयन मेजवानी' : 'Authentic Maharashtrian'}
+                  </p>
+                  <SpiceMeter level={getProductSpiceLevel(product)} compact />
+                </div>
 
                 <div className="flex items-center justify-between mt-auto mb-3">
                   <span className="font-black text-gray-900 text-base">
-                    ₹{product.variants?.[0]?.prices?.[0]?.amount / 100 || '70'}
+                    ₹{product.variants?.[0]?.prices?.[0]?.amount ? (product.variants[0].prices[0].amount / 100) : 120}
                   </span>
                   <span className="text-xs text-gray-400 font-semibold">In Stock</span>
                 </div>
