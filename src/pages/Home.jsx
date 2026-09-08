@@ -44,7 +44,8 @@ const HERO_SLIDES = [
     title: 'Visit Our Authentic Food Store',
     subtitle: 'Experience the tradition in person. Visit our flagship store in Pune for the freshest batches and local specialties.',
     buttonText: 'Locate Our Shop',
-    buttonLink: '/contact',
+    buttonLink: 'https://maps.google.com/?q=Naik+Foods,+Seva+Mitra+Mandal+Chowk,+Shukrawar+Peth,+Pune,+Maharashtra+411002',
+    isExternal: true,
     image: '/banners/home/banner-02.png',
     backgroundColor: '#E05243',
     textColor: '#FFFFFF',
@@ -432,17 +433,33 @@ export default function Home() {
                 </p>
 
                 <div className="pt-3">
-                  <Link
-                    to={activeSlide.buttonLink}
-                    className="hero-cta-btn inline-flex items-center gap-2 bg-white text-[#161915] hover:bg-[#F2F7F5] px-7 py-3.5 rounded-2xl font-black text-sm sm:text-base shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 group"
-                  >
-                    <span>
-                      {lang === 'mr'
-                        ? (activeSlide.id === 1 ? t('exploreCollection') : activeSlide.id === 2 ? t('locateShop') : t('explorePickles'))
-                        : activeSlide.buttonText}
-                    </span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Link>
+                  {activeSlide.isExternal || (activeSlide.buttonLink && activeSlide.buttonLink.startsWith('http')) ? (
+                    <a
+                      href={activeSlide.buttonLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hero-cta-btn inline-flex items-center gap-2 bg-white text-[#161915] hover:bg-[#F2F7F5] px-7 py-3.5 rounded-2xl font-black text-sm sm:text-base shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 group cursor-pointer"
+                    >
+                      <span>
+                        {lang === 'mr'
+                          ? (activeSlide.id === 1 ? t('exploreCollection') : activeSlide.id === 2 ? t('locateShop') : t('explorePickles'))
+                          : activeSlide.buttonText}
+                      </span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  ) : (
+                    <Link
+                      to={activeSlide.buttonLink}
+                      className="hero-cta-btn inline-flex items-center gap-2 bg-white text-[#161915] hover:bg-[#F2F7F5] px-7 py-3.5 rounded-2xl font-black text-sm sm:text-base shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 group"
+                    >
+                      <span>
+                        {lang === 'mr'
+                          ? (activeSlide.id === 1 ? t('exploreCollection') : activeSlide.id === 2 ? t('locateShop') : t('explorePickles'))
+                          : activeSlide.buttonText}
+                      </span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  )}
                 </div>
               </div>
 

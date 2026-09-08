@@ -64,6 +64,14 @@ export default function Contact() {
                 <div>
                   <strong className="block text-gray-900">{isMr ? 'मुख्य कार्यालय / दुकान' : 'Headquarters'}</strong>
                   <span>{isMr ? 'सेवा मित्र मंडळ चौक, फडगेट पोलीस चौकी जवळ, शुक्रवार पेठ, पुणे ४११००२, महाराष्ट्र' : 'Naik Foods, Shukrawar Peth, Pune, Maharashtra, India - 411002'}</span>
+                  <a
+                    href="https://maps.google.com/?q=Naik+Foods,+Seva+Mitra+Mandal+Chowk,+Shukrawar+Peth,+Pune,+Maharashtra+411002"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-[#70BF4F] hover:underline mt-1.5 block cursor-pointer"
+                  >
+                    {isMr ? '📍 गुगल मॅप्सवर पहा ↗' : '📍 View on Google Maps ↗'}
+                  </a>
                 </div>
               </div>
 
