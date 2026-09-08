@@ -6,12 +6,13 @@ import { useLanguageStore } from '../store/languageStore';
 import { 
   MapPin, Search, Loader2, Navigation, ShieldCheck, CheckCircle2, 
   CreditCard, Smartphone, Banknote, Sparkles, Coins, ArrowRight, 
-  ShoppingBag, Check, AlertCircle, Home as HomeIcon, Briefcase 
+  ShoppingBag, Check, AlertCircle, Home as HomeIcon, Briefcase, X
 } from 'lucide-react';
 import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
 import { Link, useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import CheckoutAuthModal from '../components/CheckoutAuthModal';
+import { searchLocalLocations, searchLocationsHybrid } from '../utils/locationSearch';
 
 const DEFAULT_CENTER = { lat: 18.5204, lng: 73.8567 }; // Pune default
 
@@ -114,103 +115,58 @@ export default function Checkout() {
     if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
 
     const cleanQuery = val.trim();
-    if (cleanQuery.length >= 2) {
+    if (cleanQuery.length >= 1) {
+      // 1. Instant 0ms synchronous local results for instant feedback on EVERY character
+      const instantMatches = searchLocalLocations(cleanQuery).map((loc) => ({
+        display_name: `${loc.name}, ${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city}, ${loc.pincode}`,
+        title: loc.name,
+        subtitle: `${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city}`,
+        lat: loc.lat,
+        lon: loc.lon,
+        address: {
+          postcode: loc.pincode,
+          suburb: loc.suburb,
+          city: loc.city,
+          state: loc.state,
+          road: loc.name
+        },
+        source: 'local'
+      }));
+
+      if (instantMatches.length > 0) {
+        setSearchResults(instantMatches);
+        setShowDropdown(true);
+      }
+
+      // 2. Debounced live hybrid geocoder search (Photon + Nominatim + abbreviation expansion)
       setIsSearching(true);
       setShowDropdown(true);
 
       searchTimeoutRef.current = setTimeout(async () => {
         try {
-          const isPinCode = /^\d{6}$/.test(cleanQuery);
-          let results = [];
-
-          // 1. If 6-digit Indian PIN Code, search postal code directly
-          if (isPinCode) {
-            try {
-              const pinRes = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=jsonv2&postalcode=${encodeURIComponent(
-                  cleanQuery
-                )}&country=India&addressdetails=1`,
-                { headers: { 'Accept-Language': 'en' } }
-              );
-              if (pinRes.ok) {
-                const pinData = await pinRes.json();
-                if (pinData && pinData.length > 0) {
-                  results = pinData;
-                }
-              }
-            } catch {}
+          const hybridResults = await searchLocationsHybrid(cleanQuery, position);
+          if (hybridResults && hybridResults.length > 0) {
+            setSearchResults(hybridResults);
+          } else if (instantMatches.length > 0) {
+            setSearchResults(instantMatches);
           }
-
-          // 2. Query Nominatim with Indian West / Maharashtra bounding bias
-          if (results.length === 0) {
-            try {
-              const nomRes = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(
-                  cleanQuery
-                )}&countrycodes=in&viewbox=72.0,22.0,81.0,15.0&bounded=0&limit=8&addressdetails=1`,
-                { headers: { 'Accept-Language': 'en' } }
-              );
-              if (nomRes.ok) {
-                const nomData = await nomRes.json();
-                if (nomData && nomData.length > 0) {
-                  results = nomData;
-                }
-              }
-            } catch {}
-          }
-
-          // 3. Photon API fallback (OpenStreetMap index with high typo tolerance)
-          if (results.length === 0) {
-            try {
-              const photonRes = await fetch(
-                `https://photon.komoot.io/api/?q=${encodeURIComponent(
-                  cleanQuery
-                )}&lat=18.5204&lon=73.8567&limit=8&lang=en`
-              );
-              if (photonRes.ok) {
-                const photonData = await photonRes.json();
-                if (photonData?.features?.length > 0) {
-                  results = photonData.features.map((f) => {
-                    const props = f.properties || {};
-                    const parts = [
-                      props.name,
-                      props.street,
-                      props.district || props.suburb,
-                      props.city,
-                      props.state,
-                      props.postcode,
-                      props.country
-                    ].filter(Boolean);
-                    return {
-                      lat: f.geometry.coordinates[1],
-                      lon: f.geometry.coordinates[0],
-                      display_name: parts.join(', '),
-                      address: {
-                        postcode: props.postcode,
-                        city: props.city,
-                        state: props.state,
-                        road: props.street || props.name,
-                        suburb: props.district || props.suburb
-                      }
-                    };
-                  });
-                }
-              }
-            } catch {}
-          }
-
-          setSearchResults(results || []);
         } catch (err) {
           console.error('Search places error:', err);
         } finally {
           setIsSearching(false);
         }
-      }, 250);
+      }, 180);
     } else {
       setSearchResults([]);
       setShowDropdown(false);
       setIsSearching(false);
     }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+    setShowDropdown(false);
   };
 
   const handleSelectPlace = (place) => {
@@ -219,8 +175,8 @@ export default function Checkout() {
     const newPos = { lat, lng };
 
     setPosition(newPos);
-    setAddress(place.display_name);
-    setSearchQuery(place.display_name.split(',')[0]);
+    setAddress(place.display_name.replace('📍 ', '').replace(' (Deliver to this pin location)', ''));
+    setSearchQuery(place.title || place.display_name.split(',')[0]);
     setShowDropdown(false);
 
     if (place.address) {
@@ -400,61 +356,89 @@ export default function Checkout() {
               {step === 1 ? (
                 /* STEP 1: DELIVERY ADDRESS */
                 <div className="space-y-6">
-                  <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-200/80 shadow-xs">
+                  <div className="bg-white dark:bg-[#0F172A] p-6 sm:p-8 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-sm transition-colors">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                          <MapPin className="text-[#70BF4F] w-5 h-5" /> 
+                        <h2 className="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2 font-serif">
+                          <MapPin className="text-[#70BF4F] dark:text-[#86EFAC] w-5 h-5" /> 
                           {lang === 'mr' ? 'नकाशावर पत्ता निश्चित करा' : 'Pin Your Delivery Location'}
                         </h2>
-                        <p className="text-xs text-gray-500">
-                          {lang === 'mr' ? 'अचूक पिनपॉइंट डिलिव्हरी ट्रॅकिंग' : 'Live reverse geocoding via OpenStreetMap'}
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {lang === 'mr' ? 'अचूक पिनपॉइंट डिलिव्हरी ट्रॅकिंग • जलद शोध' : 'Live autocomplete with instant locality search & OpenStreetMap'}
                         </p>
                       </div>
                       <button
                         type="button"
                         onClick={handleUseCurrentLocation}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#70BF4F] bg-[#70BF4F]/10 hover:bg-[#70BF4F]/20 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-[#70BF4F] dark:text-[#86EFAC] bg-[#70BF4F]/10 dark:bg-[#70BF4F]/20 hover:bg-[#70BF4F]/20 px-3.5 py-1.5 rounded-full transition-colors cursor-pointer border border-[#70BF4F]/20"
                       >
                         <Navigation className="w-3.5 h-3.5" /> 
                         {lang === 'mr' ? 'सध्याचे ठिकाण वापरा' : 'Use Current Location'}
                       </button>
                     </div>
 
-                    {/* Search Input */}
+                    {/* Zomato-style Instant Search Input */}
                     <div className="relative mb-4">
                       <div className="relative flex items-center">
-                        <Search className="w-4 h-4 text-gray-400 absolute left-3.5 pointer-events-none" />
+                        <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 absolute left-3.5 pointer-events-none" />
                         <input
                           type="text"
-                          placeholder={lang === 'mr' ? 'इमारत, परिसर किंवा रस्ता शोधा (उदा. डेक्कन, पुणे)...' : 'Search building, locality or street (e.g. Deccan Gymkhana, Pune)...'}
+                          placeholder={lang === 'mr' ? 'इमारत, कॉलनी, सोस., रस्ता किंवा परिसर शोधा (उदा. सुजाता अपार्टमेंट्स, डेक्कन)...' : 'Search building, society, apartment, street (e.g. Sujata Apartment, Kothrud)...'}
                           value={searchQuery}
                           onChange={handleSearchChange}
                           onFocus={() => {
                             if (searchResults.length > 0) setShowDropdown(true);
                           }}
-                          className="w-full bg-gray-50 border border-gray-200 rounded-2xl py-3 pl-10 pr-10 text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white"
+                          className="w-full bg-gray-50 dark:bg-[#131E35] border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-2xl py-3 pl-10 pr-16 text-sm focus:outline-none focus:border-[#70BF4F] focus:bg-white dark:focus:bg-[#18263E] transition-all shadow-inner"
                         />
-                        {isSearching && (
-                          <Loader2 className="w-4 h-4 text-[#70BF4F] animate-spin absolute right-3.5" />
-                        )}
+                        <div className="absolute right-3 flex items-center gap-1.5">
+                          {isSearching && (
+                            <Loader2 className="w-4 h-4 text-[#70BF4F] dark:text-[#86EFAC] animate-spin" />
+                          )}
+                          {searchQuery && (
+                            <button
+                              type="button"
+                              onClick={handleClearSearch}
+                              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-full hover:bg-gray-200/60 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </div>
 
+                      {/* Rich Suggestion Dropdown (Zomato-style) */}
                       {showDropdown && searchResults.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-1.5 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 max-h-60 overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#0F172A] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 max-h-72 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">
                           {searchResults.map((place, idx) => (
                             <button
                               key={idx}
                               type="button"
                               onClick={() => handleSelectPlace(place)}
-                              className="w-full text-left p-3 hover:bg-gray-50 border-b border-gray-50 last:border-0 flex items-start gap-2.5 transition-colors cursor-pointer"
+                              className="w-full text-left p-3.5 hover:bg-gray-50 dark:hover:bg-[#18263E] flex items-start gap-3 transition-colors cursor-pointer group"
                             >
-                              <MapPin className="w-4 h-4 text-[#70BF4F] mt-0.5 flex-shrink-0" />
-                              <div>
-                                <p className="text-sm font-bold text-gray-900 line-clamp-1">
-                                  {place.display_name.split(',')[0]}
+                              <div className="w-8 h-8 rounded-xl bg-[#70BF4F]/10 dark:bg-[#70BF4F]/20 text-[#70BF4F] dark:text-[#86EFAC] flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:scale-105 transition-transform border border-[#70BF4F]/20">
+                                <MapPin className="w-4 h-4" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2">
+                                  <p className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                                    {place.title || place.display_name.split(',')[0]}
+                                  </p>
+                                  {place.source === 'local' && (
+                                    <span className="text-[9px] font-bold bg-green-50 dark:bg-green-950/60 text-green-700 dark:text-[#86EFAC] px-1.5 py-0.5 rounded border border-green-200 dark:border-green-800 flex-shrink-0">
+                                      Verified
+                                    </span>
+                                  )}
+                                  {place.isCustomPin && (
+                                    <span className="text-[9px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-800 flex-shrink-0">
+                                      Pin Position
+                                    </span>
+                                  )}
+                                </div>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                                  {place.subtitle || place.display_name}
                                 </p>
-                                <p className="text-xs text-gray-500 line-clamp-1">{place.display_name}</p>
                               </div>
                             </button>
                           ))}
@@ -463,12 +447,12 @@ export default function Checkout() {
                     </div>
 
                     {/* Interactive Leaflet Map */}
-                    <div className="h-64 sm:h-80 w-full rounded-2xl overflow-hidden relative z-0 mb-4 border border-gray-200 shadow-inner">
+                    <div className="h-64 sm:h-80 w-full rounded-2xl overflow-hidden relative z-0 mb-4 border border-gray-200 dark:border-gray-700 shadow-inner">
                       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-[1000] pointer-events-none flex flex-col items-center">
-                        <div className="bg-[#161915] text-white text-[10px] font-black px-2 py-0.5 rounded shadow mb-1 whitespace-nowrap">
+                        <div className="bg-[#161915] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full shadow-lg mb-1 whitespace-nowrap border border-white/20">
                           {lang === 'mr' ? 'येथे डिलिव्हरी करा 📍' : 'Deliver Here 📍'}
                         </div>
-                        <MapPin className="w-9 h-9 text-[#EB001B] fill-[#EB001B] drop-shadow-md" />
+                        <MapPin className="w-9 h-9 text-[#EB001B] fill-[#EB001B] drop-shadow-lg animate-bounce-short" />
                       </div>
 
                       <MapContainer
@@ -487,13 +471,13 @@ export default function Checkout() {
                     </div>
 
                     {/* Detected Address Pill */}
-                    <div className="bg-[#F2F7F5] p-3.5 rounded-2xl text-xs text-gray-800 border border-green-200/60 flex items-start gap-2.5">
-                      <MapPin className="w-4 h-4 text-[#70BF4F] flex-shrink-0 mt-0.5" />
+                    <div className="bg-[#F2F7F5] dark:bg-[#131E35] p-3.5 rounded-2xl text-xs text-gray-800 dark:text-gray-200 border border-green-200/60 dark:border-gray-700 flex items-start gap-2.5">
+                      <MapPin className="w-4 h-4 text-[#70BF4F] dark:text-[#86EFAC] flex-shrink-0 mt-0.5" />
                       <div>
-                        <span className="font-black text-gray-900 block mb-0.5">
+                        <span className="font-black text-gray-900 dark:text-white block mb-0.5">
                           {lang === 'mr' ? 'शोधलेला पत्ता:' : 'Detected Street:'}
                         </span>
-                        <p className="text-gray-600 leading-relaxed">{address}</p>
+                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{address}</p>
                       </div>
                     </div>
                   </div>
