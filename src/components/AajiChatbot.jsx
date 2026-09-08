@@ -67,7 +67,7 @@ export default function AajiChatbot() {
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsThinking(true);
-    setThinkingStep(lang === 'mr' ? 'आजी विचार करत आहेत व माहिती शोधत आहेत... 🧠💭' : 'Aaji is thinking & searching recipe documents... 🧠💭');
+    setThinkingStep(lang === 'mr' ? 'आजी विचार करत आहे व माहिती शोधत आहे... 🧠💭' : 'Aaji is thinking & searching recipe documents... 🧠💭');
 
     // Multi-stage RAG thinking simulation
     setTimeout(() => {
