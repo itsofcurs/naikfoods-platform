@@ -78,7 +78,14 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { t, lang, translateCategory } = useLanguageStore();
+  const {
+    t,
+    lang,
+    translateCategory,
+    translateRegion,
+    translateProductName,
+    translateWeight
+  } = useLanguageStore();
   
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
@@ -607,9 +614,9 @@ export default function Shop() {
                     product.metadata?.weight
                       ? String(product.metadata.weight).replace(/["\\]/g, '')
                       : '500g';
-                  const weight = useLanguageStore.getState().translateWeight(rawWeight);
-                  const localizedTitle = useLanguageStore.getState().translateProductName(product.title);
-                  const localizedRegion = useLanguageStore.getState().translateRegion(regionName);
+                  const weight = translateWeight ? translateWeight(rawWeight) : rawWeight;
+                  const localizedTitle = translateProductName ? translateProductName(product.title) : product.title;
+                  const localizedRegion = translateRegion ? translateRegion(regionName) : regionName;
 
                   return (
                     <div
