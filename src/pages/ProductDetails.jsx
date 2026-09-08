@@ -99,7 +99,7 @@ export default function ProductDetails() {
     );
   }
 
-  const price = (product.variants?.[0]?.prices?.[0]?.amount || 0) / 100;
+  const price = ((product.variants?.[0]?.prices?.[0]?.amount || 0) / 100) || 120;
   const rawWeight = product.weight ? `${product.weight}g` : '250g';
   const weight = translateWeight(rawWeight);
   const rawCategoryTitle = product.collection?.title || 'Maharashtrian Specialty';

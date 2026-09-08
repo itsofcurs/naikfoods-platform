@@ -35,10 +35,10 @@ export default function BlogPost() {
   };
 
   return (
-    <article className="container mx-auto px-4 lg:px-8 py-12 max-w-4xl">
+    <article className="container mx-auto px-4 lg:px-8 py-12 max-w-4xl text-gray-800 dark:text-gray-200">
       <Link
         to="/in/blog"
-        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-[#70BF4F] mb-8 font-medium transition-colors"
+        className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-[#70BF4F] mb-8 font-medium transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> {isMr ? 'सर्व लेखांकडे परत जा' : 'Back to all stories'}
       </Link>
@@ -47,13 +47,13 @@ export default function BlogPost() {
         <span className="inline-block bg-[#70BF4F]/10 text-[#70BF4F] text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-3">
           {category}
         </span>
-        <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 font-serif leading-tight">
+        <h1 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 font-serif leading-tight">
           {title}
         </h1>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-gray-100 text-sm text-gray-500">
+        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-gray-100 dark:border-gray-800 text-sm text-gray-500 dark:text-gray-400">
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 font-medium text-gray-800">
+            <span className="flex items-center gap-1.5 font-medium text-gray-800 dark:text-gray-200">
               <User className="w-4 h-4 text-[#70BF4F]" /> {author}
             </span>
             <span className="flex items-center gap-1">
@@ -66,7 +66,7 @@ export default function BlogPost() {
 
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-xs bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-colors font-medium text-gray-700 cursor-pointer"
+            className="flex items-center gap-1.5 text-xs bg-gray-100 dark:bg-[#131E35] hover:bg-gray-200 dark:hover:bg-[#1E293B] px-3 py-1.5 rounded-full transition-colors font-medium text-gray-700 dark:text-gray-300 border border-transparent dark:border-gray-700 cursor-pointer"
           >
             <Share2 className="w-3.5 h-3.5" /> {isMr ? 'शेअर करा' : 'Share'}
           </button>
@@ -74,13 +74,13 @@ export default function BlogPost() {
       </div>
 
       {/* Featured Image */}
-      <div className="rounded-2xl overflow-hidden mb-8 shadow-sm aspect-video bg-gray-100">
+      <div className="rounded-2xl overflow-hidden mb-8 shadow-sm aspect-video bg-gray-100 dark:bg-gray-800">
         <img src={post.image} alt={title} className="w-full h-full object-cover" />
       </div>
 
       {/* Body Content */}
-      <div className="prose prose-lg max-w-none text-gray-700 space-y-6 leading-relaxed">
-        <p className="text-lg font-medium text-gray-900 leading-relaxed border-l-4 border-[#70BF4F] pl-4 py-1 italic bg-green-50/40 rounded-r">
+      <div className="prose prose-lg max-w-none text-gray-700 dark:text-gray-300 space-y-6 leading-relaxed">
+        <p className="text-lg font-medium text-gray-900 dark:text-white leading-relaxed border-l-4 border-[#70BF4F] pl-4 py-2 italic bg-green-50/60 dark:bg-[#131E35] rounded-r">
           {excerpt}
         </p>
         
@@ -88,23 +88,23 @@ export default function BlogPost() {
           {content.split('\n\n').map((para, i) => {
             if (para.trim().startsWith('###')) {
               return (
-                <h3 key={i} className="text-xl font-bold text-gray-900 mt-6 mb-2 font-serif">
+                <h3 key={i} className="text-xl font-bold text-gray-900 dark:text-white mt-6 mb-2 font-serif">
                   {para.replace('###', '').trim()}
                 </h3>
               );
             }
-            return <p key={i}>{para.trim()}</p>;
+            return <p key={i} className="text-gray-700 dark:text-gray-300">{para.trim()}</p>;
           })}
         </div>
       </div>
 
       {/* Footer CTA */}
-      <div className="mt-12 p-8 bg-orange-50/70 rounded-2xl border border-orange-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="mt-12 p-8 bg-orange-50/70 dark:bg-[#131E35] rounded-2xl border border-orange-100 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 mb-1">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
             {isMr ? 'अस्सल मराठमोळा स्वाद अनुभवा' : 'Taste authentic Maharashtra today'}
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             {isMr 
               ? 'ताजे तयार केलेले पारंपरिक स्नॅक्स, लोणची आणि मसाले आत्ताच मागवा.' 
               : 'Explore traditional snacks, pickles, and spices made fresh.'}

@@ -110,7 +110,7 @@ export default function Cart() {
                   </thead>
                   <tbody className="divide-y divide-gray-100 text-sm">
                     {items.map((item) => {
-                      const itemPrice = (item.variant.prices?.[0]?.amount || 0) / 100;
+                      const itemPrice = ((item.variant.prices?.[0]?.amount || 0) / 100) || 120;
                       return (
                         <tr key={item.variant.id} className="hover:bg-gray-50/50 transition-colors">
                           <td className="p-4 sm:p-5 flex items-center gap-4">

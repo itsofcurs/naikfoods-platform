@@ -252,7 +252,7 @@ function ReelEmbed({ videoEmbed }) {
   }, []);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 w-full h-full">
+    <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none">
       {isIntersecting && (
         <iframe
           src={`${videoEmbed}?autoplay=1&muted=1&loop=1&background=1&autopause=0&title=0&byline=0&portrait=0&badge=0&controls=0`}
@@ -260,7 +260,7 @@ function ReelEmbed({ videoEmbed }) {
           allow="autoplay; fullscreen; picture-in-picture"
           title="Instagram reel video player"
           allowFullScreen
-          className="w-full h-full object-cover border-0"
+          className="w-full h-full object-cover border-0 pointer-events-none"
         />
       )}
     </div>
@@ -273,6 +273,7 @@ function ReelCard({ reel }) {
       href={reel.instagramUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => window.open(reel.instagramUrl, '_blank')}
       className="group relative block rounded-2xl overflow-hidden bg-black cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 w-full aspect-[9/16] hover:scale-[1.02]"
     >
       <ReelEmbed videoEmbed={reel.videoEmbed} />

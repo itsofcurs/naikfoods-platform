@@ -38,8 +38,10 @@ export const useCartStore = create(
       // Selectors
       cartTotal: () => {
         return get().items.reduce((total, item) => {
-          const price = item.variant.prices?.[0]?.amount || 0;
-          return total + (price / 100) * item.quantity;
+          const price = item.variant.prices?.[0]?.amount 
+            ? (item.variant.prices[0].amount / 100) 
+            : 120;
+          return total + price * item.quantity;
         }, 0);
       },
       cartCount: () => {

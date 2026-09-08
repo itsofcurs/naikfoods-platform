@@ -609,7 +609,7 @@ export default function Shop() {
                   const regionName = getProductRegion(product);
                   const price = product.variants?.[0]?.prices?.[0]?.amount
                     ? Math.round(product.variants[0].prices[0].amount / 100)
-                    : null;
+                    : 120;
                   const rawWeight =
                     product.metadata?.weight
                       ? String(product.metadata.weight).replace(/["\\]/g, '')
@@ -686,7 +686,7 @@ export default function Shop() {
 
                         <div className="flex items-center justify-between mt-auto mb-3">
                           <span className="font-bold text-gray-900 text-base">
-                            {price ? `₹${price}` : '₹--'}
+                            ₹{price}
                           </span>
                           <span className="text-xs text-gray-400 font-medium">{weight}</span>
                         </div>

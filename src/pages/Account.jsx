@@ -346,12 +346,34 @@ export default function Account() {
                     <Package className="w-4 h-4 text-[#70BF4F]" />
                     {isMr ? 'ऑर्डर स्थिती' : 'Order Status'}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {isMr ? 'सध्या कोणतीही सक्रिय ऑर्डर नाही.' : 'You have 0 active orders.'}
-                  </p>
-                  <Link to="/in/store" className="text-sm font-bold text-[#70BF4F] hover:underline inline-flex items-center gap-1">
-                    {isMr ? 'खरेदी सुरू करा →' : 'Start Shopping →'}
-                  </Link>
+                  {customer.orders && customer.orders.length > 0 ? (
+                    <div>
+                      <p className="text-sm font-bold text-[#70BF4F] mb-1">
+                        {isMr 
+                          ? `आपल्याकडे ${customer.orders.length} ऑर्डर नोंदी आहेत.` 
+                          : `You have ${customer.orders.length} placed order(s).`}
+                      </p>
+                      <p className="text-xs text-gray-500 mb-3">
+                        {isMr ? 'नवीनतम ऑर्डर:' : 'Latest Order:'} #{customer.orders[0].orderId} (₹{customer.orders[0].total})
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab('orders')}
+                        className="text-xs font-bold text-[#70BF4F] hover:underline cursor-pointer"
+                      >
+                        {isMr ? 'सर्व ऑर्डर्स पहा →' : 'View All Orders →'}
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-4">
+                        {isMr ? 'सध्या कोणतीही सक्रिय ऑर्डर नाही.' : 'You have 0 active orders.'}
+                      </p>
+                      <Link to="/in/store" className="text-sm font-bold text-[#70BF4F] hover:underline inline-flex items-center gap-1">
+                        {isMr ? 'खरेदी सुरू करा →' : 'Start Shopping →'}
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -359,38 +381,173 @@ export default function Account() {
 
           {activeTab === 'orders' && (
             <div className="bg-white rounded-xl p-6 md:p-8 border border-gray-100 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                {isMr ? 'तुमच्या ऑर्डर्स' : 'Your Orders'}
-              </h2>
-              <div className="text-center py-12 border border-dashed border-gray-200 rounded-lg">
-                <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-600 font-medium mb-1">
-                  {isMr ? 'अजून कोणतीही ऑर्डर दिलेली नाही' : 'No orders yet'}
-                </p>
-                <p className="text-sm text-gray-400 mb-4">
-                  {isMr ? 'तुम्ही ऑर्डर दिल्यावर ती येथे दिसेल.' : 'When you place an order, it will appear here.'}
-                </p>
-                <Link to="/in/store" className="bg-[#70BF4F] text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-[#5ca040] transition-colors inline-block">
-                  {isMr ? 'उत्पादने पहा' : 'Explore Products'}
-                </Link>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {isMr ? 'तुमच्या ऑर्डर्स' : 'Your Orders'}
+                </h2>
+                {customer.orders && customer.orders.length > 0 && (
+                  <span className="text-xs font-bold bg-[#70BF4F]/10 text-[#70BF4F] px-3 py-1 rounded-full">
+                    {customer.orders.length} {isMr ? 'ऑर्डर्स' : 'Orders'}
+                  </span>
+                )}
               </div>
+
+              {customer.orders && customer.orders.length > 0 ? (
+                <div className="space-y-6">
+                  {customer.orders.map((order, idx) => (
+                    <div
+                      key={order.orderId || idx}
+                      className="border border-gray-200 rounded-2xl p-5 hover:border-gray-300 transition-colors shadow-2xs"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-gray-100 mb-4">
+                        <div>
+                          <span className="text-xs text-gray-400 font-bold uppercase">
+                            {isMr ? 'ऑर्डर क्रमांक' : 'Order ID'}
+                          </span>
+                          <h4 className="font-bold text-gray-900 text-sm sm:text-base">
+                            #{order.orderId}
+                          </h4>
+                        </div>
+
+                        <div>
+                          <span className="text-xs text-gray-400 font-bold uppercase">
+                            {isMr ? 'दिनांक' : 'Date'}
+                          </span>
+                          <p className="text-xs sm:text-sm font-medium text-gray-700">
+                            {order.date}
+                          </p>
+                        </div>
+
+                        <div>
+                          <span className="text-xs text-gray-400 font-bold uppercase">
+                            {isMr ? 'एकूण रक्कम' : 'Total Amount'}
+                          </span>
+                          <p className="text-sm font-black text-gray-900">
+                            ₹{order.total} ({order.paymentMethod || 'PREPAID'})
+                          </p>
+                        </div>
+
+                        <div>
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-700 border border-green-200">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+                            {order.status || (isMr ? 'निश्चित झाली' : 'Confirmed')}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Items List */}
+                      <div className="space-y-3 mb-4">
+                        {order.items?.map((item, itemIdx) => (
+                          <div key={itemIdx} className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-xl p-1 flex-shrink-0 overflow-hidden">
+                              {item.product?.thumbnail ? (
+                                <img
+                                  src={item.product.thumbnail}
+                                  alt={item.product.title}
+                                  className="w-full h-full object-contain"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gray-200" />
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs sm:text-sm font-bold text-gray-900 truncate">
+                                {item.product?.title || 'Delicacy'}
+                              </p>
+                              <p className="text-[11px] text-gray-500">
+                                {isMr ? 'प्रमाण:' : 'Qty:'} {item.quantity} × ₹{item.variant?.prices?.[0]?.amount ? (item.variant.prices[0].amount / 100) : 120}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Delivery Address footer */}
+                      <div className="pt-3 border-t border-gray-100 text-xs text-gray-600 flex flex-wrap items-center justify-between gap-2">
+                        <span className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-[#70BF4F]" />
+                          <span className="line-clamp-1"><strong>{isMr ? 'डिलिव्हरी पत्ता:' : 'Delivered to:'}</strong> {order.address}</span>
+                        </span>
+                        <span className="text-[11px] text-gray-400 font-medium">
+                          {isMr ? 'अंदाजे वेळ: २४ - ४८ तास' : 'Express Delivery: 24 - 48 hrs'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 border border-dashed border-gray-200 rounded-lg">
+                  <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-600 font-medium mb-1">
+                    {isMr ? 'अजून कोणतीही ऑर्डर दिलेली नाही' : 'No orders yet'}
+                  </p>
+                  <p className="text-sm text-gray-400 mb-4">
+                    {isMr ? 'तुम्ही ऑर्डर दिल्यावर ती येथे दिसेल.' : 'When you place an order, it will appear here.'}
+                  </p>
+                  <Link to="/in/store" className="bg-[#70BF4F] text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-[#5ca040] transition-colors inline-block">
+                    {isMr ? 'उत्पादने पहा' : 'Explore Products'}
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 
           {activeTab === 'addresses' && (
             <div className="bg-white rounded-xl p-6 md:p-8 border border-gray-100 shadow-sm">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                {isMr ? 'साठवलेले डिलिव्हरी पत्ते' : 'Saved Delivery Addresses'}
-              </h2>
-              <div className="text-center py-12 border border-dashed border-gray-200 rounded-lg">
-                <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-600 font-medium mb-1">
-                  {isMr ? 'कोणताही पत्ता साठवलेला नाही' : 'No saved addresses'}
-                </p>
-                <p className="text-sm text-gray-400">
-                  {isMr ? 'चेकआउट दरम्यान वापरलेले तुमचे पत्ते येथे आपोआप साठवले जातील.' : 'Your delivery addresses used at checkout will be saved here.'}
-                </p>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {isMr ? 'साठवलेले डिलिव्हरी पत्ते' : 'Saved Delivery Addresses'}
+                </h2>
+                {customer.addresses && customer.addresses.length > 0 && (
+                  <span className="text-xs font-bold bg-[#70BF4F]/10 text-[#70BF4F] px-3 py-1 rounded-full">
+                    {customer.addresses.length} {isMr ? 'पत्ते' : 'Addresses'}
+                  </span>
+                )}
               </div>
+
+              {customer.addresses && customer.addresses.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {customer.addresses.map((addr, idx) => (
+                    <div
+                      key={idx}
+                      className="border border-gray-200 rounded-2xl p-5 hover:border-gray-300 transition-colors shadow-2xs relative"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="inline-block bg-gray-100 text-gray-700 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">
+                          {addr.tag || 'Home'}
+                        </span>
+                        <MapPin className="w-4 h-4 text-[#70BF4F]" />
+                      </div>
+                      <p className="text-sm font-bold text-gray-900 mb-1">
+                        {addr.recipient || `${customer.first_name} ${customer.last_name}`}
+                      </p>
+                      <p className="text-xs text-gray-600 leading-relaxed mb-2">
+                        {addr.address}
+                      </p>
+                      {addr.pincode && (
+                        <p className="text-xs text-gray-500 font-medium">
+                          {isMr ? 'पिनकोड:' : 'Pincode:'} {addr.pincode}
+                        </p>
+                      )}
+                      {addr.phone && (
+                        <p className="text-xs text-gray-500 font-medium">
+                          {isMr ? 'फोन:' : 'Phone:'} {addr.phone}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12 border border-dashed border-gray-200 rounded-lg">
+                  <MapPin className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-gray-600 font-medium mb-1">
+                    {isMr ? 'कोणताही पत्ता साठवलेला नाही' : 'No saved addresses'}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    {isMr ? 'चेकआउट दरम्यान वापरलेले तुमचे पत्ते येथे आपोआप साठवले जातील.' : 'Your delivery addresses used at checkout will be saved here.'}
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

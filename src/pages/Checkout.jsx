@@ -8,16 +8,26 @@ import {
   CreditCard, Smartphone, Banknote, Sparkles, Coins, ArrowRight, 
   ShoppingBag, Check, AlertCircle, Home as HomeIcon, Briefcase 
 } from 'lucide-react';
-import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, useMapEvents, useMap } from 'react-leaflet';
 import { Link, useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import CheckoutAuthModal from '../components/CheckoutAuthModal';
 
 const DEFAULT_CENTER = { lat: 18.5204, lng: 73.8567 }; // Pune default
 
+function MapController({ position }) {
+  const map = useMap();
+  useEffect(() => {
+    if (position?.lat && position?.lng) {
+      map.flyTo([position.lat, position.lng], 16, { duration: 1 });
+    }
+  }, [position, map]);
+  return null;
+}
+
 function MapCenterListener({ onCenterChange }) {
   const map = useMapEvents({
-    moveend: () => {
+    dragend: () => {
       const center = map.getCenter();
       onCenterChange({ lat: center.lat, lng: center.lng });
     },
@@ -30,7 +40,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const { items, clearCart } = useCartStore();
   const rawCartTotal = useCartStore((state) => state.cartTotal());
-  const { customer, isAuthenticated } = useAuthStore();
+  const { customer, isAuthenticated, addOrder, addAddress } = useAuthStore();
   const { coins, redeemCoins, earnCoins } = useSwadCoinsStore();
 
   const [step, setStep] = useState(1); // 1: Address, 2: Payment, 3: Success
@@ -60,7 +70,6 @@ export default function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [placedOrder, setPlacedOrder] = useState(null);
 
-  const mapInstanceRef = useRef(null);
   const searchTimeoutRef = useRef(null);
 
   // COD Calculation Rules
@@ -92,10 +101,6 @@ export default function Checkout() {
       console.error('Reverse geocode error:', err);
     }
   }, []);
-
-  useEffect(() => {
-    fetchAddressFromCoords(position.lat, position.lng);
-  }, [fetchAddressFromCoords, position.lat, position.lng]);
 
   const handleCenterChange = (newCenter) => {
     setPosition(newCenter);
@@ -129,7 +134,7 @@ export default function Checkout() {
         } finally {
           setIsSearching(false);
         }
-      }, 350);
+      }, 300);
     } else {
       setSearchResults([]);
       setShowDropdown(false);
@@ -147,12 +152,14 @@ export default function Checkout() {
     setSearchQuery(place.display_name.split(',')[0]);
     setShowDropdown(false);
 
-    if (place.address?.postcode) {
-      setAddressDetails((prev) => ({ ...prev, pincode: place.address.postcode }));
-    }
-
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.flyTo([lat, lng], 17, { duration: 1.2 });
+    if (place.address) {
+      if (place.address.postcode) {
+        setAddressDetails((prev) => ({ ...prev, pincode: place.address.postcode }));
+      }
+      const landmarkPart = place.address.suburb || place.address.neighbourhood || place.address.road || '';
+      if (landmarkPart) {
+        setAddressDetails((prev) => ({ ...prev, landmark: landmarkPart }));
+      }
     }
   };
 
@@ -163,9 +170,6 @@ export default function Checkout() {
           const newPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
           setPosition(newPos);
           fetchAddressFromCoords(newPos.lat, newPos.lng);
-          if (mapInstanceRef.current) {
-            mapInstanceRef.current.flyTo([newPos.lat, newPos.lng], 17);
-          }
         },
         (err) => console.warn('Geolocation error:', err)
       );
@@ -205,7 +209,22 @@ export default function Checkout() {
         phone: addressDetails.phone,
         coinsEarned: earned,
         date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+        status: 'Confirmed & In Kitchen',
       };
+
+      // Persist to user's profile and account history
+      if (addOrder) {
+        addOrder(orderData);
+      }
+      if (addAddress) {
+        addAddress({
+          tag: addressDetails.tag || 'Home',
+          address: `${addressDetails.flat}, ${addressDetails.landmark ? addressDetails.landmark + ', ' : ''}${address}`,
+          pincode: addressDetails.pincode,
+          recipient: addressDetails.fullName,
+          phone: addressDetails.phone,
+        });
+      }
 
       setPlacedOrder(orderData);
       clearCart();
@@ -386,12 +405,12 @@ export default function Checkout() {
                         zoom={16}
                         scrollWheelZoom={true}
                         className="w-full h-full"
-                        ref={mapInstanceRef}
                       >
                         <TileLayer
                           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
+                        <MapController position={position} />
                         <MapCenterListener onCenterChange={handleCenterChange} />
                       </MapContainer>
                     </div>

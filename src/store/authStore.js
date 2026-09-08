@@ -136,6 +136,59 @@ export const useAuthStore = create(
         set((state) => ({
           customer: state.customer ? { ...state.customer, ...updatedData } : null,
         }));
+      },
+
+      addOrder: (order) => {
+        set((state) => {
+          if (!state.customer) return state;
+          const currentOrders = state.customer.orders || [];
+          const updatedOrders = [order, ...currentOrders];
+          const updatedCustomer = {
+            ...state.customer,
+            orders: updatedOrders,
+          };
+
+          // Also update saved registered customers in localStorage if exists
+          try {
+            const saved = JSON.parse(localStorage.getItem('nf_registered_customers') || '[]');
+            const idx = saved.findIndex(c => c.email?.toLowerCase() === state.customer.email?.toLowerCase());
+            if (idx !== -1) {
+              saved[idx].orders = updatedOrders;
+              localStorage.setItem('nf_registered_customers', JSON.stringify(saved));
+            }
+          } catch (e) {
+            console.warn('Error saving order to localStorage:', e);
+          }
+
+          return { customer: updatedCustomer };
+        });
+      },
+
+      addAddress: (address) => {
+        set((state) => {
+          if (!state.customer) return state;
+          const currentAddrs = state.customer.addresses || [];
+          // Avoid duplicate addresses
+          const exists = currentAddrs.some(a => a.address === address.address);
+          const updatedAddrs = exists ? currentAddrs : [address, ...currentAddrs];
+          const updatedCustomer = {
+            ...state.customer,
+            addresses: updatedAddrs,
+          };
+
+          try {
+            const saved = JSON.parse(localStorage.getItem('nf_registered_customers') || '[]');
+            const idx = saved.findIndex(c => c.email?.toLowerCase() === state.customer.email?.toLowerCase());
+            if (idx !== -1) {
+              saved[idx].addresses = updatedAddrs;
+              localStorage.setItem('nf_registered_customers', JSON.stringify(saved));
+            }
+          } catch (e) {
+            console.warn('Error saving address to localStorage:', e);
+          }
+
+          return { customer: updatedCustomer };
+        });
       }
     }),
     {
