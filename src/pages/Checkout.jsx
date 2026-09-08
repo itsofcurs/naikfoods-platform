@@ -5,7 +5,7 @@ import { useSwadCoinsStore } from '../store/swadCoinsStore';
 import { useLanguageStore } from '../store/languageStore';
 import { 
   MapPin, ShieldCheck, CheckCircle2, CreditCard, Smartphone, 
-  Banknote, Coins, ArrowRight, AlertCircle, Loader2 
+  Banknote, Coins, ArrowRight, AlertCircle, Loader2, Sparkles 
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import CheckoutAuthModal from '../components/CheckoutAuthModal';
