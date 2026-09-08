@@ -5,7 +5,7 @@
  * reverse geocoding, and browser geolocation.
  */
 
-import { MAHARASHTRA_LOCALITIES, expandAbbreviations } from '../utils/locationSearch.js';
+import { expandAbbreviations } from '../utils/locationSearch.js';
 
 let mapplsSdkPromise = null;
 let cachedOAuthToken = null;
@@ -144,7 +144,6 @@ export function calculateDistanceKm(lat1, lon1, lat2, lon2) {
 export async function reverseGeocodeMappls(lat, lng, apiKey) {
   const key = apiKey || import.meta.env.VITE_MAPPLS_API_KEY || '00bbe96387a74989d5eece48e7208c42';
 
-  // 1. Try Live Mappls REST API
   if (key && key !== 'YOUR_KEY' && key.trim() !== '') {
     try {
       const res = await fetch(`https://apis.mappls.com/advancedmaps/v1/${encodeURIComponent(key)}/rev_geocode?lat=${lat}&lng=${lng}`);
@@ -175,23 +174,14 @@ export async function reverseGeocodeMappls(lat, lng, apiKey) {
     }
   }
 
-  // 2. Fallback to closest reference locality
-  const closest = MAHARASHTRA_LOCALITIES.reduce(
-    (best, loc) => {
-      const d = Math.hypot(loc.lat - lat, loc.lon - lng);
-      return d < best.dist ? { loc, dist: d } : best;
-    },
-    { loc: MAHARASHTRA_LOCALITIES[0], dist: Infinity }
-  );
-
-  const matched = closest.loc;
+  // Generic fallback if network fails
   return {
-    formatted_address: `${matched.name}, ${matched.landmark ? matched.landmark + ', ' : ''}${matched.suburb}, ${matched.city}, ${matched.pincode}`,
-    street: matched.name,
-    locality: matched.suburb,
-    city: matched.city,
-    pincode: matched.pincode,
-    state: matched.state,
+    formatted_address: `Delivery Location (${lat.toFixed(4)}, ${lng.toFixed(4)}), Pune, Maharashtra`,
+    street: `Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+    locality: 'Pune',
+    city: 'Pune',
+    pincode: '',
+    state: 'Maharashtra',
     lat,
     lng
   };
@@ -259,42 +249,7 @@ export async function searchPlacesMappls(query, center = { lat: 18.5204, lng: 73
     console.warn('[Mappls Live Atlas] Search error:', err);
   }
 
-  // 2. Proximity matching from reference localities if Atlas returned fewer results
-  if (results.length < 3) {
-    const genericStopWords = new Set(['pune', 'maharashtra', 'india', 'near', 'rd', 'road', 'street']);
-    const tokens = clean.toLowerCase().split(/\s+/).filter(Boolean);
-    const specificTokens = tokens.filter((t) => !genericStopWords.has(t));
-
-    const localRanked = MAHARASHTRA_LOCALITIES.map((loc) => {
-      const text = `${loc.name} ${loc.landmark || ''} ${loc.suburb} ${loc.city} ${loc.pincode}`.toLowerCase();
-      let score = 0;
-      if (text.includes(clean.toLowerCase())) score += 100;
-      if (text.includes(expandedQuery.toLowerCase())) score += 80;
-      if (specificTokens.length > 0 && specificTokens.every((t) => text.includes(t))) score += 60;
-
-      const distKmStr = calculateDistanceKm(center.lat, center.lng, loc.lat, loc.lon);
-      return { loc, score, distance: distKmStr };
-    })
-      .filter((r) => r.score > 0)
-      .sort((a, b) => b.score - a.score);
-
-    for (const match of localRanked.slice(0, 4)) {
-      const loc = match.loc;
-      addResult({
-        title: loc.name,
-        subtitle: `${loc.landmark ? loc.landmark + ', ' : ''}${loc.suburb}, ${loc.city} ${loc.pincode ? '• ' + loc.pincode : ''}`,
-        display_name: `${loc.name}, ${loc.suburb}, ${loc.city}`,
-        distance: match.distance,
-        lat: loc.lat,
-        lng: loc.lon,
-        pincode: loc.pincode,
-        landmark: loc.landmark,
-        source: 'mappls-poi'
-      });
-    }
-  }
-
-  // 3. Always include 1-click Pin Drop action for custom user search query
+  // 2. Always include 1-click Pin Drop action for custom user search query
   if (!results.some((r) => r.title.toLowerCase() === clean.toLowerCase())) {
     addResult({
       title: clean,
