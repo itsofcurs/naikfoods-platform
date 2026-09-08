@@ -306,13 +306,13 @@ export default function About() {
       </section>
 
       {/* SECTION 3: HOW WE WORK (5 Step Process) */}
-      <section className="py-16 md:py-24 bg-[#F8FAF7]">
+      <section className="py-16 md:py-24 bg-[#F8FAF7] dark:bg-[#070B14]">
         <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-[#70BF4F] font-extrabold text-xs uppercase tracking-[0.2em] block mb-2">
               {isMr ? 'कार्यपद्धती' : 'OUR PROCESS'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-gray-900">
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white">
               {isMr ? 'गुणवत्ता आणि शुद्धतेची ५ सूत्रे' : 'How We Bring Authenticity to You'}
             </h2>
           </div>
@@ -321,12 +321,12 @@ export default function About() {
             {workSteps.map((step, idx) => {
               const IconComp = step.icon;
               return (
-                <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center text-center">
-                  <div className="w-12 h-12 rounded-xl bg-green-50 text-[#70BF4F] flex items-center justify-center mb-4">
+                <div key={idx} className="bg-white dark:bg-[#0F172A] p-6 rounded-2xl border border-gray-100 dark:border-[#1E293B] shadow-sm flex flex-col items-center text-center">
+                  <div className="w-12 h-12 rounded-xl bg-green-50 dark:bg-green-950/60 text-[#70BF4F] flex items-center justify-center mb-4">
                     <IconComp className="w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-gray-900 text-base mb-2">{step.title}</h3>
-                  <p className="text-xs text-gray-500 leading-relaxed">{step.description}</p>
+                  <h3 className="font-bold text-gray-900 dark:text-white text-base mb-2">{step.title}</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{step.description}</p>
                 </div>
               );
             })}
@@ -335,13 +335,13 @@ export default function About() {
       </section>
 
       {/* SECTION 4: CORE VALUES */}
-      <section className="py-16 md:py-24 bg-white">
+      <section className="py-16 md:py-24 bg-white dark:bg-[#070B14]">
         <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-[#70BF4F] font-extrabold text-xs uppercase tracking-[0.2em] block mb-2">
               {isMr ? 'आमची मूल्ये' : 'OUR VALUES'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-gray-900">
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white">
               {isMr ? 'ज्या मूल्यांवर आम्ही काम करतो' : 'The Values That Guide Us'}
             </h2>
           </div>
@@ -350,13 +350,13 @@ export default function About() {
             {valuesList.map((val) => {
               const IconComp = val.icon;
               return (
-                <div key={val.id} className="p-8 rounded-3xl bg-[#F9FBF9] border border-[#EAEDE9] flex gap-5">
-                  <div className="w-14 h-14 rounded-2xl bg-white text-[#70BF4F] shadow-sm flex items-center justify-center flex-shrink-0">
+                <div key={val.id} className="p-8 rounded-3xl bg-[#F9FBF9] dark:bg-[#0F172A] border border-[#EAEDE9] dark:border-[#1E293B] flex gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-white dark:bg-[#131E35] text-[#70BF4F] shadow-sm flex items-center justify-center flex-shrink-0">
                     <IconComp className="w-7 h-7" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xl text-gray-900 mb-2">{val.title}</h3>
-                    <p className="text-gray-600 text-sm sm:text-base leading-relaxed">{val.description}</p>
+                    <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2">{val.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">{val.description}</p>
                   </div>
                 </div>
               );

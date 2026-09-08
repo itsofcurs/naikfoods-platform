@@ -220,19 +220,19 @@ export default function RegionalTasteMap() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white via-amber-50/40 to-white">
+    <section className="py-16 bg-gradient-to-b from-white via-amber-50/40 to-white dark:from-[#070B14] dark:via-[#0B1329] dark:to-[#070B14]">
       <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-900 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-3 shadow-xs">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+          <div className="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300/40 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider mb-3 shadow-xs">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             {isMr ? 'स्वाद महाराष्ट्राचा • अस्सल प्रांतिक खाद्य संस्कृती' : 'स्वाद महाराष्ट्राचा • Culinary Geography of Maharashtra'}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
             {isMr ? 'महाराष्ट्राच्या अस्सल प्रांतिक चवींची सफर' : <>Taste of Maharashtra <span className="text-[#70BF4F]">Regional Explorer</span></>}
           </h2>
-          <p className="mt-3 text-base text-gray-600">
+          <p className="mt-3 text-base text-gray-600 dark:text-gray-300">
             {isMr 
               ? 'विदर्भाच्या झणझणीत सावजी मसाल्यांपासून ते कोकणच्या सुगंधी मालवणी मसाल्यांपर्यंत — नाईक फूड्समध्ये जपलेली अस्सल प्रांतिक खाद्य परंपरा जाणून घ्या.'
               : 'From the fiery Saoji curries of Vidarbha to the coconut-infused Malvani masalas of Konkan, explore the authentic regional culinary traditions preserved in Naik Foods recipes.'}

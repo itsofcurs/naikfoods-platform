@@ -229,11 +229,11 @@ export default function Blog() {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mt-16 bg-gradient-to-br from-[#F8FAF6] to-white p-8 sm:p-12 rounded-3xl border border-[#EAEDE9] text-center max-w-3xl mx-auto shadow-sm">
-          <h3 className="text-2xl sm:text-3xl font-black text-gray-900 mb-2 font-serif">
+        <div className="mt-16 bg-gradient-to-br from-[#F8FAF6] to-white dark:from-[#0F172A] dark:to-[#131E35] p-8 sm:p-12 rounded-3xl border border-[#EAEDE9] dark:border-[#1E293B] text-center max-w-3xl mx-auto shadow-sm">
+          <h3 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-2 font-serif">
             {isMr ? 'आजीच्या अस्सल पाककृती थेट ईमेलवर मिळवा' : 'Receive Grandma’s Secret Recipes in Your Inbox'}
           </h3>
-          <p className="text-gray-600 text-sm mb-6 max-w-xl mx-auto">
+          <p className="text-gray-600 dark:text-gray-300 text-sm mb-6 max-w-xl mx-auto">
             {isMr 
               ? 'सणासुदीच्या खास ऑफर, नवीन उत्पादने आणि पारंपारिक पाककृतींसाठी आजच सामील व्हा.'
               : 'Join over 15,000+ food lovers who receive our seasonal recipe gazettes, spice-pairing guides, and exclusive discounts.'}
@@ -246,7 +246,7 @@ export default function Blog() {
               placeholder={isMr ? 'तुमचा ईमेल पत्ता टाका...' : 'Enter your email address...'}
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
-              className="flex-grow bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#70BF4F]"
+              className="flex-grow bg-white dark:bg-[#131E35] border border-gray-200 dark:border-[#243556] text-gray-900 dark:text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#70BF4F]"
             />
             <button
               type="submit"
